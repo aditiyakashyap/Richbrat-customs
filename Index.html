@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RichBrat$ Customs</title>
+    <style>
+        /* --- RESET & BASE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #0f0f0f;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* --- BACKGROUND LOADER --- */
+        /* Using a fixed background for that immersive feel */
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), 
+                        url('https://images.unsplash.com/photo-1600706432502-78b9821897d9?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: blur(2px);
+            transition: filter 0.5s ease;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .logo span {
+            color: #d4af37; /* Gold Accent */
+        }
+
+        /* --- SECTIONS --- */
+        .section {
+            display: none; /* Hidden by default */
+            min-height: 100vh;
+            padding: 100px 20px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .section.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- HOME PAGE (FLOATING MENU) --- */
+        .menu-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .floating-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            width: 300px;
+            text-align: center;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .floating-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2); /* Gold glow */
+            border-color: #d4af37;
+        }
+
+        .floating-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #d4af37;
+        }
+
+        .floating-card p {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        /* --- FORMS (APPOINTMENT & CONSULT) --- */
+        .form-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #333;
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #d4af37;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, 
+        .form-group textarea:focus {
+            border-color: #d4af37;
+        }
+
+        button.submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #d4af37;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        button.submit-btn:hover {
+            background: #f3c845;
+        }
+
+        /* --- ORDER PAGE (GRID) --- */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .product-card {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            background-color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            color: #d4af37;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* --- BACK BUTTON --- */
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #aaa;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: none; /* Hidden on home */
+        }
+        
+        .back-btn:hover {
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="background-container"></div>
+
+    <header>
+        <div class="back-btn" id="backBtn" onclick="goHome()">← Back to Home</div>
+        <div class="logo" onclick="goHome()">RichBrat<span>$</span> Customs</div>
+    </header>
+
+    <section id="home" class="section active">
+        <div class="menu-container">
+            <div class="floating-card" onclick="showSection('order')">
+                <h2>Order Online</h2>
+                <p>Shop premium spoilers, decals, and body kits directly.</p>
+            </div>
+            <div class="floating-card" onclick="showSection('appointment')">
+                <h2>Get Appointment</h2>
+                <p>Book a slot to get your beast customized by our pros.</p>
+            </div>
+            <div class="floating-card" onclick="showSection('consult')">
+                <h2>Consult</h2>
+                <p>Talk to an expert. Callbacks and WhatsApp chats.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="order" class="section">
+        <h2 class="form-title">Shop Accessories</h2>
+        <div class="products-grid">
+            <div class="product-card">
+                <div class="product-image">Carbon Spoiler</div>
+                <h3 class="product-title">GT Wing - Carbon Fiber</h3>
+                <p class="product-price">$450.00</p>
+                <button class="submit-btn">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <div class="product-image">Neon Kit</div>
+                <h3 class="product-title">Underglow Neon Kit</h3>
+                <p class="product-price">$120.00</p>
+                <button class="submit-btn">Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <div class="product-image">Decal Pack</div>
+                <h3 class="product-title">Racing Stripe Decals</h3>
+                <p class="product-price">$45.00</p>
+                <button class="submit-btn">Add to Cart</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="appointment" class="section">
+        <div class="form-container">
+            <h2 class="form-title">Book Appointment</h2>
+            <form onsubmit="event.preventDefault(); alert('Appointment Request Sent!');">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" placeholder="+1 234 567 890" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Car Model</label>
+                    <input type="text" placeholder="e.g. Ford Mustang GT" required>
+                </div>
+                <div class="form-group">
+                    <label>Customization Required</label>
+                    <textarea rows="4" placeholder="Describe the mods you need..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Confirm Booking</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="consult" class="section">
+        <div class="form-container">
+            <h2 class="form-title">Consult an Expert</h2>
+            <form onsubmit="event.preventDefault(); alert('We will contact you shortly!');">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Car Model</label>
+                    <input type="text" placeholder="e.g. Honda Civic" required>
+                </div>
+                <div class="form-group">
+                    <label>Preferred Contact Method</label>
+                    <select>
+                        <option>WhatsApp Chat</option>
+                        <option>Phone Call Back</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Optional Car Look / Style Reference</label>
+                    <input type="text" placeholder="e.g. Matte Black, Street Racing style">
+                </div>
+                <button type="submit" class="submit-btn">Request Consultation</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        // Simple function to handle navigation between sections
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => sec.classList.remove('active'));
+
+            // Show the target section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Handle background blur intensity based on page
+            const bg = document.querySelector('.background-container');
+            
+            // Show back button if not on home
+            const backBtn = document.getElementById('backBtn');
+            if(sectionId === 'home') {
+                backBtn.style.display = 'none';
+                bg.style.filter = 'blur(2px)'; // Less blur on home so car is visible
+            } else {
+                backBtn.style.display = 'block';
+                bg.style.filter = 'blur(8px)'; // More blur on forms for readability
+            }
+        }
+
+        function goHome() {
+            showSection('home');
+        }
+    </script>
+</body>
+</html>
