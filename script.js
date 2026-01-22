@@ -1,152 +1,128 @@
-/* --- RICHBRAT$ SYSTEM CORE --- */
-
-const CONFIG = {
-    emailKey: "9-7GR7Lab7wUNI5sH",
-    serviceId: "service_ilkre51",
-    templateId: "template_hu62u55"
-};
+// --- CONFIGURATION ---
+const SCRIPT_URL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE"; // <--- PASTE HERE
+const SHOP_HOURS = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
 
 class App {
     constructor() {
-        this.initEmail();
         this.initCursor();
-        this.initCanvas();
-        this.soundEnabled = true;
-        this.currentLang = 'en';
-        
-        // Dictionary
-        this.langData = {
-            en: { store: "STORE", booking: "BOOKING", consult: "CONSULT", project_brief: "PROJECT BRIEF", name: "PILOT NAME", car_model: "VEHICLE ID", details: "PARAMETERS" },
-            hi: { store: "स्टोर", booking: "बुकिंग", consult: "सलाह", project_brief: "प्रोजेक्ट विवरण", name: "आपका नाम", car_model: "गाड़ी का मॉडल", details: "विवरण" }
-        };
     }
 
-    // --- 1. INITIALIZATION ---
-    initEmail() {
-        emailjs.init(CONFIG.emailKey);
-    }
-
-    initCursor() {
-        const cursor = document.getElementById('cursor');
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-        // Hover effects for all interactive elements
-        document.querySelectorAll('button, a, input, textarea, .holo-card').forEach(el => {
-            el.addEventListener('mouseenter', () => { 
-                cursor.classList.add('hover-active'); 
-                this.playSfx('hover');
-            });
-            el.addEventListener('mouseleave', () => cursor.classList.remove('hover-active'));
-        });
-    }
-
-    initCanvas() {
-        const cvs = document.getElementById('matrix-canvas');
-        const ctx = cvs.getContext('2d');
-        cvs.width = window.innerWidth; cvs.height = window.innerHeight;
-        
-        const drops = [];
-        for(let i=0; i<100; i++) drops.push({x: Math.random()*cvs.width, y: Math.random()*cvs.height, s: Math.random()*2+1});
-
-        function animate() {
-            ctx.clearRect(0,0,cvs.width,cvs.height);
-            ctx.fillStyle = '#d4af37';
-            drops.forEach(d => {
-                d.y += d.s;
-                if(d.y > cvs.height) d.y = 0;
-                ctx.fillRect(d.x, d.y, 2, 2);
-            });
-            requestAnimationFrame(animate);
-        }
-        animate();
-    }
-
-    // --- 2. NAVIGATION ---
-    nav(pageId) {
-        this.playSfx('click');
+    // --- NAVIGATION ---
+    nav(id) {
         document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
+        document.getElementById(id).classList.add('active');
     }
+    goHome() { this.nav('home'); }
 
-    goHome() {
-        this.nav('home');
-    }
-
-    // --- 3. AUDIO SYSTEM (Synthesizer) ---
-    playSfx(type) {
-        if(!this.soundEnabled) return;
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+    // --- 1. DYNAMIC STORE LOGIC ---
+    async loadStore() {
+        this.nav('store');
+        const container = document.getElementById('product-list');
+        const loader = document.getElementById('loading-store');
         
-        if(type === 'hover') {
-            osc.frequency.setValueAtTime(400, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.1);
-            gain.gain.setValueAtTime(0.02, ctx.currentTime);
-        } else if (type === 'click') {
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(100, ctx.currentTime);
-            gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        container.innerHTML = "";
+        loader.style.display = 'block';
+
+        try {
+            // Fetch JSON from Google Sheet
+            const res = await fetch(`${SCRIPT_URL}?action=getInventory`);
+            const products = await res.json();
+            
+            loader.style.display = 'none';
+            
+            if(products.length === 0) {
+                container.innerHTML = "<p>OUT OF STOCK</p>";
+                return;
+            }
+
+            // Create Cards for each product
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'store-card';
+                card.innerHTML = `
+                    <div class="prod-img" style="background-image:url('${p.image}')"></div>
+                    <h3>${p.name}</h3>
+                    <p class="desc">${p.desc}</p>
+                    <div class="price">$${p.price}</div>
+                    <button class="cyber-btn" onclick="app.buy('${p.name}')">BUY NOW</button>
+                `;
+                container.appendChild(card);
+            });
+        } catch (err) {
+            console.error(err);
+            loader.innerText = "DATABASE CONNECTION FAILED";
         }
+    }
+
+    buy(itemName) {
+        // Direct WhatsApp Purchase Link
+        window.open(`https://wa.me/919999999999?text=I want to buy: ${itemName}`, '_blank');
+    }
+
+    // --- 2. BOOKING LOGIC ---
+    async checkSlots() {
+        const date = document.getElementById('dateInput').value;
+        const select = document.getElementById('timeInput');
+        const btn = document.getElementById('bookBtn');
         
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.start(); osc.stop(ctx.currentTime + 0.1);
-    }
+        select.innerHTML = "<option>SCANNING...</option>";
+        select.disabled = true;
+        btn.disabled = true;
 
-    toggleSound() {
-        this.soundEnabled = !this.soundEnabled;
-        document.getElementById('sound-btn').innerText = this.soundEnabled ? "MUTE" : "UNMUTE";
-    }
+        const res = await fetch(`${SCRIPT_URL}?action=checkSlots&date=${date}`);
+        const taken = await res.json();
 
-    // --- 4. UTILITIES ---
-    toggleLang() {
-        this.currentLang = this.currentLang === 'en' ? 'hi' : 'en';
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            el.innerText = this.langData[this.currentLang][el.getAttribute('data-i18n')];
-        });
-    }
-
-    toggleVoice() {
-        if(!('webkitSpeechRecognition' in window)) { alert("Use Chrome for Voice."); return; }
-        const recognition = new webkitSpeechRecognition();
-        const icon = document.querySelector('.mic-icon');
-        icon.classList.add('listening');
-        recognition.start();
+        // Filter available slots
+        const available = SHOP_HOURS.filter(slot => !taken.includes(slot));
         
-        recognition.onresult = (e) => {
-            document.getElementById('u_message').value += e.results[0][0].transcript + " ";
-            icon.classList.remove('listening');
-        };
+        select.innerHTML = "";
+        if(available.length === 0) {
+            select.innerHTML = "<option>FULL</option>";
+        } else {
+            available.forEach(t => {
+                let opt = document.createElement('option');
+                opt.value = t; opt.text = t;
+                select.add(opt);
+            });
+            select.disabled = false;
+            btn.disabled = false;
+        }
     }
 
-    sendMail() {
-        const btn = document.querySelector('.full-width');
-        const status = document.getElementById('status-log');
-        btn.innerText = "TRANSMITTING...";
+    async bookSlot(e) {
+        e.preventDefault();
+        const btn = document.getElementById('bookBtn');
+        const status = document.getElementById('booking-status');
         
-        const params = {
-            from_name: document.getElementById('u_name').value,
-            reply_to: document.getElementById('u_email').value,
-            car_model: document.getElementById('u_car').value,
-            message: document.getElementById('u_message').value
-        };
+        btn.innerText = "PROCESSING...";
+        btn.disabled = true;
 
-        emailjs.send(CONFIG.serviceId, CONFIG.templateId, params)
-        .then(() => {
-            status.innerText = "> UPLOAD SUCCESSFUL";
-            status.style.color = "#00f3ff";
-            btn.innerText = "DONE";
-        })
-        .catch(() => {
-            status.innerText = "> CONNECTION FAILED";
-            status.style.color = "red";
-            btn.innerText = "RETRY";
+        const formData = new FormData();
+        formData.append('date', document.getElementById('dateInput').value);
+        formData.append('time', document.getElementById('timeInput').value);
+        formData.append('name', document.getElementById('b_name').value);
+        formData.append('phone', document.getElementById('b_phone').value);
+        formData.append('car', document.getElementById('b_car').value);
+
+        try {
+            await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+            status.innerText = "CONFIRMED. ID GENERATED.";
+            status.style.color = "#d4af37";
+            document.getElementById('bookingForm').reset();
+            setTimeout(() => { this.goHome(); status.innerText = ""; btn.innerText="CONFIRM"; }, 3000);
+        } catch(err) {
+            status.innerText = "ERROR.";
+            btn.disabled = false;
+        }
+    }
+    
+    // --- UTILS ---
+    initCursor() {
+        const c = document.getElementById('cursor');
+        document.addEventListener('mousemove', e => {
+            c.style.left=e.clientX+'px'; c.style.top=e.clientY+'px';
         });
     }
 }
 
-// Start System
 const app = new App();
