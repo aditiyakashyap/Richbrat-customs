@@ -3,109 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RichBrat$ Customs | Systems</title>
-    
+    <title>RichBrat$ Customs</title>
     <link rel="stylesheet" href="style.css">
-    
-    <link rel="manifest" href="manifest.json">
-    
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <div id="cursor"></div>
-    <canvas id="matrix-canvas"></canvas>
-    <div class="scanlines"></div>
-
-    <nav>
+    <div class="bg-overlay"></div> <nav>
         <div class="logo-box" onclick="app.goHome()">
-            <img src="logo.png" alt="RichBrat$">
-            <span>// SYSTEM_OS v2.0</span>
+            <img src="logo.png" alt="RB$" onerror="this.style.display='none'; document.getElementById('alt-logo').style.display='block'">
+            <span id="alt-logo" style="display:none; color:#d4af37; font-weight:bold;">RICHBRAT$</span>
         </div>
         <div class="nav-controls">
-            <button class="cyber-btn" onclick="app.toggleLang()">EN / HI</button>
-            <button class="cyber-btn" onclick="app.toggleSound()" id="sound-btn">MUTE</button>
+            <button class="cyber-btn" onclick="app.goHome()">HOME</button>
         </div>
     </nav>
 
     <main class="container">
-        
+
         <section id="home" class="active">
             <div class="grid-menu">
-                <div class="holo-card" onclick="app.nav('store')">
+                <div class="holo-card" onclick="app.loadStore()">
                     <div class="card-icon">🛒</div>
-                    <h2 data-i18n="store">STORE</h2>
-                    <p>> INVENTORY ACCESS</p>
+                    <h2>STORE</h2>
+                    <p>> LIVE INVENTORY</p>
                 </div>
                 <div class="holo-card" onclick="app.nav('booking')">
                     <div class="card-icon">📅</div>
-                    <h2 data-i18n="booking">BOOKING</h2>
-                    <p>> SECURE SLOT</p>
+                    <h2>BOOKING</h2>
+                    <p>> RESERVE SLOT</p>
                 </div>
                 <div class="holo-card" onclick="app.nav('consult')">
-                    <div class="card-icon">👨‍🔧</div>
-                    <h2 data-i18n="consult">CONSULT</h2>
-                    <p>> AI INTERFACE</p>
-                </div>
-            </div>
-        </section>
-
-        <section id="consult">
-            <div class="glass-panel">
-                <div class="panel-visual">
-                    <div class="scanner-bar"></div>
-                    <img src="car.png" class="analyzed-car" alt="Scan">
-                    <div class="hud-overlay">
-                        <div>SCANNING CHASSIS...</div>
-                        <div>INTEGRITY: 100%</div>
-                    </div>
-                </div>
-                <div class="panel-form">
-                    <h2 data-i18n="project_brief">PROJECT BRIEF</h2>
-                    <form id="consultForm">
-                        <div class="input-box">
-                            <label data-i18n="name">PILOT NAME</label>
-                            <input type="text" id="u_name" required>
-                        </div>
-                        <div class="input-box">
-                            <label>COMM LINK (EMAIL)</label>
-                            <input type="email" id="u_email" required>
-                        </div>
-                        <div class="input-box">
-                            <label data-i18n="car_model">VEHICLE ID</label>
-                            <input type="text" id="u_car" required>
-                        </div>
-                        <div class="input-box">
-                            <label data-i18n="details">PARAMETERS</label>
-                            <textarea id="u_message" rows="3" placeholder="Click Mic to Speak..."></textarea>
-                            <button type="button" class="mic-icon" onclick="app.toggleVoice()">🎙️</button>
-                        </div>
-                        <button type="button" class="cyber-btn full-width" onclick="app.sendMail()">INITIATE UPLOAD</button>
-                        <div id="status-log"></div>
-                    </form>
+                    <div class="card-icon">⚡</div>
+                    <h2>CONSULT</h2>
+                    <p>> EXPERT CHAT</p>
                 </div>
             </div>
         </section>
 
         <section id="store">
             <div class="glass-panel centered">
-                <h2>STORE OFFLINE</h2>
-                <p>> CONNECTING TO SERVER...</p>
-                <button class="cyber-btn" onclick="app.goHome()">RETURN</button>
+                <h2 style="color:var(--gold)">INVENTORY DATABASE</h2>
+                <div id="loading-store">LOADING DATA...</div>
+                
+                <div class="store-grid" id="product-list"></div>
+                
+                <button class="cyber-btn full-width" onclick="app.goHome()">BACK TO HUB</button>
             </div>
         </section>
-        
+
         <section id="booking">
+            <div class="glass-panel">
+                <div class="panel-form">
+                    <h2 style="color:var(--gold)">SECURE RESERVATION</h2>
+                    <form id="bookingForm" onsubmit="app.bookSlot(event)">
+                        <div class="input-box">
+                            <label>SELECT DATE</label>
+                            <input type="date" id="dateInput" required onchange="app.checkSlots()">
+                        </div>
+                        <div class="input-box">
+                            <label>AVAILABLE TIME</label>
+                            <select id="timeInput" disabled>
+                                <option>Select Date First...</option>
+                            </select>
+                        </div>
+                        <div class="input-box"><label>NAME</label><input type="text" id="b_name" required></div>
+                        <div class="input-box"><label>PHONE</label><input type="tel" id="b_phone" required></div>
+                        <div class="input-box"><label>CAR</label><input type="text" id="b_car" required></div>
+                        
+                        <button class="cyber-btn full-width" id="bookBtn">CONFIRM SLOT</button>
+                        <div id="booking-status" style="margin-top:10px; text-align:center;"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="consult">
             <div class="glass-panel centered">
-                <h2>CALENDAR MODULE</h2>
-                <p>> LOADING EXTERNAL PROTOCOLS...</p>
-                <button class="cyber-btn" onclick="app.goHome()">RETURN</button>
+                <h2>CONSULTATION</h2>
+                <p>Use the Chat Interface or Email form previously created.</p>
+                <button class="cyber-btn" onclick="app.goHome()">BACK</button>
             </div>
         </section>
 
     </main>
-
     <script src="script.js"></script>
 </body>
 </html>
