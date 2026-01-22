@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RichBrat$ Customs | Luxury Car Modifications</title>
+    <title>RichBrat$ Customs | Digital Garage</title>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 1. CORE STYLES --- */
+        /* --- 1. CORE VARIABLES & RESET --- */
         :root {
             --gold: #d4af37;
-            --black: #080808;
-            --glass: rgba(15, 15, 15, 0.95);
+            --gold-dim: rgba(212, 175, 55, 0.3);
+            --black: #050505;
+            --glass: rgba(10, 10, 10, 0.85);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,207 +22,217 @@
             color: #fff;
             font-family: 'Roboto', sans-serif;
             overflow-x: hidden;
+            height: 100vh;
+            width: 100vw;
         }
 
-        h1, h2, h3, button { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+        h1, h2, h3, button, .sys-log { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
 
-        /* --- 2. BACKGROUND VIDEO --- */
-        #bg-video-container {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
+        /* --- 2. HOLOGRAPHIC BACKGROUND (NO VIDEO) --- */
+        #holo-deck {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
             overflow: hidden;
-        }
-        
-        #bg-video {
-            min-width: 100%; min-height: 100%;
-            object-fit: cover;
-            filter: brightness(0.3) blur(2px);
+            perspective: 1000px; /* 3D effect */
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000 90%);
         }
 
-        /* --- 3. NAVIGATION & LOGO --- */
+        /* Moving Grid Floor */
+        .grid-floor {
+            position: absolute;
+            bottom: -50%;
+            left: -50%;
+            width: 200%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--gold-dim) 1px, transparent 1px),
+                linear-gradient(90deg, var(--gold-dim) 1px, transparent 1px);
+            background-size: 50px 50px;
+            transform: rotateX(60deg); /* Tilts the floor */
+            animation: gridMove 20s linear infinite;
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 60%); /* Fades out at horizon */
+        }
+
+        @keyframes gridMove {
+            0% { transform: rotateX(60deg) translateY(0); }
+            100% { transform: rotateX(60deg) translateY(50px); }
+        }
+
+        /* The Car Image in Center */
+        .holo-car {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            max-width: 700px;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 20px var(--gold-dim)) grayscale(80%);
+            transition: 0.5s;
+        }
+
+        /* The Laser Scanner Beam */
+        .scanner {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--gold);
+            box-shadow: 0 0 15px var(--gold), 0 0 30px var(--gold);
+            animation: scan 4s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes scan {
+            0% { top: 30%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 70%; opacity: 0; }
+        }
+
+        /* Dynamic System Text Background */
+        .sys-log {
+            position: absolute;
+            top: 20%; right: 5%;
+            color: var(--gold);
+            font-size: 0.9rem;
+            text-align: right;
+            line-height: 1.5;
+            opacity: 0.6;
+            text-shadow: 0 0 5px var(--gold);
+            pointer-events: none; /* Let clicks pass through */
+        }
+
+        /* --- 3. UI LAYOUT --- */
         nav {
-            position: fixed;
-            top: 0; width: 100%;
-            padding: 15px;
-            display: flex;
-            justify-content: center; /* Centers Logo */
-            align-items: center;
-            z-index: 1000;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+            position: fixed; top: 0; width: 100%; padding: 20px;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 100;
         }
-
-        .logo-btn {
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        
-        .logo-btn:hover { transform: scale(1.1); }
 
         .logo-btn img {
-            height: 70px; /* Adjust size here */
-            width: auto;
-            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5));
+            height: 60px; width: auto;
+            filter: drop-shadow(0 0 10px var(--gold));
+            cursor: pointer; transition: 0.3s;
         }
+        .logo-btn:hover img { transform: scale(1.1); }
 
         .back-btn {
-            position: absolute;
-            left: 20px;
-            color: var(--gold);
-            font-weight: bold;
-            cursor: pointer;
-            display: none; /* Hidden on home */
-            font-size: 1.2rem;
-            border: 1px solid var(--gold);
-            padding: 5px 15px;
-            border-radius: 4px;
-            background: rgba(0,0,0,0.5);
+            position: absolute; left: 20px;
+            color: var(--gold); font-weight: bold; cursor: pointer;
+            border: 1px solid var(--gold); padding: 8px 20px;
+            background: rgba(0,0,0,0.8); display: none;
         }
 
-        /* --- 4. SECTIONS --- */
+        /* Content Container */
         .container {
+            position: relative;
+            z-index: 10;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 100px 20px 50px 20px; /* Top padding clears the logo */
+            padding-top: 80px;
         }
 
         .section {
             display: none;
-            width: 100%;
-            max-width: 1000px;
-            animation: fadeIn 0.5s ease-out;
+            width: 90%; max-width: 1000px;
+            animation: slideUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
-
         .section.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
-        /* --- 5. HOME MENU CARDS --- */
+        /* --- 4. CARDS & FORMS --- */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            gap: 20px;
             width: 100%;
         }
 
         .menu-card {
-            background: rgba(20, 20, 20, 0.8);
-            border: 1px solid #333;
-            padding: 40px;
-            text-align: center;
-            border-radius: 8px;
-            cursor: pointer;
+            background: rgba(0,0,0,0.6); /* Transparent to see holo car */
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            backdrop-filter: blur(5px);
+            padding: 40px; text-align: center;
+            border-radius: 4px; cursor: pointer;
             transition: 0.3s;
             position: relative;
-            overflow: hidden;
+        }
+
+        .menu-card::before {
+            content: ''; position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(212,175,55,0.1), transparent);
+            transform: translateX(-100%); transition: 0.5s;
         }
 
         .menu-card:hover {
             border-color: var(--gold);
-            background: rgba(0,0,0,0.9);
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
-
-        .menu-card h2 { color: var(--gold); margin-bottom: 10px; font-size: 2rem; }
-        .menu-card p { color: #ccc; }
-
-        /* --- 6. FORMS (GOOGLE FORM STYLE) --- */
-        .form-box {
-            background: var(--glass);
-            padding: 30px;
-            border-radius: 10px;
-            border-top: 3px solid var(--gold);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .form-group { margin-bottom: 20px; }
         
-        .form-group label {
-            display: block;
-            color: var(--gold);
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
+        .menu-card:hover::before { transform: translateX(100%); }
+
+        .form-box {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 30px; border-radius: 8px;
+            border: 1px solid var(--gold);
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            max-width: 500px; margin: 0 auto;
         }
 
         input, textarea, select {
-            width: 100%;
-            padding: 12px;
-            background: #111;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 4px;
-            font-family: inherit;
+            width: 100%; padding: 12px; margin-bottom: 15px;
+            background: #111; border: 1px solid #333; color: #fff;
         }
+        input:focus { border-color: var(--gold); outline: none; }
+        
+        label { color: var(--gold); font-size: 0.8rem; margin-bottom: 5px; display: block; }
 
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--gold);
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 15px;
-            background: var(--gold);
-            color: #000;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-            text-transform: uppercase;
+        .btn-gold {
+            width: 100%; padding: 15px;
+            background: var(--gold); color: #000;
+            font-weight: 800; border: none; cursor: pointer;
             transition: 0.3s;
         }
+        .btn-gold:hover { background: #fff; box-shadow: 0 0 20px #fff; }
 
-        .btn-submit:hover { background: #fff; }
-
-        /* --- 7. PRODUCT LIST --- */
-        .product-item {
-            display: flex;
-            align-items: center;
-            background: #111;
-            border: 1px solid #333;
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 8px;
+        /* --- 5. RESPONSIVE --- */
+        @media (max-width: 768px) {
+            /* On mobile, move car to top so text is visible */
+            .holo-car { top: 25%; width: 90%; }
+            .sys-log { display: none; } /* Hide text logs on mobile to save space */
+            .container { justify-content: flex-end; padding-bottom: 50px; }
+            .menu-card { padding: 30px; }
         }
-
-        .product-info { flex-grow: 1; padding: 0 20px; }
-        
-        .product-price { 
-            color: var(--gold); 
-            font-size: 1.2rem; 
-            font-weight: bold; 
-        }
-
-        /* Mobile Fixes */
-        @media (max-width: 600px) {
-            .product-item { flex-direction: column; text-align: center; }
-            .product-info { margin: 15px 0; }
-        }
-
     </style>
 </head>
 <body>
 
-    <div id="bg-video-container">
-        <video autoplay muted loop id="bg-video">
-            <source src="background.mp4" type="video/mp4">
-        </video>
+    <div id="holo-deck">
+        <div class="grid-floor"></div>
+        <div style="position:relative; width:100%; height:100%;">
+            <img src="car.png" class="holo-car" alt="Project Car">
+            <div class="scanner"></div>
+        </div>
+        
+        <div class="sys-log" id="sys-log">
+            > SYSTEM INITIALIZED...<br>
+            > CONNECTED TO RICHBRAT$ SERVER...<br>
+        </div>
     </div>
 
     <nav>
         <div id="back-btn" class="back-btn" onclick="goHome()">← BACK</div>
         <div class="logo-btn" onclick="goHome()">
-            <img src="logo.png" alt="RichBrat$ Logo">
+            <img src="logo.png" alt="RichBrat$">
         </div>
     </nav>
 
@@ -230,88 +241,50 @@
         <div id="home" class="section active">
             <div class="card-grid">
                 <div class="menu-card" onclick="show('order')">
-                    <h2>Store</h2>
-                    <p>Order Custom Parts</p>
+                    <h2>Store</h2><p>Parts & Mods</p>
                 </div>
                 <div class="menu-card" onclick="show('appointment')">
-                    <h2>Appointment</h2>
-                    <p>Book Garage Visit</p>
+                    <h2>Book</h2><p>Garage Slot</p>
                 </div>
                 <div class="menu-card" onclick="show('consult')">
-                    <h2>Consult</h2>
-                    <p>Chat with Experts</p>
+                    <h2>Chat</h2><p>Consult Expert</p>
                 </div>
             </div>
         </div>
 
         <div id="order" class="section">
-            <h2 style="text-align:center; color:var(--gold); margin-bottom:30px;">Select Parts</h2>
-            
-            <div class="product-item">
-                <div class="product-info">
-                    <h3>Carbon GT Wing</h3>
-                    <p class="product-price">$450</p>
+            <div class="form-box">
+                <h2 style="text-align:center; color:var(--gold); margin-bottom:20px;">Quick Order</h2>
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
+                    <div><h3>GT WING</h3><small>$450</small></div>
+                    <button onclick="waOrder('GT Wing')" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:5px 10px; cursor:pointer;">BUY</button>
                 </div>
-                <button class="btn-submit" style="width:auto;" onclick="window.open('https://wa.me/919999999999?text=I+want+to+order+Carbon+GT+Wing')">Buy on WhatsApp</button>
-            </div>
-
-            <div class="product-item">
-                <div class="product-info">
-                    <h3>Underglow Neon Kit</h3>
-                    <p class="product-price">$120</p>
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
+                    <div><h3>NEON KIT</h3><small>$120</small></div>
+                    <button onclick="waOrder('Neon Kit')" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:5px 10px; cursor:pointer;">BUY</button>
                 </div>
-                <button class="btn-submit" style="width:auto;" onclick="window.open('https://wa.me/919999999999?text=I+want+to+order+Neon+Kit')">Buy on WhatsApp</button>
             </div>
         </div>
 
         <div id="appointment" class="section">
             <div class="form-box">
-                <h2 style="text-align:center; margin-bottom:20px;">Book Appointment</h2>
-                
-                <form action="YOUR_GOOGLE_FORM_ACTION_URL_HERE" method="POST" target="_blank">
-                    
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" name="entry.NAME_ID_HERE" required placeholder="Enter Name">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" name="entry.PHONE_ID_HERE" required placeholder="Enter Phone">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Car Model</label>
-                        <input type="text" name="entry.CAR_ID_HERE" required placeholder="e.g. Mustang GT">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Customization Details</label>
-                        <textarea name="entry.DETAILS_ID_HERE" rows="3" placeholder="What do you need?"></textarea>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Submit Request</button>
+                <h2 style="text-align:center; margin-bottom:20px; color:var(--gold);">Garage Visit</h2>
+                <form action="YOUR_GOOGLE_FORM_URL" method="POST" target="_blank">
+                    <label>NAME</label><input type="text" name="entry.ID_HERE" required>
+                    <label>PHONE</label><input type="tel" name="entry.ID_HERE" required>
+                    <label>CAR MODEL</label><input type="text" name="entry.ID_HERE" required>
+                    <button class="btn-gold">CONFIRM SLOT</button>
                 </form>
             </div>
         </div>
 
         <div id="consult" class="section">
             <div class="form-box">
-                <h2 style="text-align:center; margin-bottom:20px;">Expert Consultation</h2>
-                
-                <form action="YOUR_SECOND_GOOGLE_FORM_ACTION_URL_HERE" method="POST" target="_blank">
-                    
-                    <div class="form-group">
-                        <label>Name</label>
-                        <input type="text" name="entry.NAME_ID_HERE" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Contact (Email/Phone)</label>
-                        <input type="text" name="entry.CONTACT_ID_HERE" required>
-                    </div>
-
-                    <button type="submit" class="btn-submit">Request Call Back</button>
+                <h2 style="text-align:center; margin-bottom:20px; color:var(--gold);">Expert Chat</h2>
+                <form action="YOUR_GOOGLE_FORM_URL" method="POST" target="_blank">
+                    <label>NAME</label><input type="text" name="entry.ID_HERE" required>
+                    <label>WHATSAPP NO.</label><input type="tel" name="entry.ID_HERE" required>
+                    <button class="btn-gold">REQUEST CALLBACK</button>
                 </form>
             </div>
         </div>
@@ -319,20 +292,51 @@
     </div>
 
     <script>
+        // 1. Navigation Logic
         function show(id) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            // Show target section
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            // Show back button
             document.getElementById('back-btn').style.display = 'block';
         }
-
         function goHome() {
             show('home');
-            // Hide back button on home
             document.getElementById('back-btn').style.display = 'none';
         }
+
+        // 2. WhatsApp Order Logic
+        function waOrder(item) {
+            window.open(`https://wa.me/919999999999?text=I am interested in buying ${item}`, '_blank');
+        }
+
+        // 3. Dynamic "Hacking/Modifying" Text Animation
+        const logs = [
+            "> SCANNING CHASSIS...",
+            "> PAINT MIXTURE: GOLD [98%]",
+            "> INSTALLING TURBO...",
+            "> ECU MAPPING...",
+            "> CHECKING SUSPENSION...",
+            "> NITROUS PURGE: READY",
+            "> RIMS: VOSSEN 20 INCH",
+            "> APPLYING DECALS..."
+        ];
+
+        function addLog() {
+            const logBox = document.getElementById('sys-log');
+            const randomLog = logs[Math.floor(Math.random() * logs.length)];
+            
+            // Create new line
+            const newLine = document.createElement('div');
+            newLine.innerText = randomLog;
+            logBox.appendChild(newLine);
+
+            // Remove old lines if too many
+            if(logBox.children.length > 6) {
+                logBox.removeChild(logBox.children[0]);
+            }
+        }
+
+        // Add a new log line every 2 seconds
+        setInterval(addLog, 2000);
     </script>
 </body>
 </html>
