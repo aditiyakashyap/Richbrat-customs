@@ -20,7 +20,6 @@
         }
 
         /* --- BACKGROUND LOADER --- */
-        /* Using a fixed background for that immersive feel */
         .background-container {
             position: fixed;
             top: 0;
@@ -49,23 +48,19 @@
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #fff;
             cursor: pointer;
         }
 
-        .logo span {
-            color: #d4af37; /* Gold Accent */
+        .logo img {
+            max-height: 80px; /* Adjust size as needed */
+            width: auto;
         }
 
         /* --- SECTIONS --- */
         .section {
-            display: none; /* Hidden by default */
+            display: none;
             min-height: 100vh;
-            padding: 100px 20px;
+            padding: 120px 20px; /* Increased top padding for logo */
             animation: fadeIn 0.5s ease-in-out;
         }
 
@@ -175,11 +170,16 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1rem;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.1s;
         }
 
         button.submit-btn:hover {
             background: #f3c845;
+            transform: scale(1.02);
+        }
+        
+        button.submit-btn:active {
+            transform: scale(0.98);
         }
 
         /* --- ORDER PAGE (GRID) --- */
@@ -197,6 +197,12 @@
             border-radius: 8px;
             padding: 20px;
             text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: #d4af37;
         }
 
         .product-image {
@@ -208,6 +214,7 @@
             align-items: center;
             justify-content: center;
             color: #555;
+            border-radius: 4px;
         }
 
         .product-title {
@@ -224,12 +231,13 @@
         /* --- BACK BUTTON --- */
         .back-btn {
             position: absolute;
-            top: 20px;
+            top: 40px; /* Adjusted for logo */
             left: 20px;
             color: #aaa;
             cursor: pointer;
             font-size: 0.9rem;
-            display: none; /* Hidden on home */
+            display: none;
+            transition: color 0.3s;
         }
         
         .back-btn:hover {
@@ -244,7 +252,9 @@
 
     <header>
         <div class="back-btn" id="backBtn" onclick="goHome()">← Back to Home</div>
-        <div class="logo" onclick="goHome()">RichBrat<span>$</span> Customs</div>
+        <div class="logo" onclick="goHome()">
+            <img src="image_0.png" alt="RichBrat$ Customs Logo">
+        </div>
     </header>
 
     <section id="home" class="section active">
