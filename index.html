@@ -7,111 +7,93 @@
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 1. RESET & VARIABLES --- */
+        /* --- 1. CORE STYLES --- */
         :root {
             --gold: #d4af37;
-            --gold-glow: rgba(212, 175, 55, 0.4);
-            --dark-bg: #050505;
-            --glass: rgba(20, 20, 20, 0.85);
-            --border: 1px solid rgba(255, 255, 255, 0.1);
+            --black: #080808;
+            --glass: rgba(15, 15, 15, 0.95);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--dark-bg);
+            background-color: var(--black);
             color: #fff;
             font-family: 'Roboto', sans-serif;
             overflow-x: hidden;
-            height: 100vh;
         }
 
         h1, h2, h3, button { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
 
-        /* --- 2. LOADER --- */
-        #loader {
+        /* --- 2. BACKGROUND VIDEO --- */
+        #bg-video-container {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.5s;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            z-index: -1;
+            overflow: hidden;
         }
-        .spinner {
-            width: 50px; height: 50px;
-            border: 3px solid transparent;
-            border-top: 3px solid var(--gold);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* --- 3. BACKGROUND --- */
-        .bg-video-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1; overflow: hidden;
-        }
+        
         #bg-video {
-            min-width: 100%; min-height: 100%; 
+            min-width: 100%; min-height: 100%;
             object-fit: cover;
-            filter: brightness(0.3); /* Dark professional look */
+            filter: brightness(0.3) blur(2px);
         }
 
-        /* --- 4. HEADER --- */
-        header {
-            position: fixed; top: 0; width: 100%;
-            padding: 20px 5%;
+        /* --- 3. NAVIGATION & LOGO --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 15px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center; /* Centers Logo */
             align-items: center;
-            z-index: 100;
+            z-index: 1000;
             background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
         }
 
-        .logo-container {
+        .logo-btn {
             cursor: pointer;
-            z-index: 101;
-        }
-        
-        .logo-container img {
-            height: 60px; /* Adjust based on your logo shape */
-            width: auto;
             transition: transform 0.3s;
-            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
         }
         
-        .logo-container:hover img { transform: scale(1.05); }
+        .logo-btn:hover { transform: scale(1.1); }
 
-        .back-nav {
+        .logo-btn img {
+            height: 70px; /* Adjust size here */
+            width: auto;
+            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5));
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 20px;
             color: var(--gold);
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 700;
-            letter-spacing: 2px;
+            font-weight: bold;
             cursor: pointer;
             display: none; /* Hidden on home */
-            text-shadow: 0 0 10px var(--gold-glow);
-            transition: 0.3s;
+            font-size: 1.2rem;
+            border: 1px solid var(--gold);
+            padding: 5px 15px;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.5);
         }
-        .back-nav:hover { color: #fff; }
 
-        /* --- 5. SECTIONS & LAYOUT --- */
-        main {
-            position: relative;
-            height: 100vh;
-            width: 100%;
+        /* --- 4. SECTIONS --- */
+        .container {
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 100px 20px 50px 20px; /* Top padding clears the logo */
         }
 
         .section {
-            display: none; /* Hidden by default */
+            display: none;
             width: 100%;
-            max-width: 1200px;
-            padding: 20px;
-            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 1000px;
+            animation: fadeIn 0.5s ease-out;
         }
 
         .section.active { display: block; }
@@ -121,189 +103,141 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- 6. HOME MENU (FLOATING CARDS) --- */
-        .menu-grid {
+        /* --- 5. HOME MENU CARDS --- */
+        .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
             width: 100%;
-            margin-top: 60px;
         }
 
         .menu-card {
-            background: var(--glass);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 40px 20px;
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid #333;
+            padding: 40px;
             text-align: center;
-            border-radius: 4px; /* Professional sharp corners */
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.4s ease;
+            transition: 0.3s;
             position: relative;
             overflow: hidden;
         }
 
-        .menu-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; width: 3px; height: 100%;
-            background: var(--gold);
-            transform: scaleY(0);
-            transition: transform 0.4s;
-        }
-
         .menu-card:hover {
-            transform: translateY(-10px);
-            background: rgba(30, 30, 30, 0.95);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border-color: var(--gold);
+            background: rgba(0,0,0,0.9);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
         }
 
-        .menu-card:hover::before { transform: scaleY(1); }
+        .menu-card h2 { color: var(--gold); margin-bottom: 10px; font-size: 2rem; }
+        .menu-card p { color: #ccc; }
 
-        .menu-card h2 {
-            color: var(--gold);
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .menu-card p { color: #aaa; font-size: 0.9rem; }
-
-        /* --- 7. FORMS & INPUTS --- */
-        .content-box {
+        /* --- 6. FORMS (GOOGLE FORM STYLE) --- */
+        .form-box {
             background: var(--glass);
-            padding: 40px;
-            border-radius: 8px;
-            border-top: 2px solid var(--gold);
+            padding: 30px;
+            border-radius: 10px;
+            border-top: 3px solid var(--gold);
             max-width: 600px;
             margin: 0 auto;
-            position: relative;
         }
 
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: #fff;
-            margin-bottom: 30px;
-            text-shadow: 0 0 20px var(--gold-glow);
-        }
-
-        .form-row { margin-bottom: 20px; }
-        .form-row label { display: block; color: var(--gold); margin-bottom: 5px; font-size: 0.9rem; letter-spacing: 1px; }
+        .form-group { margin-bottom: 20px; }
         
-        input, select, textarea {
+        .form-group label {
+            display: block;
+            color: var(--gold);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        input, textarea, select {
             width: 100%;
-            padding: 15px;
-            background: #0a0a0a;
-            border: 1px solid #333;
+            padding: 12px;
+            background: #111;
+            border: 1px solid #444;
             color: #fff;
-            font-family: 'Roboto', sans-serif;
-            outline: none;
-            transition: 0.3s;
+            border-radius: 4px;
+            font-family: inherit;
         }
 
         input:focus, textarea:focus {
+            outline: none;
             border-color: var(--gold);
-            box-shadow: 0 0 10px var(--gold-glow);
         }
 
-        .btn-main {
+        .btn-submit {
             width: 100%;
             padding: 15px;
             background: var(--gold);
             color: #000;
-            font-weight: 700;
-            letter-spacing: 2px;
+            font-weight: bold;
             border: none;
             cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
-        }
-
-        .btn-main:hover {
-            background: #fff;
-            box-shadow: 0 0 20px rgba(255,255,255,0.4);
-        }
-
-        /* --- 8. SHOP GRID --- */
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-            height: 60vh; /* Scrollable area */
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .shop-item {
-            background: rgba(255,255,255,0.05);
-            padding: 20px;
-            border: 1px solid #333;
-            text-align: center;
+            font-size: 1.1rem;
+            text-transform: uppercase;
             transition: 0.3s;
         }
-        
-        .shop-item:hover { border-color: var(--gold); }
 
-        .shop-img {
-            height: 120px;
-            background: #111;
-            margin-bottom: 15px;
+        .btn-submit:hover { background: #fff; }
+
+        /* --- 7. PRODUCT LIST --- */
+        .product-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: #555;
-            font-size: 0.8rem;
+            background: #111;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
         }
 
-        /* --- SCROLLBAR --- */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: var(--gold); }
-
-        /* --- MOBILE TWEAKS --- */
-        @media (max-width: 768px) {
-            .section-title { font-size: 1.8rem; }
-            .menu-card h2 { font-size: 1.5rem; }
-            .content-box { padding: 20px; width: 95%; }
-            header { padding: 15px 20px; }
+        .product-info { flex-grow: 1; padding: 0 20px; }
+        
+        .product-price { 
+            color: var(--gold); 
+            font-size: 1.2rem; 
+            font-weight: bold; 
         }
+
+        /* Mobile Fixes */
+        @media (max-width: 600px) {
+            .product-item { flex-direction: column; text-align: center; }
+            .product-info { margin: 15px 0; }
+        }
+
     </style>
 </head>
-<body onload="hideLoader()">
+<body>
 
-    <div id="loader"><div class="spinner"></div></div>
-
-    <div class="bg-video-container">
-        <video autoplay muted loop id="bg-video" poster="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920">
+    <div id="bg-video-container">
+        <video autoplay muted loop id="bg-video">
             <source src="background.mp4" type="video/mp4">
         </video>
     </div>
 
-    <header>
-        <div class="logo-container" onclick="showSection('home')">
-            <img src="logo.png" alt="RichBrat$ Customs" title="Back to Home">
+    <nav>
+        <div id="back-btn" class="back-btn" onclick="goHome()">← BACK</div>
+        <div class="logo-btn" onclick="goHome()">
+            <img src="logo.png" alt="RichBrat$ Logo">
         </div>
-        <div id="nav-back" class="back-nav" onclick="showSection('home')">
-            // RETURN TO HOME
-        </div>
-    </header>
+    </nav>
 
-    <main>
-        
+    <div class="container">
+
         <div id="home" class="section active">
-            <div style="text-align:center; margin-bottom:40px;">
-                <h1 style="font-size:3rem; text-shadow:0 0 20px black;">Welcome to the <span style="color:var(--gold);">Underground</span></h1>
-                <p style="color:#ccc; letter-spacing:1px; margin-top:10px;">Select a service below to begin</p>
-            </div>
-
-            <div class="menu-grid">
-                <div class="menu-card" onclick="showSection('order')">
+            <div class="card-grid">
+                <div class="menu-card" onclick="show('order')">
                     <h2>Store</h2>
-                    <p>Order Parts & Accessories</p>
+                    <p>Order Custom Parts</p>
                 </div>
-                <div class="menu-card" onclick="showSection('appointment')">
+                <div class="menu-card" onclick="show('appointment')">
                     <h2>Appointment</h2>
-                    <p>Book a Garage Visit</p>
+                    <p>Book Garage Visit</p>
                 </div>
-                <div class="menu-card" onclick="showSection('consult')">
+                <div class="menu-card" onclick="show('consult')">
                     <h2>Consult</h2>
                     <p>Chat with Experts</p>
                 </div>
@@ -311,468 +245,93 @@
         </div>
 
         <div id="order" class="section">
-            <div class="content-box">
-                <h2 class="section-title">Online Store</h2>
-                <div class="shop-grid">
-                    <div class="shop-item">
-                        <div class="shop-img">CARBON WING</div>
-                        <h3>GT Spoiler</h3>
-                        <p style="color:var(--gold); margin:5px 0;">$450</p>
-                        <button class="btn-main" style="padding:5px; font-size:0.8rem;">Add</button>
-                    </div>
-                    <div class="shop-item">
-                        <div class="shop-img">VOSSEN RIMS</div>
-                        <h3>Matte Rims</h3>
-                        <p style="color:var(--gold); margin:5px 0;">$1200</p>
-                        <button class="btn-main" style="padding:5px; font-size:0.8rem;">Add</button>
-                    </div>
-                    <div class="shop-item">
-                        <div class="shop-img">NEON KIT</div>
-                        <h3>Underglow</h3>
-                        <p style="color:var(--gold); margin:5px 0;">$150</p>
-                        <button class="btn-main" style="padding:5px; font-size:0.8rem;">Add</button>
-                    </div>
-                    <div class="shop-item">
-                        <div class="shop-img">WRAP</div>
-                        <h3>Vinyl Wrap</h3>
-                        <p style="color:var(--gold); margin:5px 0;">$800</p>
-                        <button class="btn-main" style="padding:5px; font-size:0.8rem;">Add</button>
-                    </div>
+            <h2 style="text-align:center; color:var(--gold); margin-bottom:30px;">Select Parts</h2>
+            
+            <div class="product-item">
+                <div class="product-info">
+                    <h3>Carbon GT Wing</h3>
+                    <p class="product-price">$450</p>
                 </div>
+                <button class="btn-submit" style="width:auto;" onclick="window.open('https://wa.me/919999999999?text=I+want+to+order+Carbon+GT+Wing')">Buy on WhatsApp</button>
+            </div>
+
+            <div class="product-item">
+                <div class="product-info">
+                    <h3>Underglow Neon Kit</h3>
+                    <p class="product-price">$120</p>
+                </div>
+                <button class="btn-submit" style="width:auto;" onclick="window.open('https://wa.me/919999999999?text=I+want+to+order+Neon+Kit')">Buy on WhatsApp</button>
             </div>
         </div>
 
         <div id="appointment" class="section">
-            <div class="content-box">
-                <h2 class="section-title">Book Service</h2>
-                <form onsubmit="event.preventDefault(); alert('Booking Request Sent!');">
-                    <div class="form-row">
-                        <label>FULL NAME</label>
-                        <input type="text" placeholder="Enter your name" required>
+            <div class="form-box">
+                <h2 style="text-align:center; margin-bottom:20px;">Book Appointment</h2>
+                
+                <form action="YOUR_GOOGLE_FORM_ACTION_URL_HERE" method="POST" target="_blank">
+                    
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" name="entry.NAME_ID_HERE" required placeholder="Enter Name">
                     </div>
-                    <div class="form-row">
-                        <label>CONTACT NUMBER</label>
-                        <input type="tel" placeholder="+91 98765..." required>
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" name="entry.PHONE_ID_HERE" required placeholder="Enter Phone">
                     </div>
-                    <div class="form-row">
-                        <label>VEHICLE DETAILS</label>
-                        <input type="text" placeholder="Model, Year, Trim" required>
+
+                    <div class="form-group">
+                        <label>Car Model</label>
+                        <input type="text" name="entry.CAR_ID_HERE" required placeholder="e.g. Mustang GT">
                     </div>
-                    <div class="form-row">
-                        <label>MODIFICATION REQUIRED</label>
-                        <textarea rows="3" placeholder="Describe the work needed..."></textarea>
+
+                    <div class="form-group">
+                        <label>Customization Details</label>
+                        <textarea name="entry.DETAILS_ID_HERE" rows="3" placeholder="What do you need?"></textarea>
                     </div>
-                    <button class="btn-main">CONFIRM SLOT</button>
+
+                    <button type="submit" class="btn-submit">Submit Request</button>
                 </form>
             </div>
         </div>
 
         <div id="consult" class="section">
-            <div class="content-box">
-                <h2 class="section-title">Expert Consult</h2>
-                <form onsubmit="event.preventDefault(); alert('We will reach out shortly!');">
-                    <div class="form-row">
-                        <label>NAME</label>
-                        <input type="text" required>
+            <div class="form-box">
+                <h2 style="text-align:center; margin-bottom:20px;">Expert Consultation</h2>
+                
+                <form action="YOUR_SECOND_GOOGLE_FORM_ACTION_URL_HERE" method="POST" target="_blank">
+                    
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input type="text" name="entry.NAME_ID_HERE" required>
                     </div>
-                    <div class="form-row">
-                        <label>EMAIL / WHATSAPP</label>
-                        <input type="text" required>
+
+                    <div class="form-group">
+                        <label>Contact (Email/Phone)</label>
+                        <input type="text" name="entry.CONTACT_ID_HERE" required>
                     </div>
-                    <div class="form-row">
-                        <label>PREFERRED MODE</label>
-                        <select>
-                            <option>WhatsApp Chat</option>
-                            <option>Voice Call</option>
-                            <option>Video Call</option>
-                        </select>
-                    </div>
-                    <div class="form-row">
-                        <label>REFERENCE IMAGE (URL)</label>
-                        <input type="text" placeholder="Paste link to inspiration...">
-                    </div>
-                    <button class="btn-main">REQUEST CONSULT</button>
+
+                    <button type="submit" class="btn-submit">Request Call Back</button>
                 </form>
             </div>
         </div>
 
-    </main>
+    </div>
 
     <script>
-        // 1. Loading Screen Logic
-        function hideLoader() {
-            setTimeout(() => {
-                const loader = document.getElementById('loader');
-                loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 500);
-            }, 1000); // 1 second forced load time for effect
-        }
-
-        // 2. Navigation Logic
-        function showSection(sectionId) {
-            // Hide all active sections
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(sec => {
-                sec.style.opacity = '0';
-                setTimeout(() => sec.classList.remove('active'), 200);
-            });
-
-            // Show new section after brief delay for smooth fade
-            setTimeout(() => {
-                const target = document.getElementById(sectionId);
-                target.classList.add('active');
-                setTimeout(() => target.style.opacity = '1', 50);
-            }, 200);
-
-            // Toggle Header "Back" Button
-            const backBtn = document.getElementById('nav-back');
-            if (sectionId === 'home') {
-                backBtn.style.display = 'none';
-            } else {
-                backBtn.style.display = 'block';
-            }
-        }
-    </script>
-</body>
-</html>            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2;
-            background: url('https://images.unsplash.com/photo-1600706432502-78b9821897d9?q=80&w=2070') no-repeat center center/cover;
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes glow {
-            0% { box-shadow: 0 0 5px #d4af37; }
-            50% { box-shadow: 0 0 20px #d4af37; }
-            100% { box-shadow: 0 0 5px #d4af37; }
-        }
-
-        /* --- HEADER --- */
-        header {
-            position: absolute;
-            top: 0;
-            width: 100%;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-            animation: slideDown 1s ease-out; /* Header Animation */
-        }
-
-        .logo {
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        /* IMAGE LOGO STYLING */
-        .logo img {
-            max-height: 100px; /* Adjust this to make logo bigger/smaller */
-            width: auto;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
-        }
-
-        /* --- SECTIONS --- */
-        .section {
-            display: none;
-            min-height: 100vh;
-            padding: 120px 20px;
-            animation: slideUp 0.6s ease-out; /* Section Enter Animation */
-        }
-
-        .section.active {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* --- HOME PAGE (FLOATING MENU) --- */
-        .menu-container {
-            display: flex;
-            gap: 40px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .floating-card {
-            background: rgba(20, 20, 20, 0.7); /* Darker, more premium glass */
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(212, 175, 55, 0.3); /* Gold border hint */
-            padding: 50px 30px;
-            width: 300px;
-            text-align: center;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy effect */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            animation: slideUp 1s ease-out;
-            animation-fill-mode: both;
-        }
-
-        /* Stagger animations for cards */
-        .floating-card:nth-child(1) { animation-delay: 0.1s; }
-        .floating-card:nth-child(2) { animation-delay: 0.2s; }
-        .floating-card:nth-child(3) { animation-delay: 0.3s; }
-
-        .floating-card:hover {
-            transform: translateY(-15px) scale(1.03);
-            background: rgba(212, 175, 55, 0.1);
-            border-color: #d4af37;
-            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.2);
-        }
-
-        .floating-card h2 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-            color: #d4af37;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .floating-card p {
-            font-size: 1rem;
-            color: #ddd;
-            line-height: 1.5;
-        }
-
-        /* --- FORMS --- */
-        .form-container {
-            background: rgba(0, 0, 0, 0.85);
-            padding: 40px;
-            border-radius: 15px;
-            width: 100%;
-            max-width: 500px;
-            border: 1px solid #d4af37;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-        }
-
-        .form-title {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #d4af37;
-            font-size: 2rem;
-            text-transform: uppercase;
-        }
-
-        .form-group { margin-bottom: 20px; }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #d4af37;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        .form-group input, 
-        .form-group select, 
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            background: #111;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 5px;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        .form-group input:focus, .form-group textarea:focus {
-            border-color: #d4af37;
-            box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
-        }
-
-        button.submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: #d4af37;
-            color: #000;
-            font-weight: 800;
-            text-transform: uppercase;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: 0.3s;
-            letter-spacing: 1px;
-        }
-
-        button.submit-btn:hover {
-            background: #fff;
-            box-shadow: 0 0 15px #fff;
-        }
-
-        /* --- GRID FOR PRODUCTS --- */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            width: 100%;
-            max-width: 1100px;
-        }
-
-        .product-card {
-            background: rgba(20,20,20,0.9);
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            transition: 0.3s;
-        }
-
-        .product-card:hover {
-            border-color: #d4af37;
-            transform: translateY(-5px);
-        }
-
-        .product-image {
-            height: 160px;
-            background: #222;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            font-weight: bold;
-        }
-
-        /* --- BACK BUTTON --- */
-        .back-btn {
-            position: absolute;
-            top: 40px;
-            left: 20px;
-            color: #d4af37;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1.1rem;
-            display: none;
-            transition: 0.3s;
-            z-index: 20;
-        }
-        
-        .back-btn:hover { color: #fff; text-shadow: 0 0 10px #fff; }
-
-        /* --- MOBILE RESPONSIVE --- */
-        @media(max-width: 768px) {
-            .header { flex-direction: column; }
-            .logo img { max-height: 80px; }
-            .menu-container { flex-direction: column; }
-            .floating-card { width: 100%; }
-        }
-
-    </style>
-</head>
-<body>
-
-    <div class="bg-fallback"></div> <video autoplay muted loop id="bg-video">
-        <source src="background.mp4" type="video/mp4">
-    </video>
-
-    <header>
-        <div class="back-btn" id="backBtn" onclick="goHome()">← BACK</div>
-        <div class="logo" onclick="goHome()">
-            <img src="logo.png" alt="RichBrat$ Customs" onerror="this.style.display='none'; document.getElementById('text-logo').style.display='block';">
-            <h1 id="text-logo" style="display:none; color:#d4af37; font-family:impact;">RICHBRAT$</h1>
-        </div>
-    </header>
-
-    <section id="home" class="section active">
-        <div class="menu-container">
-            <div class="floating-card" onclick="showSection('order')">
-                <h2>Order Online</h2>
-                <p>Buy Custom Spoilers, Kits & Decals</p>
-            </div>
-            <div class="floating-card" onclick="showSection('appointment')">
-                <h2>Book Appointment</h2>
-                <p>Schedule a Garage Visit</p>
-            </div>
-            <div class="floating-card" onclick="showSection('consult')">
-                <h2>Consultation</h2>
-                <p>Chat with our Design Experts</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="order" class="section">
-        <h2 class="form-title">Store</h2>
-        <div class="products-grid">
-            <div class="product-card">
-                <div class="product-image">IMG: SPOILER</div>
-                <h3>Carbon Fiber Wing</h3>
-                <p style="color:#d4af37; margin:10px 0;">$450</p>
-                <button class="submit-btn">Add to Cart</button>
-            </div>
-            <div class="product-card">
-                <div class="product-image">IMG: RIMS</div>
-                <h3>Matte Black Rims</h3>
-                <p style="color:#d4af37; margin:10px 0;">$1200</p>
-                <button class="submit-btn">Add to Cart</button>
-            </div>
-            <div class="product-card">
-                <div class="product-image">IMG: WRAP</div>
-                <h3>Full Body Wrap</h3>
-                <p style="color:#d4af37; margin:10px 0;">$800</p>
-                <button class="submit-btn">Customize</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="appointment" class="section">
-        <div class="form-container">
-            <h2 class="form-title">Garage Appointment</h2>
-            <form onsubmit="event.preventDefault(); alert('Request Sent!');">
-                <div class="form-group"><label>Name</label><input type="text" required></div>
-                <div class="form-group"><label>Phone</label><input type="tel" required></div>
-                <div class="form-group"><label>Car Model</label><input type="text" required></div>
-                <div class="form-group"><label>Service Needed</label><textarea required></textarea></div>
-                <button class="submit-btn">Book Slot</button>
-            </form>
-        </div>
-    </section>
-
-    <section id="consult" class="section">
-        <div class="form-container">
-            <h2 class="form-title">Expert Consult</h2>
-            <form onsubmit="event.preventDefault(); alert('We will Whatsapp you!');">
-                <div class="form-group"><label>Name</label><input type="text" required></div>
-                <div class="form-group"><label>Whatsapp Number</label><input type="tel" required></div>
-                <div class="form-group"><label>Car Model</label><input type="text" required></div>
-                <button class="submit-btn">Request Chat</button>
-            </form>
-        </div>
-    </section>
-
-    <script>
-        function showSection(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        function show(id) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            // Show target section
             document.getElementById(id).classList.add('active');
-            
-            const btn = document.getElementById('backBtn');
-            const logo = document.querySelector('.logo');
-            
-            if(id === 'home') {
-                btn.style.display = 'none';
-                logo.style.display = 'block'; // Show logo on home
-            } else {
-                btn.style.display = 'block';
-                // Optional: Hide logo on inner pages to save space
-                // logo.style.display = 'none'; 
-            }
+            // Show back button
+            document.getElementById('back-btn').style.display = 'block';
+        }
+
+        function goHome() {
+            show('home');
+            // Hide back button on home
+            document.getElementById('back-btn').style.display = 'none';
         }
     </script>
 </body>
