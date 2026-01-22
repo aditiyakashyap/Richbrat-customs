@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RichBrat$ Customs | Digital Garage</title>
+    <title>RichBrat$ Customs | System Online</title>
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 1. CORE VARIABLES & RESET --- */
+        /* --- 1. CORE VARIABLES & SETUP --- */
         :root {
             --gold: #d4af37;
-            --gold-dim: rgba(212, 175, 55, 0.3);
+            --gold-dim: rgba(212, 175, 55, 0.2);
             --black: #050505;
             --glass: rgba(10, 10, 10, 0.85);
+            --neon-red: #ff3333;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; } /* Crosshair cursor for tech feel */
 
         body {
             background-color: var(--black);
@@ -24,85 +25,96 @@
             overflow-x: hidden;
             height: 100vh;
             width: 100vw;
+            perspective: 1000px; /* Essential for 3D effects */
         }
 
         h1, h2, h3, button, .sys-log { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
 
-        /* --- 2. HOLOGRAPHIC BACKGROUND (NO VIDEO) --- */
+        /* --- 2. HOLOGRAPHIC BACKGROUND FX --- */
         #holo-deck {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
             overflow: hidden;
-            perspective: 1000px; /* 3D effect */
             background: radial-gradient(circle at center, #1a1a1a 0%, #000 90%);
         }
 
-        /* Moving Grid Floor */
+        /* 3D Grid Floor */
         .grid-floor {
             position: absolute;
-            bottom: -50%;
-            left: -50%;
-            width: 200%;
-            height: 100%;
+            bottom: -50%; left: -50%; width: 200%; height: 100%;
             background-image: 
                 linear-gradient(var(--gold-dim) 1px, transparent 1px),
                 linear-gradient(90deg, var(--gold-dim) 1px, transparent 1px);
-            background-size: 50px 50px;
-            transform: rotateX(60deg); /* Tilts the floor */
-            animation: gridMove 20s linear infinite;
-            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 60%); /* Fades out at horizon */
+            background-size: 60px 60px;
+            transform: rotateX(70deg);
+            animation: gridMove 15s linear infinite;
+            mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 50%);
         }
 
         @keyframes gridMove {
-            0% { transform: rotateX(60deg) translateY(0); }
-            100% { transform: rotateX(60deg) translateY(50px); }
+            0% { background-position: 0 0; }
+            100% { background-position: 0 60px; }
         }
 
-        /* The Car Image in Center */
-        .holo-car {
+        /* Car Container for 3D Movement */
+        .car-container {
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 60%;
-            max-width: 700px;
-            opacity: 0.8;
-            filter: drop-shadow(0 0 20px var(--gold-dim)) grayscale(80%);
-            transition: 0.5s;
+            width: 60%; max-width: 700px;
+            transition: transform 0.1s ease-out; /* Smooth mouse follow */
         }
 
-        /* The Laser Scanner Beam */
+        .holo-car {
+            width: 100%;
+            opacity: 0.9;
+            filter: drop-shadow(0 0 20px var(--gold-dim)) sepia(20%) hue-rotate(-10deg);
+        }
+
+        /* Laser Scanner */
         .scanner {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%;
-            height: 2px;
+            top: 0; left: -10%; width: 120%; height: 2px;
             background: var(--gold);
             box-shadow: 0 0 15px var(--gold), 0 0 30px var(--gold);
-            animation: scan 4s ease-in-out infinite;
-            z-index: 0;
+            animation: scan 3s ease-in-out infinite;
+            opacity: 0.7;
         }
 
         @keyframes scan {
-            0% { top: 30%; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { top: 70%; opacity: 0; }
+            0% { top: 10%; opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { top: 90%; opacity: 0; }
         }
 
-        /* Dynamic System Text Background */
-        .sys-log {
+        /* CRT Scanline Effect Overlay */
+        .scanline {
+            width: 100%; height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(212, 175, 55, 0.05) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            position: absolute; bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scanline { 0% { bottom: 100%; } 100% { bottom: -100px; } }
+
+        /* Floating Particles */
+        .particle {
             position: absolute;
-            top: 20%; right: 5%;
-            color: var(--gold);
-            font-size: 0.9rem;
-            text-align: right;
-            line-height: 1.5;
-            opacity: 0.6;
-            text-shadow: 0 0 5px var(--gold);
-            pointer-events: none; /* Let clicks pass through */
+            width: 2px; height: 2px;
+            background: var(--gold);
+            pointer-events: none;
+            animation: floatUp linear infinite;
+        }
+        @keyframes floatUp {
+            from { transform: translateY(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            to { transform: translateY(-100px); opacity: 0; }
         }
 
-        /* --- 3. UI LAYOUT --- */
+        /* --- 3. UI COMPONENTS --- */
         nav {
             position: fixed; top: 0; width: 100%; padding: 20px;
             display: flex; justify-content: center; align-items: center;
@@ -110,122 +122,130 @@
         }
 
         .logo-btn img {
-            height: 60px; width: auto;
+            height: 70px; width: auto;
             filter: drop-shadow(0 0 10px var(--gold));
-            cursor: pointer; transition: 0.3s;
+            transition: 0.3s;
         }
-        .logo-btn:hover img { transform: scale(1.1); }
+        .logo-btn:hover img { transform: scale(1.1); filter: drop-shadow(0 0 20px var(--gold)); }
 
         .back-btn {
             position: absolute; left: 20px;
-            color: var(--gold); font-weight: bold; cursor: pointer;
-            border: 1px solid var(--gold); padding: 8px 20px;
-            background: rgba(0,0,0,0.8); display: none;
+            color: var(--gold); font-weight: bold; border: 1px solid var(--gold); 
+            padding: 8px 20px; background: rgba(0,0,0,0.8); display: none;
         }
 
-        /* Content Container */
         .container {
-            position: relative;
-            z-index: 10;
+            position: relative; z-index: 10;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center;
             padding-top: 80px;
         }
 
         .section {
-            display: none;
-            width: 90%; max-width: 1000px;
-            animation: slideUp 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+            display: none; width: 90%; max-width: 1000px;
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .section.active { display: block; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* --- 4. CARDS & FORMS --- */
+        /* --- 4. CARDS & GLITCH FX --- */
         .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            width: 100%;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px; width: 100%;
         }
 
         .menu-card {
-            background: rgba(0,0,0,0.6); /* Transparent to see holo car */
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            backdrop-filter: blur(5px);
+            background: rgba(10,10,10,0.7);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            backdrop-filter: blur(8px);
             padding: 40px; text-align: center;
-            border-radius: 4px; cursor: pointer;
+            clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%); /* Sci-Fi Shape */
             transition: 0.3s;
-            position: relative;
-        }
-
-        .menu-card::before {
-            content: ''; position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(212,175,55,0.1), transparent);
-            transform: translateX(-100%); transition: 0.5s;
         }
 
         .menu-card:hover {
+            background: rgba(20,20,20,0.9);
             border-color: var(--gold);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
-        
-        .menu-card:hover::before { transform: translateX(100%); }
 
+        .menu-card h2 { color: var(--gold); font-size: 2rem; margin-bottom: 5px; }
+
+        /* Glitch Text Effect */
+        .glitch-hover:hover {
+            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: var(--neon-red);
+        }
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        /* --- 5. FORMS --- */
         .form-box {
-            background: rgba(15, 15, 15, 0.95);
-            padding: 30px; border-radius: 8px;
-            border: 1px solid var(--gold);
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            background: rgba(10, 10, 10, 0.95);
+            padding: 30px; border: 1px solid var(--gold);
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
             max-width: 500px; margin: 0 auto;
+            position: relative;
+        }
+        /* Decor lines */
+        .form-box::after {
+            content: ''; position: absolute; bottom: -5px; right: -5px;
+            width: 20px; height: 20px; border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold);
         }
 
-        input, textarea, select {
+        input, select {
             width: 100%; padding: 12px; margin-bottom: 15px;
-            background: #111; border: 1px solid #333; color: #fff;
+            background: #080808; border: 1px solid #333; color: #fff;
+            font-family: 'Rajdhani', sans-serif; letter-spacing: 1px;
         }
-        input:focus { border-color: var(--gold); outline: none; }
+        input:focus, select:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px rgba(212,175,55,0.2); }
         
-        label { color: var(--gold); font-size: 0.8rem; margin-bottom: 5px; display: block; }
-
         .btn-gold {
-            width: 100%; padding: 15px;
-            background: var(--gold); color: #000;
-            font-weight: 800; border: none; cursor: pointer;
-            transition: 0.3s;
+            width: 100%; padding: 15px; background: var(--gold); color: #000;
+            font-weight: 800; border: none; cursor: pointer; transition: 0.3s;
+            text-transform: uppercase; letter-spacing: 2px;
         }
         .btn-gold:hover { background: #fff; box-shadow: 0 0 20px #fff; }
 
-        /* --- 5. RESPONSIVE --- */
+        /* Status Messages */
+        #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; min-height: 20px; }
+
+        /* Mobile Adjustments */
         @media (max-width: 768px) {
-            /* On mobile, move car to top so text is visible */
-            .holo-car { top: 25%; width: 90%; }
-            .sys-log { display: none; } /* Hide text logs on mobile to save space */
-            .container { justify-content: flex-end; padding-bottom: 50px; }
+            .car-container { top: 20%; width: 85%; }
+            .sys-log { display: none; }
+            .container { justify-content: flex-end; padding-bottom: 80px; }
             .menu-card { padding: 30px; }
+        }
+
+        /* System Log Text */
+        .sys-log {
+            position: absolute; top: 20%; right: 5%; color: var(--gold);
+            font-size: 0.8rem; text-align: right; opacity: 0.7; pointer-events: none;
         }
     </style>
 </head>
 <body>
 
+    <div class="scanline"></div>
+
     <div id="holo-deck">
         <div class="grid-floor"></div>
-        <div style="position:relative; width:100%; height:100%;">
+        <div class="car-container" id="tilt-car">
             <img src="car.png" class="holo-car" alt="Project Car">
             <div class="scanner"></div>
         </div>
-        
         <div class="sys-log" id="sys-log">
-            > SYSTEM INITIALIZED...<br>
-            > CONNECTED TO RICHBRAT$ SERVER...<br>
+            > SYSTEM ONLINE...<br>
+            > CONNECTED TO SERVER...
         </div>
     </div>
 
@@ -241,50 +261,78 @@
         <div id="home" class="section active">
             <div class="card-grid">
                 <div class="menu-card" onclick="show('order')">
-                    <h2>Store</h2><p>Parts & Mods</p>
+                    <h2 class="glitch-hover">STORE</h2>
+                    <p>> ACCESS PARTS DATABASE</p>
                 </div>
                 <div class="menu-card" onclick="show('appointment')">
-                    <h2>Book</h2><p>Garage Slot</p>
+                    <h2 class="glitch-hover">BOOKING</h2>
+                    <p>> RESERVE GARAGE SLOT</p>
                 </div>
                 <div class="menu-card" onclick="show('consult')">
-                    <h2>Chat</h2><p>Consult Expert</p>
+                    <h2 class="glitch-hover">CONSULT</h2>
+                    <p>> INITIATE EXPERT CHAT</p>
                 </div>
             </div>
         </div>
 
         <div id="order" class="section">
             <div class="form-box">
-                <h2 style="text-align:center; color:var(--gold); margin-bottom:20px;">Quick Order</h2>
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
-                    <div><h3>GT WING</h3><small>$450</small></div>
-                    <button onclick="waOrder('GT Wing')" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:5px 10px; cursor:pointer;">BUY</button>
+                <h2 style="text-align:center; color:var(--gold); margin-bottom:20px;">QUICK ORDER</h2>
+                <div style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <h3>GT WING [CARBON]</h3> <span style="color:var(--gold)">$450</span>
+                    </div>
+                    <button class="btn-gold" style="padding:5px; margin-top:5px; font-size:0.8rem;" 
+                        onclick="waOrder('GT Wing')">PURCHASE</button>
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
-                    <div><h3>NEON KIT</h3><small>$120</small></div>
-                    <button onclick="waOrder('Neon Kit')" style="background:none; border:1px solid var(--gold); color:var(--gold); padding:5px 10px; cursor:pointer;">BUY</button>
+                <div style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <h3>NEON UNDERGLOW</h3> <span style="color:var(--gold)">$120</span>
+                    </div>
+                    <button class="btn-gold" style="padding:5px; margin-top:5px; font-size:0.8rem;" 
+                        onclick="waOrder('Neon Kit')">PURCHASE</button>
                 </div>
             </div>
         </div>
 
         <div id="appointment" class="section">
             <div class="form-box">
-                <h2 style="text-align:center; margin-bottom:20px; color:var(--gold);">Garage Visit</h2>
-                <form action="YOUR_GOOGLE_FORM_URL" method="POST" target="_blank">
-                    <label>NAME</label><input type="text" name="entry.ID_HERE" required>
-                    <label>PHONE</label><input type="tel" name="entry.ID_HERE" required>
-                    <label>CAR MODEL</label><input type="text" name="entry.ID_HERE" required>
-                    <button class="btn-gold">CONFIRM SLOT</button>
+                <h2 style="text-align:center; color:var(--gold); margin-bottom:20px;">GARAGE RESERVATION</h2>
+                <form id="bookingForm" onsubmit="handleBooking(event)">
+                    
+                    <label>> SELECT DATE</label>
+                    <input type="date" id="dateInput" required onchange="checkAvailability()">
+                    
+                    <label>> AVAILABLE SLOTS</label>
+                    <select id="timeInput" disabled required>
+                        <option value="">WAITING FOR DATE...</option>
+                    </select>
+
+                    <label>> DRIVER NAME</label>
+                    <input type="text" id="nameInput" required placeholder="ENTER NAME">
+                    
+                    <label>> CONTACT NO.</label>
+                    <input type="tel" id="phoneInput" required placeholder="+91...">
+                    
+                    <label>> CAR MODEL</label>
+                    <input type="text" id="carInput" required placeholder="VEHICLE DETAILS">
+
+                    <button type="submit" class="btn-gold" id="bookBtn">CONFIRM SLOT</button>
+                    <div id="statusMsg"></div>
                 </form>
             </div>
         </div>
 
         <div id="consult" class="section">
             <div class="form-box">
-                <h2 style="text-align:center; margin-bottom:20px; color:var(--gold);">Expert Chat</h2>
-                <form action="YOUR_GOOGLE_FORM_URL" method="POST" target="_blank">
-                    <label>NAME</label><input type="text" name="entry.ID_HERE" required>
-                    <label>WHATSAPP NO.</label><input type="tel" name="entry.ID_HERE" required>
-                    <button class="btn-gold">REQUEST CALLBACK</button>
+                <h2 style="text-align:center; color:var(--gold); margin-bottom:20px;">EXPERT LINK</h2>
+                <p style="color:#ccc; text-align:center; margin-bottom:20px;">
+                    Connect directly with our lead customizer via WhatsApp.
+                </p>
+                <form onsubmit="event.preventDefault(); waConsult();">
+                    <label>> YOUR NAME</label>
+                    <input type="text" id="consultName" required>
+                    <button class="btn-gold">START CHAT</button>
                 </form>
             </div>
         </div>
@@ -292,51 +340,160 @@
     </div>
 
     <script>
-        // 1. Navigation Logic
+        // --- CONFIGURATION ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx0BrogOgHWeEVKKgg1uvCYFxRjg5HUlGNWDZtf5PFDaK2RFP-OI5ci4Npslwx_gZiv8Q/exec";
+        const allSlots = ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+
+        // --- 1. DYNAMIC FX (Parallax & Particles) ---
+        
+        // Mouse Parallax Logic
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth - e.pageX * 2) / 100;
+            const y = (window.innerHeight - e.pageY * 2) / 100;
+            
+            // Move the car slightly opposite to mouse
+            const car = document.getElementById('tilt-car');
+            car.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+        });
+
+        // Particle System
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            // Random position
+            particle.style.left = Math.random() * 100 + "vw";
+            particle.style.top = "100vh";
+            // Random speed
+            particle.style.animationDuration = Math.random() * 2 + 3 + "s";
+            
+            document.getElementById('holo-deck').appendChild(particle);
+            
+            // Kill particle after animation
+            setTimeout(() => { particle.remove(); }, 5000);
+        }
+        setInterval(createParticle, 300); // New particle every 300ms
+
+        // Dynamic Logs
+        const logs = ["> OPTIMIZING...", "> CHECKING DATABASE...", "> SECURE CONNECTION...", "> RENDERING ASSETS..."];
+        setInterval(() => {
+            const logBox = document.getElementById('sys-log');
+            if(Math.random() > 0.7) {
+                const item = logs[Math.floor(Math.random()*logs.length)];
+                const div = document.createElement('div');
+                div.innerText = item;
+                logBox.appendChild(div);
+                if(logBox.children.length > 5) logBox.removeChild(logBox.children[0]);
+            }
+        }, 1500);
+
+
+        // --- 2. NAVIGATION & UI ---
         function show(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.getElementById('back-btn').style.display = 'block';
         }
+
         function goHome() {
             show('home');
             document.getElementById('back-btn').style.display = 'none';
         }
 
-        // 2. WhatsApp Order Logic
         function waOrder(item) {
-            window.open(`https://wa.me/919999999999?text=I am interested in buying ${item}`, '_blank');
+            window.open(`https://wa.me/919999999999?text=Ordering: ${item}`, '_blank');
         }
 
-        // 3. Dynamic "Hacking/Modifying" Text Animation
-        const logs = [
-            "> SCANNING CHASSIS...",
-            "> PAINT MIXTURE: GOLD [98%]",
-            "> INSTALLING TURBO...",
-            "> ECU MAPPING...",
-            "> CHECKING SUSPENSION...",
-            "> NITROUS PURGE: READY",
-            "> RIMS: VOSSEN 20 INCH",
-            "> APPLYING DECALS..."
-        ];
+        function waConsult() {
+            const name = document.getElementById('consultName').value;
+            window.open(`https://wa.me/919999999999?text=Hi, I am ${name}. I need consultation for my car.`, '_blank');
+        }
 
-        function addLog() {
-            const logBox = document.getElementById('sys-log');
-            const randomLog = logs[Math.floor(Math.random() * logs.length)];
-            
-            // Create new line
-            const newLine = document.createElement('div');
-            newLine.innerText = randomLog;
-            logBox.appendChild(newLine);
 
-            // Remove old lines if too many
-            if(logBox.children.length > 6) {
-                logBox.removeChild(logBox.children[0]);
+        // --- 3. BOOKING LOGIC (Using your Google Script) ---
+        
+        async function checkAvailability() {
+            const date = document.getElementById('dateInput').value;
+            const timeSelect = document.getElementById('timeInput');
+            const btn = document.getElementById('bookBtn');
+            const status = document.getElementById('statusMsg');
+
+            if(!date) return;
+
+            // UI Loading State
+            timeSelect.innerHTML = "<option>SCANNING SLOTS...</option>";
+            timeSelect.disabled = true;
+            btn.disabled = true;
+            status.innerText = "";
+
+            try {
+                // Fetch from your script
+                const response = await fetch(`${SCRIPT_URL}?action=check&date=${date}`);
+                const takenSlots = await response.json(); // Expects ["10:00", "12:00"] etc
+
+                // Calculate free slots
+                const available = allSlots.filter(slot => !takenSlots.includes(slot));
+
+                timeSelect.innerHTML = "";
+                if(available.length === 0) {
+                    timeSelect.innerHTML = "<option>DATE FULLY BOOKED</option>";
+                } else {
+                    available.forEach(slot => {
+                        let opt = document.createElement("option");
+                        opt.value = slot;
+                        opt.text = slot;
+                        timeSelect.add(opt);
+                    });
+                    timeSelect.disabled = false;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error(error);
+                timeSelect.innerHTML = "<option>CONNECTION ERROR</option>";
+                status.style.color = "red";
+                status.innerText = "FAILED TO CONNECT TO SERVER";
             }
         }
 
-        // Add a new log line every 2 seconds
-        setInterval(addLog, 2000);
+        async function handleBooking(e) {
+            e.preventDefault();
+            const btn = document.getElementById('bookBtn');
+            const status = document.getElementById('statusMsg');
+
+            btn.innerText = "UPLOADING...";
+            btn.disabled = true;
+
+            // Create form data payload
+            const formData = new FormData();
+            formData.append('action', 'book');
+            formData.append('date', document.getElementById('dateInput').value);
+            formData.append('time', document.getElementById('timeInput').value);
+            formData.append('name', document.getElementById('nameInput').value);
+            formData.append('phone', document.getElementById('phoneInput').value);
+            formData.append('car', document.getElementById('carInput').value);
+
+            try {
+                // Send to your script
+                const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+                const result = await response.text();
+
+                if (result.includes("SUCCESS")) {
+                    status.style.color = "#d4af37";
+                    status.innerText = "> BOOKING CONFIRMED. ID GENERATED.";
+                    document.getElementById('bookingForm').reset();
+                    setTimeout(() => { goHome(); status.innerText = ""; }, 3000);
+                } else {
+                    status.style.color = "red";
+                    status.innerText = "> ERROR: SLOT TAKEN OR SYSTEM BUSY.";
+                }
+            } catch (error) {
+                status.style.color = "red";
+                status.innerText = "> FATAL ERROR: CONNECTION LOST.";
+            }
+
+            btn.innerText = "CONFIRM SLOT";
+            btn.disabled = false;
+        }
     </script>
 </body>
 </html>
