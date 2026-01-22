@@ -3,38 +3,438 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RichBrat$ Customs</title>
+    <title>RichBrat$ Customs | Luxury Car Modifications</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- RESET & BASE STYLES --- */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* --- 1. RESET & VARIABLES --- */
+        :root {
+            --gold: #d4af37;
+            --gold-glow: rgba(212, 175, 55, 0.4);
+            --dark-bg: #050505;
+            --glass: rgba(20, 20, 20, 0.85);
+            --border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background-color: #000;
-            color: #ffffff;
+            background-color: var(--dark-bg);
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
             overflow-x: hidden;
             height: 100vh;
         }
 
-        /* --- VIDEO BACKGROUND --- */
-        #bg-video {
+        h1, h2, h3, button { font-family: 'Rajdhani', sans-serif; text-transform: uppercase; }
+
+        /* --- 2. LOADER --- */
+        #loader {
             position: fixed;
-            right: 0;
-            bottom: 0;
-            min-width: 100%;
-            min-height: 100%;
-            z-index: -1;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s;
+        }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 3px solid transparent;
+            border-top: 3px solid var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- 3. BACKGROUND --- */
+        .bg-video-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+        }
+        #bg-video {
+            min-width: 100%; min-height: 100%; 
             object-fit: cover;
-            filter: brightness(0.4); /* Darkens video so text pops */
+            filter: brightness(0.3); /* Dark professional look */
         }
 
-        /* Fallback image if video fails or loads slow */
-        .bg-fallback {
-            position: fixed;
+        /* --- 4. HEADER --- */
+        header {
+            position: fixed; top: 0; width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+        }
+
+        .logo-container {
+            cursor: pointer;
+            z-index: 101;
+        }
+        
+        .logo-container img {
+            height: 60px; /* Adjust based on your logo shape */
+            width: auto;
+            transition: transform 0.3s;
+            filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+        }
+        
+        .logo-container:hover img { transform: scale(1.05); }
+
+        .back-nav {
+            color: var(--gold);
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            display: none; /* Hidden on home */
+            text-shadow: 0 0 10px var(--gold-glow);
+            transition: 0.3s;
+        }
+        .back-nav:hover { color: #fff; }
+
+        /* --- 5. SECTIONS & LAYOUT --- */
+        main {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .section {
+            display: none; /* Hidden by default */
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 6. HOME MENU (FLOATING CARDS) --- */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 100%;
+            margin-top: 60px;
+        }
+
+        .menu-card {
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px 20px;
+            text-align: center;
+            border-radius: 4px; /* Professional sharp corners */
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+            background: var(--gold);
+            transform: scaleY(0);
+            transition: transform 0.4s;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px);
+            background: rgba(30, 30, 30, 0.95);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .menu-card:hover::before { transform: scaleY(1); }
+
+        .menu-card h2 {
+            color: var(--gold);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .menu-card p { color: #aaa; font-size: 0.9rem; }
+
+        /* --- 7. FORMS & INPUTS --- */
+        .content-box {
+            background: var(--glass);
+            padding: 40px;
+            border-radius: 8px;
+            border-top: 2px solid var(--gold);
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        .form-row { margin-bottom: 20px; }
+        .form-row label { display: block; color: var(--gold); margin-bottom: 5px; font-size: 0.9rem; letter-spacing: 1px; }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 15px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            color: #fff;
+            font-family: 'Roboto', sans-serif;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .btn-main {
+            width: 100%;
+            padding: 15px;
+            background: var(--gold);
+            color: #000;
+            font-weight: 700;
+            letter-spacing: 2px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-main:hover {
+            background: #fff;
+            box-shadow: 0 0 20px rgba(255,255,255,0.4);
+        }
+
+        /* --- 8. SHOP GRID --- */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            height: 60vh; /* Scrollable area */
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .shop-item {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border: 1px solid #333;
+            text-align: center;
+            transition: 0.3s;
+        }
+        
+        .shop-item:hover { border-color: var(--gold); }
+
+        .shop-img {
+            height: 120px;
+            background: #111;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 0.8rem;
+        }
+
+        /* --- SCROLLBAR --- */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--gold); }
+
+        /* --- MOBILE TWEAKS --- */
+        @media (max-width: 768px) {
+            .section-title { font-size: 1.8rem; }
+            .menu-card h2 { font-size: 1.5rem; }
+            .content-box { padding: 20px; width: 95%; }
+            header { padding: 15px 20px; }
+        }
+    </style>
+</head>
+<body onload="hideLoader()">
+
+    <div id="loader"><div class="spinner"></div></div>
+
+    <div class="bg-video-container">
+        <video autoplay muted loop id="bg-video" poster="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920">
+            <source src="background.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <header>
+        <div class="logo-container" onclick="showSection('home')">
+            <img src="logo.png" alt="RichBrat$ Customs" title="Back to Home">
+        </div>
+        <div id="nav-back" class="back-nav" onclick="showSection('home')">
+            // RETURN TO HOME
+        </div>
+    </header>
+
+    <main>
+        
+        <div id="home" class="section active">
+            <div style="text-align:center; margin-bottom:40px;">
+                <h1 style="font-size:3rem; text-shadow:0 0 20px black;">Welcome to the <span style="color:var(--gold);">Underground</span></h1>
+                <p style="color:#ccc; letter-spacing:1px; margin-top:10px;">Select a service below to begin</p>
+            </div>
+
+            <div class="menu-grid">
+                <div class="menu-card" onclick="showSection('order')">
+                    <h2>Store</h2>
+                    <p>Order Parts & Accessories</p>
+                </div>
+                <div class="menu-card" onclick="showSection('appointment')">
+                    <h2>Appointment</h2>
+                    <p>Book a Garage Visit</p>
+                </div>
+                <div class="menu-card" onclick="showSection('consult')">
+                    <h2>Consult</h2>
+                    <p>Chat with Experts</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="order" class="section">
+            <div class="content-box">
+                <h2 class="section-title">Online Store</h2>
+                <div class="shop-grid">
+                    <div class="shop-item">
+                        <div class="shop-img">CARBON WING</div>
+                        <h3>GT Spoiler</h3>
+                        <p style="color:var(--gold); margin:5px 0;">$450</p>
+                        <button class="btn-main" style="padding:5px; font-size:0.8rem;">Add</button>
+                    </div>
+                    <div class="shop-item">
+                        <div class="shop-img">VOSSEN RIMS</div>
+                        <h3>Matte Rims</h3>
+                        <p style="color:var(--gold); margin:5px 0;">$1200</p>
+                        <button class="btn-main" style="padding:5px; font-size:0.8rem;">Add</button>
+                    </div>
+                    <div class="shop-item">
+                        <div class="shop-img">NEON KIT</div>
+                        <h3>Underglow</h3>
+                        <p style="color:var(--gold); margin:5px 0;">$150</p>
+                        <button class="btn-main" style="padding:5px; font-size:0.8rem;">Add</button>
+                    </div>
+                    <div class="shop-item">
+                        <div class="shop-img">WRAP</div>
+                        <h3>Vinyl Wrap</h3>
+                        <p style="color:var(--gold); margin:5px 0;">$800</p>
+                        <button class="btn-main" style="padding:5px; font-size:0.8rem;">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="appointment" class="section">
+            <div class="content-box">
+                <h2 class="section-title">Book Service</h2>
+                <form onsubmit="event.preventDefault(); alert('Booking Request Sent!');">
+                    <div class="form-row">
+                        <label>FULL NAME</label>
+                        <input type="text" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-row">
+                        <label>CONTACT NUMBER</label>
+                        <input type="tel" placeholder="+91 98765..." required>
+                    </div>
+                    <div class="form-row">
+                        <label>VEHICLE DETAILS</label>
+                        <input type="text" placeholder="Model, Year, Trim" required>
+                    </div>
+                    <div class="form-row">
+                        <label>MODIFICATION REQUIRED</label>
+                        <textarea rows="3" placeholder="Describe the work needed..."></textarea>
+                    </div>
+                    <button class="btn-main">CONFIRM SLOT</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="consult" class="section">
+            <div class="content-box">
+                <h2 class="section-title">Expert Consult</h2>
+                <form onsubmit="event.preventDefault(); alert('We will reach out shortly!');">
+                    <div class="form-row">
+                        <label>NAME</label>
+                        <input type="text" required>
+                    </div>
+                    <div class="form-row">
+                        <label>EMAIL / WHATSAPP</label>
+                        <input type="text" required>
+                    </div>
+                    <div class="form-row">
+                        <label>PREFERRED MODE</label>
+                        <select>
+                            <option>WhatsApp Chat</option>
+                            <option>Voice Call</option>
+                            <option>Video Call</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label>REFERENCE IMAGE (URL)</label>
+                        <input type="text" placeholder="Paste link to inspiration...">
+                    </div>
+                    <button class="btn-main">REQUEST CONSULT</button>
+                </form>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // 1. Loading Screen Logic
+        function hideLoader() {
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 500);
+            }, 1000); // 1 second forced load time for effect
+        }
+
+        // 2. Navigation Logic
+        function showSection(sectionId) {
+            // Hide all active sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(sec => {
+                sec.style.opacity = '0';
+                setTimeout(() => sec.classList.remove('active'), 200);
+            });
+
+            // Show new section after brief delay for smooth fade
+            setTimeout(() => {
+                const target = document.getElementById(sectionId);
+                target.classList.add('active');
+                setTimeout(() => target.style.opacity = '1', 50);
+            }, 200);
+
+            // Toggle Header "Back" Button
+            const backBtn = document.getElementById('nav-back');
+            if (sectionId === 'home') {
+                backBtn.style.display = 'none';
+            } else {
+                backBtn.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>            position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -2;
             background: url('https://images.unsplash.com/photo-1600706432502-78b9821897d9?q=80&w=2070') no-repeat center center/cover;
