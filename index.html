@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RichBrat$ Customs | Bespoke Automotive</title>
+    <title>RichBrat$ Customs | Next Gen Mods</title>
     
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&f[]=clash-display@600,700,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,217 +18,212 @@
 </head>
 <body>
 
-    <div id="drag-run-overlay">
-        <div class="skid-marks"></div>
-        <img src="zoom.png" class="hologram-car" alt="Race Car Blueprint">
+    <div id="global-loader">
+        <img src="logo.png" class="loader-logo" alt="Loading...">
     </div>
 
-    <div class="bg-navy"></div>
-    <div class="bg-grid"></div>
-    <div class="bg-vignette"></div>
+    <div id="drag-run-overlay">
+        <div class="skid-marks"></div>
+        <img src="zoom.png" class="hologram-car" alt="Blueprint">
+    </div>
+
+    <div class="bg-noise"></div>
+    <div style="position:fixed; top:0; left:0; width:100%; height:100vh; background: var(--navy); z-index:-2;"></div>
     
     <nav>
         <div class="logo-container" onclick="app.goHome()">
             <img src="logo.png" alt="RichBrat$ Customs">
         </div>
+
         <div class="user-panel" id="nav-actions">
-            <span class="nav-link" onclick="openModal('login')">LOGIN</span>
-            <button class="btn-luxury" style="padding: 10px 20px; font-size: 0.75rem;" onclick="openModal('register')">REGISTER</button>
+            <span class="nav-link" onclick="openModal('login')">Log In</span>
+            <button class="btn-luxury" style="padding: 10px 20px; font-size: 0.8rem;" onclick="openModal('register')">Sign Up</button>
         </div>
         <div class="user-panel" id="user-actions" style="display:none;">
-            <span style="cursor:pointer; font-size: 1.1rem; color:var(--text-white);" onclick="app.toggleCart()">
+            <span style="cursor:pointer; font-size: 1.2rem; color:#fff;" onclick="app.toggleCart()">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span id="cart-count">0</span>
             </span>
-            <span class="nav-link" id="nav-username" onclick="app.navTo('view-profile')">MY GARAGE</span>
-            <span class="nav-link" style="color:var(--text-muted);" onclick="app.logout()">LOGOUT</span>
+            <span class="nav-link" onclick="app.navTo('view-profile')">My Garage</span>
+            <span class="nav-link" style="color:#666;" onclick="app.logout()">Log Out</span>
         </div>
     </nav>
 
+    <div class="floating-home-btn" id="floatHome" onclick="app.goHome()">
+        <i class="fa-solid fa-house"></i>
+    </div>
+
     <div id="cart-panel">
-        <div class="cart-header">
-            <h2 class="gold-text" style="font-family: var(--text-display);">SHOPPING BAG</h2>
-            <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.5rem;" onclick="app.toggleCart()"></i>
+        <div class="cart-header" style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding-bottom:20px; margin-bottom:20px;">
+            <h2 style="color:var(--gold); font-family:var(--font-display);">YOUR STASH</h2>
+            <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.5rem; color:#fff;" onclick="app.toggleCart()"></i>
         </div>
-        <div class="cart-items" id="cart-items-list">
-            <p style="color:var(--text-muted); text-align:center; margin-top:20px;">Empty.</p>
-        </div>
-        <div class="cart-footer">
-            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size:1.1rem; font-weight:700;">
-                <span>TOTAL</span><span id="cart-total" class="gold-text">$0</span>
+        <div class="cart-items" id="cart-items-list" style="flex:1; overflow-y:auto; color:#888;">Bag is empty.</div>
+        <div class="cart-footer" style="border-top:1px solid #333; padding-top:20px;">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; color:#fff; margin-bottom:15px;">
+                <span>TOTAL</span><span id="cart-total" style="color:var(--gold);">$0</span>
             </div>
-            <button class="btn-luxury" style="width:100%;" onclick="app.openCheckout()">CHECKOUT</button>
+            <button class="btn-luxury" style="width:100%;" onclick="app.openCheckout()">PAY NOW</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="auth-modal">
-        <div class="modal-box">
-            <h2 id="modal-title" class="holo-text" style="margin-bottom: 10px; font-family: var(--text-display);">CLIENT ACCESS</h2>
-            <p style="color:var(--text-muted); margin-bottom:30px; font-size:0.9rem;">Secure biometric gateway.</p>
+        <div class="modal-box" style="background:#0b1624; padding:40px; border:1px solid #333; width:90%; max-width:400px; text-align:center;">
+            <h2 id="modal-title" style="color:#fff; font-family:var(--font-display); margin-bottom:20px;">ACCESS</h2>
             <form onsubmit="app.handleAuth(event)">
-                <input type="text" id="reg-name" class="form-input" placeholder="FULL NAME" style="display:none;">
-                <input type="email" id="email" class="form-input" placeholder="EMAIL IDENTIFIER" required>
-                <input type="password" id="password" class="form-input" placeholder="ACCESS KEY" required>
+                <input type="text" id="reg-name" class="form-input" placeholder="Name" style="display:none; width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;">
+                <input type="email" id="email" class="form-input" placeholder="Email" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                <input type="password" id="password" class="form-input" placeholder="Password" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
                 <div id="extra-fields" style="display:none;">
-                    <input type="tel" id="reg-phone" class="form-input" placeholder="PHONE">
-                    <input type="text" id="reg-car" class="form-input" placeholder="CHASSIS MODEL">
-                    <input type="text" id="reg-insta" class="form-input" placeholder="SOCIAL ID">
+                    <input type="tel" id="reg-phone" class="form-input" placeholder="Phone" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;">
+                    <input type="text" id="reg-car" class="form-input" placeholder="Car Model" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;">
                 </div>
-                <button type="submit" class="btn-luxury" style="width:100%;" id="submit-btn">INITIALIZE</button>
+                <button type="submit" class="btn-luxury" style="width:100%;" id="submit-btn">GO</button>
             </form>
-            <div style="margin-top:20px; display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted);">
-                <span style="cursor:pointer;" onclick="switchMode()">Switch Mode</span>
-                <span style="cursor:pointer;" onclick="closeModal()">Close Panel</span>
-            </div>
+            <p style="margin-top:20px; color:#666; cursor:pointer;" onclick="switchMode()">Switch Mode</p>
+            <p style="margin-top:10px; color:#666; cursor:pointer;" onclick="closeModal()">Close</p>
         </div>
     </div>
-
+    
     <div class="modal-overlay" id="checkout-modal">
-        <div class="modal-box" style="max-width: 600px;">
-            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">SHIPPING MANIFEST</h2>
+        <div class="modal-box" style="background:#0b1624; padding:40px; border:1px solid #333; width:90%; max-width:500px;">
+            <h2 style="color:var(--gold); font-family:var(--font-display); margin-bottom:20px;">SHIPPING</h2>
             <form onsubmit="app.processCheckout(event)">
-                <input type="text" id="chk-address" class="form-input" placeholder="DELIVERY COORDINATES" required>
-                <div style="display:flex; gap:20px;">
-                    <input type="text" id="chk-city" class="form-input" placeholder="SECTOR/CITY" required>
-                    <input type="text" id="chk-zip" class="form-input" placeholder="ZONE CODE" required>
+                <input type="text" id="chk-address" placeholder="Address" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="chk-city" placeholder="City" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                    <input type="text" id="chk-zip" placeholder="Zip Code" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
                 </div>
-                <select id="chk-payment" class="form-input" style="background:var(--navy); color:#fff;">
-                    <option value="ONLINE">DIGITAL TRANSFER</option>
-                    <option value="COD">PAYMENT ON ARRIVAL</option>
+                <select id="chk-payment" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;">
+                    <option value="ONLINE">Online Payment</option>
+                    <option value="COD">Cash on Delivery</option>
                 </select>
-                <button type="submit" class="btn-luxury" style="width:100%; margin-top:10px;" id="chk-btn">AUTHORIZE ($<span id="chk-total">0</span>)</button>
+                <button type="submit" class="btn-luxury" style="width:100%;" id="chk-btn">CONFIRM ORDER</button>
             </form>
-            <p style="margin-top:20px; color:var(--text-muted); cursor:pointer; font-size:0.8rem;" onclick="document.getElementById('checkout-modal').style.display='none'">Abort</p>
+            <p style="margin-top:20px; color:#666; cursor:pointer; text-align:center;" onclick="document.getElementById('checkout-modal').style.display='none'">Cancel</p>
         </div>
     </div>
 
     <div id="view-landing" class="section active">
         <div class="hero">
             <div>
-                <p class="gold-text" style="letter-spacing:4px; font-weight:700;">ELITE AUTOMOTIVE ENGINEERING</p>
-                <h1>PURE<br><span style="color:#fff; -webkit-text-stroke: 2px var(--gold); color:transparent;">ADRENALINE</span></h1>
-                <p style="max-width:600px; margin: 20px auto 40px; color:var(--text-muted); line-height:1.8;">
-                    Precision bodywork. High-performance aesthetic upgrades. 
-                    Transform your machine into a masterpiece.
+                <img src="logo.png" class="hero-logo" alt="RichBrat$ Logo">
+                
+                <h1>Next Gen<br><span style="color:var(--gold);">Customs</span></h1>
+                <p style="color:#aaa; font-size:1.1rem; max-width:500px; margin:0 auto 40px; line-height:1.6;">
+                    Premium modifications for the modern enthusiast. Aesthetics, Performance, and Identity.
                 </p>
-                <button class="btn-luxury" onclick="app.enterGarage()"><i class="fa-solid fa-power-off"></i> IGNITE ENGINE</button>
+                
+                <button class="btn-start-engine" onclick="app.enterGarage()">
+                    <span>ENGINE</span>
+                    <strong>START</strong>
+                    <span>STOP</span>
+                </button>
             </div>
         </div>
     </div>
 
     <div id="view-dashboard" class="section">
         <div class="content-box">
-            <h2 style="font-family:var(--text-display); font-size:3rem;">OPERATIONS DECK</h2>
+            <h2 style="font-family:var(--font-display); font-size:2.5rem; margin-bottom:10px;">THE HUB</h2>
+            <p style="color:#888;">Select an action below.</p>
+
             <div class="dashboard-grid">
                 <div class="dash-card" onclick="app.loadStore()">
-                    <div class="dash-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
-                    <div class="dash-text">
-                        <h3 class="gold-text">PARTS ARMORY</h3>
-                        <p style="color:var(--text-muted);">Acquire Mods & Kits</p>
-                    </div>
+                    <i class="fa-solid fa-cart-shopping dash-icon"></i>
+                    <h3 style="color:#fff; font-family:var(--font-display); font-size:1.5rem;">Shop Mods</h3>
+                    <p style="color:#666; margin-top:10px;">Browse Parts & Kits</p>
                 </div>
                 <div class="dash-card" onclick="app.navTo('view-booking')">
-                    <div class="dash-icon"><i class="fa-solid fa-calendar-check"></i></div>
-                    <div class="dash-text">
-                        <h3 class="gold-text">SERVICE BAY</h3>
-                        <p style="color:var(--text-muted);">Schedule Appointment</p>
-                    </div>
+                    <i class="fa-regular fa-calendar-days dash-icon"></i>
+                    <h3 style="color:#fff; font-family:var(--font-display); font-size:1.5rem;">Book Appointment</h3>
+                    <p style="color:#666; margin-top:10px;">Schedule Garage Visit</p>
                 </div>
                 <div class="dash-card" onclick="app.navTo('view-consultancy')">
-                    <div class="dash-icon"><i class="fa-solid fa-clipboard-list"></i></div>
-                    <div class="dash-text">
-                        <h3 class="gold-text">BLUEPRINT LAB</h3>
-                        <p style="color:var(--text-muted);">Custom Consultation</p>
-                    </div>
+                    <i class="fa-solid fa-pencil dash-icon"></i>
+                    <h3 style="color:#fff; font-family:var(--font-display); font-size:1.5rem;">Custom Design</h3>
+                    <p style="color:#666; margin-top:10px;">Consult with Experts</p>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-store" class="section">
+        <div class="content-box">
+            <h2 style="font-family:var(--font-display); font-size:2.5rem; color:var(--gold); margin-bottom:30px;">THE COLLECTION</h2>
+            <div id="loading-store" style="text-align:center; padding:50px;">
+                <img src="logo.png" class="loader-logo" alt="Loading..." style="width:80px; height:auto;">
+            </div>
+            <div class="store-grid" id="product-list"></div>
+        </div>
+    </div>
+
+    <div id="view-booking" class="section">
+        <div class="content-box">
+            <h2 style="font-family:var(--font-display); font-size:2.5rem; color:var(--gold); margin-bottom:30px;">BOOK APPOINTMENT</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px;">
+                <form id="bookingForm" onsubmit="app.bookSlot(event)">
+                    <input type="date" id="b_date" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required onchange="app.checkSlots()">
+                    <select id="b_time" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" disabled><option>Select Date</option></select>
+                    <input type="text" id="b_name" placeholder="Name" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                    <input type="tel" id="b_phone" placeholder="Phone" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                    <input type="text" id="b_car" placeholder="Car Model" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                    <button type="submit" id="bookBtn" class="btn-luxury" style="width:100%;">CONFIRM</button>
+                    <div id="booking-status" style="margin-top:15px; text-align:center; color:var(--gold);"></div>
+                </form>
+                <div style="padding:30px; background:#0b1624; border:1px solid #333; border-radius:12px;">
+                    <h3 style="color:#fff; font-family:var(--font-display);">VIP SERVICE</h3>
+                    <p style="color:#888; margin-top:10px; line-height:1.6;">Relax in our lounge while we work on your car. Wi-Fi, Coffee, and Sim Racing available.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-consultancy" class="section">
+        <div class="content-box">
+            <h2 style="font-family:var(--font-display); font-size:2.5rem; color:var(--gold); margin-bottom:30px;">CUSTOM DESIGN</h2>
+            <div id="consultancy-form-container" style="max-width:700px;">
+                <form onsubmit="app.submitConsultation(event)">
+                    <input type="text" id="c_name" placeholder="Name" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                    <input type="email" id="c_email" placeholder="Email" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                    <input type="tel" id="c_phone" placeholder="Phone" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                    <input type="text" id="c_car" placeholder="Car Model" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                    <label style="display:block; color:#888; margin-bottom:5px;">Upload Inspiration (Image)</label>
+                    <input type="file" id="c_image" style="width:100%; padding:10px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;">
+                    <textarea id="c_message" rows="4" placeholder="Describe your idea..." style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required></textarea>
+                    <button type="submit" class="btn-luxury" style="width:100%;" id="consultBtn">SEND</button>
+                </form>
+            </div>
+            <div id="consultancy-success" style="display:none; text-align:center; padding:40px; background:#0b1624; border:1px solid var(--gold);">
+                <h3 style="color:#fff; font-family:var(--font-display);">RECEIVED</h3>
+                <p style="color:#888; margin:15px 0;">We'll get back to you shortly.</p>
+                <a href="https://wa.me/9999999999" target="_blank" class="btn-luxury" style="text-decoration:none; background:#25D366; color:#fff; display:inline-block;">WHATSAPP US</a>
             </div>
         </div>
     </div>
 
     <div id="view-profile" class="section">
         <div class="content-box">
-            <h2 class="holo-text" style="font-family:var(--text-display); font-size:3rem; margin-bottom:30px;">MY GARAGE</h2>
-            <div class="profile-container">
-                <div class="profile-sidebar">
-                    <h3 class="gold-text" style="margin-bottom:20px;">DRIVER DATA</h3>
+            <h2 style="font-family:var(--font-display); font-size:2.5rem; margin-bottom:30px;">MY GARAGE</h2>
+            <div style="display:grid; grid-template-columns:1fr 2fr; gap:30px;">
+                <div style="background:#0b1624; padding:30px; border-radius:12px;">
+                    <h3 style="color:var(--gold); margin-bottom:20px;">PROFILE</h3>
                     <form onsubmit="app.updateProfile(event)">
-                        <input type="text" id="p_name" class="form-input" disabled>
-                        <input type="text" id="p_phone" class="form-input" placeholder="Phone">
-                        <input type="text" id="p_car" class="form-input" placeholder="Current Build">
-                        <button type="submit" id="updateProfileBtn" class="btn-luxury btn-outline" style="width:100%;">UPDATE SPECS</button>
+                        <input type="text" id="p_name" disabled style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:none; color:#888;">
+                        <input type="text" id="p_phone" placeholder="Phone" style="width:100%; padding:10px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff;">
+                        <input type="text" id="p_car" placeholder="Car" style="width:100%; padding:10px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff;">
+                        <button type="submit" id="updateProfileBtn" class="btn-luxury" style="width:100%; font-size:0.8rem;">SAVE</button>
                     </form>
                 </div>
-                <div class="profile-main">
-                    <h3 class="gold-text" style="margin-bottom:20px;">BUILD HISTORY</h3>
+                <div style="background:#0b1624; padding:30px; border-radius:12px;">
+                    <h3 style="color:var(--gold); margin-bottom:20px;">HISTORY</h3>
                     <div id="order-history-list"></div>
                 </div>
             </div>
-            <button class="btn-luxury btn-outline" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← RETURN TO DECK</button>
-        </div>
-    </div>
-
-    <div id="view-store" class="section">
-        <div class="content-box">
-            <h2 class="gold-text" style="font-family:var(--text-display); font-size:3rem;">INVENTORY</h2>
-            <div id="loading-store" style="color:var(--text-muted); text-align:center; padding:50px;">INITIALIZING DATABASE...</div>
-            <div class="store-grid" id="product-list"></div>
-            <button class="btn-luxury btn-outline" style="margin-top:50px;" onclick="app.navTo('view-dashboard')">← RETURN TO DECK</button>
-        </div>
-    </div>
-
-    <div id="view-booking" class="section">
-        <div class="content-box">
-            <h2 class="gold-text" style="font-family:var(--text-display); font-size:3rem;">RESERVE BAY</h2>
-            <div class="booking-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap:50px; margin-top:30px;">
-                <form id="bookingForm" onsubmit="app.bookSlot(event)">
-                    <input type="date" id="b_date" class="form-input" required onchange="app.checkSlots()">
-                    <select id="b_time" class="form-input" disabled><option>Select Date</option></select>
-                    <input type="text" id="b_name" class="form-input" placeholder="Pilot Name">
-                    <input type="tel" id="b_phone" class="form-input" placeholder="Comms">
-                    <input type="text" id="b_car" class="form-input" placeholder="Machine Model">
-                    <button type="submit" id="bookBtn" class="btn-luxury" style="width:100%;">CONFIRM SLOT</button>
-                </form>
-                <div style="background:var(--navy-card); padding:30px; border:1px solid var(--gold);">
-                    <h3 class="holo-text">VIP ACCESS INCLUDED</h3>
-                    <ul style="list-style:none; margin-top:20px; color:var(--text-muted); line-height:2;">
-                        <li><i class="fa-solid fa-check gold-text"></i> Premium Lounge Access</li>
-                        <li><i class="fa-solid fa-check gold-text"></i> Live Dyno Viewing</li>
-                        <li><i class="fa-solid fa-check gold-text"></i> 4K Sim Racing Rig</li>
-                    </ul>
-                </div>
-            </div>
-            <button class="btn-luxury btn-outline" style="margin-top:40px;" onclick="app.navTo('view-dashboard')">← RETURN TO DECK</button>
-        </div>
-    </div>
-
-    <div id="view-consultancy" class="section">
-        <div class="content-box">
-            <h2 class="gold-text" style="font-family:var(--text-display); font-size:3rem;">PROJECT BLUEPRINT</h2>
-            <div id="consultancy-form-container" style="max-width:800px;">
-                <form onsubmit="app.submitConsultation(event)">
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                        <input type="text" id="c_name" class="form-input" placeholder="Name">
-                        <input type="tel" id="c_phone" class="form-input" placeholder="Phone">
-                    </div>
-                    <input type="email" id="c_email" class="form-input" placeholder="Email">
-                    <input type="text" id="c_car" class="form-input" placeholder="Car Model">
-                    <label style="color:var(--blueprint-blue); font-size:0.8rem; margin-bottom:5px; display:block;">UPLOAD REFERENCE SCHEMATIC (IMG)</label>
-                    <input type="file" id="c_image" class="form-input">
-                    <textarea id="c_message" class="form-input" rows="4" placeholder="Describe your vision..."></textarea>
-                    <button type="submit" class="btn-luxury" style="width:100%;" id="consultBtn">TRANSMIT DATA</button>
-                </form>
-            </div>
-            <div id="consultancy-success" style="display:none; text-align:center; padding:50px; background:var(--navy-card); border:1px solid var(--gold);">
-                <h3 class="holo-text" style="font-size:2rem;">DATA RECEIVED</h3>
-                <p style="color:#fff; margin-bottom:20px;">Our engineers are analyzing your schematic.</p>
-                <a href="https://wa.me/9999999999" target="_blank" class="btn-luxury" style="text-decoration:none; background:#25D366; color:#fff;">
-                    <i class="fa-brands fa-whatsapp"></i> SECURE CHAT
-                </a>
-            </div>
-            <button class="btn-luxury btn-outline" style="margin-top:40px;" onclick="app.navTo('view-dashboard')">← RETURN TO DECK</button>
         </div>
     </div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
