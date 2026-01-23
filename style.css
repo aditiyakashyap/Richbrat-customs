@@ -83,7 +83,7 @@ nav {
 .cart-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 20px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px; }
 #cart-count { position:absolute; top:-8px; right:-8px; background:var(--gold); color:#000; font-weight:700; font-size:0.7rem; padding: 3px 6px; border-radius:50%; }
 
-/* --- "GULLWING" MODALS (Doors Opening Up) --- */
+/* --- "GULLWING" MODALS --- */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; justify-content: center; align-items: center; perspective: 1500px; }
 .modal-box { 
     width: 90%; max-width: 450px; background: var(--navy-card); padding: 50px; text-align: center; 
@@ -101,7 +101,7 @@ nav {
 }
 .form-input:focus { outline: none; border-color: var(--blueprint-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); }
 
-/* --- SECTIONS (Mechanical Slide In) --- */
+/* --- SECTIONS --- */
 .section { display: none; min-height: 100vh; padding: 140px 20px 50px; }
 .section.active { display: block; animation: mechSlide 0.6s ease-out; }
 @keyframes mechSlide { 
@@ -113,7 +113,7 @@ nav {
 .hero { display: flex; align-items: center; justify-content: center; height: 80vh; text-align: center; }
 .hero h1 { font-family: var(--text-display); font-size: clamp(3rem, 7vw, 7rem); margin-bottom: 20px; line-height: 1; letter-spacing: -3px; text-transform: uppercase; color: #fff; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
 
-/* CARDS (Alloy Wheel Hover) */
+/* CARDS */
 .content-box { max-width: 1100px; margin: 0 auto; position: relative; z-index: 10; }
 .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
 .dash-card { 
@@ -121,7 +121,6 @@ nav {
     border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: 0.4s; position: relative; overflow: hidden;
 }
 .dash-card:hover { border-color: var(--gold); transform: translateY(-5px); }
-/* Alloy Wheel Spinner Background */
 .dash-card::after {
     content: '\f013'; font-family: "Font Awesome 6 Free"; font-weight: 900;
     position: absolute; bottom: -50px; right: -50px; font-size: 10rem; color: rgba(255,255,255,0.03);
@@ -137,43 +136,65 @@ nav {
     position: fixed; bottom: 0; left: 0; width: 100%; height: 100vh;
     z-index: 9999; pointer-events: none; display: none;
     overflow: hidden;
-    background: linear-gradient(to top, rgba(5, 14, 26, 0.9) 0%, transparent 100%);
+    background: linear-gradient(to top, rgba(5, 14, 26, 0.95) 0%, transparent 100%);
 }
+
+/* UPDATED: IMAGE STYLING */
 .hologram-car {
-    position: absolute; bottom: -150px; left: 50%; transform: translateX(-50%);
-    font-size: 8rem; color: transparent; 
-    -webkit-text-stroke: 2px var(--blueprint-blue);
-    filter: drop-shadow(0 0 20px var(--blueprint-blue));
+    position: absolute; 
+    bottom: -300px; /* Start further down to hide larger image */
+    left: 50%; 
+    width: 200px; /* Set a reasonable size for the car */
+    height: auto;
+    /* Center horizontal, Rotate -90deg so front points UP */
+    transform: translateX(-50%) rotate(-90deg); 
     opacity: 0;
+    /* Create the hologram blue glow effect */
+    filter: drop-shadow(0 0 15px var(--blueprint-blue)) brightness(1.5) contrast(1.2);
+    /* If png has black background, screen mode helps blend it */
+    mix-blend-mode: screen; 
 }
+
 .skid-marks {
     position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 120px; height: 0;
-    border-left: 4px dashed var(--gold);
-    border-right: 4px dashed var(--gold);
+    width: 140px; height: 0;
+    border-left: 2px dashed var(--blueprint-blue);
+    border-right: 2px dashed var(--blueprint-blue);
     opacity: 0;
-    box-shadow: 0 0 15px var(--gold);
+    box-shadow: 0 0 20px var(--blueprint-blue);
 }
+
 /* Animation Classes */
-.animate-drag .hologram-car { animation: dragLaunch 1.5s cubic-bezier(0.5, 0, 0.1, 1) forwards; }
-.animate-drag .skid-marks { animation: skidGrow 1.5s cubic-bezier(0.5, 0, 0.1, 1) forwards; }
+.animate-drag .hologram-car { animation: dragLaunch 1.5s cubic-bezier(0.6, 0.05, 0.01, 0.99) forwards; }
+.animate-drag .skid-marks { animation: skidGrow 1.5s cubic-bezier(0.6, 0.05, 0.01, 0.99) forwards; }
 
 @keyframes dragLaunch {
-    0% { bottom: -150px; opacity: 0; transform: translateX(-50%) scale(0.8); }
-    20% { opacity: 1; transform: translateX(-50%) scale(1) vibrate(2px); } /* Engine Rev */
-    40% { bottom: 10%; }
-    100% { bottom: 120%; opacity: 0; transform: translateX(-50%) scale(1.2); } /* Zoom off */
+    0% { 
+        bottom: -300px; 
+        opacity: 0; 
+        /* Keep rotation in keyframes! */
+        transform: translateX(-50%) rotate(-90deg) scale(0.8); 
+    }
+    10% { 
+        opacity: 1; 
+        transform: translateX(-50%) rotate(-90deg) scale(1) translate(2px, 2px); /* Engine Rumble */
+    } 
+    100% { 
+        bottom: 150%; /* Shoot off screen */
+        opacity: 0; 
+        transform: translateX(-50%) rotate(-90deg) scale(1.1); 
+    } 
 }
+
 @keyframes skidGrow {
     0% { height: 0; opacity: 0; }
-    30% { height: 50vh; opacity: 0.8; }
+    20% { height: 60vh; opacity: 0.6; }
     100% { height: 100vh; opacity: 0; bottom: 100%; }
 }
 
 /* PROFILE & STORE */
 .profile-container { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
 .profile-sidebar, .profile-main { background: var(--navy-card); padding: 30px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
-/* Technical Corners */
 .profile-sidebar::before, .profile-main::before {
     content: ''; position: absolute; top: -1px; left: -1px; width: 20px; height: 20px;
     border-top: 2px solid var(--blueprint-blue); border-left: 2px solid var(--blueprint-blue);
