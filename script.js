@@ -8,6 +8,7 @@ const firebaseConfig = {
     appId: "1:717900685166:web:095f2354c75917907c6b7f"
 };
 
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -16,7 +17,7 @@ const storage = firebase.storage();
 // --- 2. CONFIGURATION ---
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKWST3IhiMjYIS6hLfBQhOdftghIZr9lvrU5rZZWu7uaOnDfhAhPPUnTxnmAbI33wgdg/exec";
 
-// --- 3. UI HELPER ---
+// --- 3. UI & MODAL CONTROL ---
 let authMode = 'login';
 window.openModal = (mode) => { authMode = mode; updateModalUI(); document.getElementById('auth-modal').style.display = 'flex'; }
 window.closeModal = () => document.getElementById('auth-modal').style.display = 'none';
@@ -29,23 +30,40 @@ function updateModalUI() {
     document.getElementById('extra-fields').style.display = authMode === 'register' ? 'block' : 'none';
 }
 
-// --- 4. APP LOGIC ---
+// --- 4. MASTER APP LOGIC ---
 class App {
     constructor() {
         this.cart = [];
         this.uid = null;
         
+        // --- GLOBAL LOADER LOGIC ---
+        // Fades out the pulsing logo overlay once the app loads
+        window.onload = () => {
+            const loader = document.getElementById('global-loader');
+            if(loader) {
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.style.display = 'none', 500);
+                }, 1000); // 1-second pulse before fading
+            }
+        };
+
+        // Auth Listener
         setTimeout(() => {
             auth.onAuthStateChanged(user => {
                 if (user) {
+                    // LOGGED IN
                     this.uid = user.uid;
                     this.loadProfile(user.uid);
                     document.getElementById('nav-actions').style.display = 'none';
                     document.getElementById('user-actions').style.display = 'flex';
+                    
+                    // Optional: Auto-redirect if on landing page
                     if(document.getElementById('view-landing').classList.contains('active')) {
-                        this.navTo('view-dashboard');
+                        // this.navTo('view-dashboard'); // Uncomment to auto-enter
                     }
                 } else {
+                    // GUEST
                     this.uid = null;
                     this.loadGuestProfile();
                     document.getElementById('nav-actions').style.display = 'flex';
@@ -55,37 +73,53 @@ class App {
         }, 1000);
     }
 
-    // --- NEW: HOLOGRAM DRAG RACE ANIMATION ---
+    // --- NAVIGATION & ANIMATION ---
+    
+    // DRAG RACE ANIMATION TRIGGER
     triggerDragRace(callback) {
         const overlay = document.getElementById('drag-run-overlay');
         overlay.style.display = 'block';
         overlay.classList.add('animate-drag');
 
-        // Animation lasts 1.5s. Execute callback halfway through or after.
+        // Animation lasts ~1.8s total. Execute callback mid-way.
         setTimeout(() => {
             if (callback) callback();
         }, 1200);
 
-        // Reset after animation ends
+        // Cleanup after animation finishes
         setTimeout(() => {
             overlay.classList.remove('animate-drag');
             overlay.style.display = 'none';
-        }, 1600);
+        }, 2000);
     }
-
-    enterGarage() { this.navTo('view-dashboard'); }
-    goHome() { this.navTo('view-dashboard'); }
 
     navTo(id) {
         window.scrollTo(0,0);
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
+        
+        // FLOATING HOME BUTTON LOGIC
+        const floatBtn = document.getElementById('floatHome');
+        if (floatBtn) {
+            if (id === 'view-landing') {
+                floatBtn.classList.remove('visible');
+            } else {
+                floatBtn.classList.add('visible');
+            }
+        }
+
+        // Reset consultancy form UI if entering that section
         if(id === 'view-consultancy') {
              document.getElementById('consultancy-form-container').style.display = 'block';
              document.getElementById('consultancy-success').style.display = 'none';
         }
     }
 
+    enterGarage() { this.navTo('view-dashboard'); }
+    goHome() { this.navTo('view-landing'); }
+    logout() { auth.signOut(); this.navTo('view-landing'); }
+
+    // --- AUTHENTICATION ---
     async handleAuth(e) {
         e.preventDefault();
         const email = document.getElementById('email').value;
@@ -97,7 +131,6 @@ class App {
                     name: document.getElementById('reg-name').value,
                     phone: document.getElementById('reg-phone').value,
                     car: document.getElementById('reg-car').value,
-                    insta: document.getElementById('reg-insta').value,
                     email: email,
                     orders: []
                 });
@@ -107,11 +140,14 @@ class App {
             // Trigger Animation on Success
             this.triggerDragRace(() => {
                 window.closeModal();
+                this.navTo('view-dashboard');
             });
         } catch (error) { alert("Access Denied: " + error.message); }
     }
 
+    // --- PROFILE MANAGEMENT ---
     loadGuestProfile() {
+        // Clear all form fields
         document.getElementById('b_name').value = ""; 
         document.getElementById('b_phone').value = ""; 
         document.getElementById('b_car').value = "";
@@ -121,34 +157,40 @@ class App {
         const docSnap = await db.collection("users").doc(uid).get();
         if (docSnap.exists) {
             const data = docSnap.data();
-            document.getElementById('nav-username').innerText = "MY GARAGE";
+            
+            // Auto-fill Booking Form
             document.getElementById('b_name').value = data.name; 
             document.getElementById('b_phone').value = data.phone; 
             document.getElementById('b_car').value = data.car;
+
+            // Auto-fill Consultancy Form
             document.getElementById('c_name').value = data.name; 
             document.getElementById('c_phone').value = data.phone || "";
             document.getElementById('c_email').value = data.email || "";
             document.getElementById('c_car').value = data.car;
+            
+            // Auto-fill Profile Page
             document.getElementById('p_name').value = data.name;
             document.getElementById('p_phone').value = data.phone || "";
             document.getElementById('p_car').value = data.car || "";
 
+            // Render History
             const historyList = document.getElementById('order-history-list');
             historyList.innerHTML = "";
             if (data.orders && data.orders.length > 0) {
                 data.orders.reverse().forEach(order => {
                     historyList.innerHTML += `
-                        <div style="padding:15px; border-bottom:1px solid #333; margin-bottom:10px;">
-                            <div style="display:flex; justify-content:space-between; color:var(--gold);">
+                        <div style="padding:15px; background:rgba(255,255,255,0.05); margin-bottom:10px; border-radius:6px; font-size:0.9rem;">
+                            <div style="display:flex; justify-content:space-between; color:#fff;">
                                 <span>${order.date}</span>
-                                <span>$${order.total}</span>
+                                <span style="color:var(--gold);">$${order.total}</span>
                             </div>
-                            <div style="color:var(--text-muted); font-size:0.8rem;">${order.status}</div>
+                            <div style="color:#666; font-size:0.8rem; margin-top:5px;">${order.status}</div>
                         </div>
                     `;
                 });
             } else {
-                historyList.innerHTML = '<p style="color:var(--text-muted);">No history.</p>';
+                historyList.innerHTML = '<p style="color:#666;">No history found.</p>';
             }
         }
     }
@@ -156,42 +198,51 @@ class App {
     async updateProfile(e) {
         e.preventDefault();
         const btn = document.getElementById('updateProfileBtn');
-        btn.innerText = "UPDATING..."; btn.disabled = true;
+        btn.innerText = "SAVING..."; btn.disabled = true;
         try {
             await db.collection("users").doc(this.uid).update({
                 phone: document.getElementById('p_phone').value,
                 car: document.getElementById('p_car').value
             });
             this.triggerDragRace(() => {
-                btn.innerText = "UPDATE SPECS"; btn.disabled = false;
+                btn.innerText = "SAVE"; btn.disabled = false;
                 this.loadProfile(this.uid);
             });
-        } catch(error) { alert(error.message); btn.disabled = false; }
+        } catch(error) { 
+            alert(error.message); 
+            btn.innerText = "SAVE"; btn.disabled = false; 
+        }
     }
 
-    logout() { auth.signOut(); this.navTo('view-landing'); }
-
+    // --- STORE LOGIC ---
     async loadStore() {
         this.navTo('view-store');
         const list = document.getElementById('product-list');
         const loader = document.getElementById('loading-store');
+        
+        // Simple cache check
         if(list.children.length > 0) return;
+
         loader.style.display = 'block';
+
         try {
             const res = await fetch(`${SCRIPT_URL}?action=getInventory`);
             const data = await res.json();
             loader.style.display = 'none';
-            if(data.length === 0) { list.innerHTML = "<p>EMPTY</p>"; return; }
+
+            if(data.length === 0) { list.innerHTML = "<p>Out of Stock</p>"; return; }
+
+            list.innerHTML = "";
             data.forEach(p => {
                 list.innerHTML += `
                 <div class="product-item">
                     <div class="prod-img" style="background-image:url('${p.image}')"></div>
-                    <h3 style="font-family:var(--text-display); color:#fff;">${p.name}</h3>
-                    <p class="gold-text">$${p.price}</p>
-                    <button class="btn-luxury btn-outline" style="width:100%; margin-top:10px;" onclick="app.addToCart('${p.name}', ${p.price})">ADD TO BAG</button>
+                    <div class="prod-title">${p.name}</div>
+                    <div class="prod-price">$${p.price}</div>
+                    <button class="btn-luxury" style="width:100%; font-size:0.8rem; padding:10px;" onclick="app.addToCart('${p.name}', ${p.price})">ADD TO BAG</button>
                 </div>`;
             });
-        } catch(e) { loader.innerText = "Error."; }
+        } catch(e) { loader.innerText = "Error loading inventory."; }
     }
 
     addToCart(name, price) {
@@ -205,7 +256,7 @@ class App {
         const list = document.getElementById('cart-items-list');
         list.innerHTML = "";
         let total = 0;
-        if (this.cart.length === 0) { list.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>Empty.</p>"; }
+        if (this.cart.length === 0) { list.innerHTML = "Bag is empty."; }
         this.cart.forEach((item, index) => {
             total += Number(item.price);
             list.innerHTML += `
@@ -222,8 +273,13 @@ class App {
     toggleCart() { document.getElementById('cart-panel').classList.toggle('open'); }
 
     openCheckout() {
-        if (this.cart.length === 0) { alert("Empty!"); return; }
-        if (!this.uid) { window.openModal('login'); return; }
+        if (this.cart.length === 0) { alert("Bag is empty!"); return; }
+        if (!this.uid) { 
+            alert("Please login to checkout.");
+            this.toggleCart();
+            window.openModal('login'); 
+            return; 
+        }
         this.toggleCart();
         document.getElementById('checkout-modal').style.display = 'flex';
     }
@@ -233,10 +289,11 @@ class App {
         const btn = document.getElementById('chk-btn');
         const paymentMethod = document.getElementById('chk-payment').value;
         const totalAmount = parseFloat(document.getElementById('chk-total').innerText);
+        
         btn.innerText = "PROCESSING..."; btn.disabled = true;
 
         if (paymentMethod === "COD") {
-            this.saveOrderToDatabase("Cash on Delivery", "PENDING");
+            this.saveOrderToDatabase("Cash on Delivery", "PENDING_PAYMENT");
             return;
         }
 
@@ -245,7 +302,7 @@ class App {
             amount: totalAmount * 100,
             currency: "INR",
             name: "RichBrat$ Customs",
-            description: "Parts",
+            description: "Modifications",
             image: "logo.png",
             handler: (response) => {
                 this.saveOrderToDatabase("Online Paid", response.razorpay_payment_id);
@@ -260,8 +317,8 @@ class App {
 
         const rzp = new Razorpay(options);
         rzp.on('payment.failed', function (response){
-            alert("Failed: " + response.error.description);
-            btn.innerText = "AUTHORIZE"; btn.disabled = false;
+            alert("Payment Failed: " + response.error.description);
+            btn.innerText = "PAY NOW"; btn.disabled = false;
         });
         rzp.open();
     }
@@ -286,7 +343,7 @@ class App {
             this.triggerDragRace(() => {
                 this.cart = []; this.renderCart();
                 document.getElementById('checkout-modal').style.display = 'none';
-                document.getElementById('chk-btn').innerText = "AUTHORIZE"; 
+                document.getElementById('chk-btn').innerText = "PAY NOW"; 
                 document.getElementById('chk-btn').disabled = false;
                 this.loadProfile(this.uid);
                 this.navTo('view-profile');
@@ -295,11 +352,11 @@ class App {
         } catch (error) { alert(error.message); }
     }
 
+    // --- BOOKING LOGIC ---
     async checkSlots() {
         const date = document.getElementById('b_date').value;
         const sel = document.getElementById('b_time');
-        const btn = document.getElementById('bookBtn');
-        sel.innerHTML = "<option>SCANNING...</option>"; sel.disabled = true; btn.disabled = true;
+        sel.innerHTML = "<option>SCANNING...</option>"; sel.disabled = true;
         try {
             const res = await fetch(`${SCRIPT_URL}?action=checkSlots&date=${date}`);
             const taken = await res.json();
@@ -307,16 +364,20 @@ class App {
             const avail = hours.filter(h => !taken.includes(h));
             sel.innerHTML = "";
             if(avail.length === 0) { sel.innerHTML = "<option>FULL</option>"; }
-            else { avail.forEach(h => sel.innerHTML += `<option value="${h}">${h}</option>`); sel.disabled = false; btn.disabled = false; }
+            else { avail.forEach(h => sel.innerHTML += `<option value="${h}">${h}</option>`); sel.disabled = false; }
         } catch(e) { sel.innerHTML = "<option>ERROR</option>"; }
     }
 
     async bookSlot(e) {
         e.preventDefault();
-        if (!this.uid) { window.openModal('login'); return; }
+        if (!this.uid) { 
+            alert("Login required."); 
+            window.openModal('login'); 
+            return; 
+        }
 
         const btn = document.getElementById('bookBtn');
-        btn.innerText = "RESERVING...";
+        btn.innerText = "BOOKING...";
         const fd = new FormData();
         fd.append('date', document.getElementById('b_date').value); fd.append('time', document.getElementById('b_time').value);
         fd.append('name', document.getElementById('b_name').value); fd.append('phone', document.getElementById('b_phone').value); fd.append('car', document.getElementById('b_car').value);
@@ -327,24 +388,30 @@ class App {
             // Trigger Drag Race Animation
             this.triggerDragRace(() => {
                 document.getElementById('bookingForm').reset();
-                btn.innerText = "CONFIRM SLOT";
+                btn.innerText = "CONFIRM";
                 this.goHome();
             });
         } catch(e) { alert("Failed"); }
     }
 
+    // --- CONSULTANCY LOGIC ---
     async submitConsultation(e) {
         e.preventDefault();
-        if (!this.uid) { window.openModal('login'); return; }
+        if (!this.uid) { 
+            alert("Login required."); 
+            window.openModal('login'); 
+            return; 
+        }
 
         const btn = document.getElementById('consultBtn');
         const formContainer = document.getElementById('consultancy-form-container');
         const successContainer = document.getElementById('consultancy-success');
         
-        btn.innerText = "TRANSMITTING..."; btn.disabled = true;
+        btn.innerText = "UPLOADING..."; btn.disabled = true;
         const file = document.getElementById('c_image').files[0];
         
-        if (!file) { alert("Image required."); btn.innerText = "TRANSMIT"; btn.disabled = false; return; }
+        // Optional: Allow submit without image if you want, but sticking to logic
+        if (!file) { alert("Image required."); btn.innerText = "SEND"; btn.disabled = false; return; }
 
         try {
             const storageRef = storage.ref(`consultations/${this.uid}_${Date.now()}_${file.name}`);
@@ -368,11 +435,12 @@ class App {
                 successContainer.style.display = 'block';
                 document.getElementById('c_image').value = ""; 
                 document.getElementById('c_message').value = "";
-                btn.innerText = "TRANSMIT"; btn.disabled = false;
+                btn.innerText = "SEND"; btn.disabled = false;
             });
 
         } catch (error) { alert("Failed"); btn.disabled = false; }
     }
 }
 
+// Start App
 window.app = new App();
