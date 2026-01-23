@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RichBrat$ Customs | Next Gen Mods</title>
+    <title>RichBrat$ Customs | Luxury Mods</title>
     
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&f[]=clash-display@600,700,500&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&f[]=clash-display@700,600,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 
@@ -37,10 +37,10 @@
 
         <div class="user-panel" id="nav-actions">
             <span class="nav-link" onclick="openModal('login')">Log In</span>
-            <button class="btn-luxury" style="padding: 10px 20px; font-size: 0.8rem;" onclick="openModal('register')">Sign Up</button>
+            <button class="btn-luxury" style="padding: 10px 24px; font-size: 0.85rem;" onclick="openModal('register')">Sign Up</button>
         </div>
         <div class="user-panel" id="user-actions" style="display:none;">
-            <span style="cursor:pointer; font-size: 1.2rem; color:#fff;" onclick="app.toggleCart()">
+            <span style="cursor:pointer; font-size: 1.3rem; color:#fff; display:flex; align-items:center;" onclick="app.toggleCart()">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span id="cart-count">0</span>
             </span>
@@ -54,12 +54,12 @@
     </div>
 
     <div id="cart-panel">
-        <div class="cart-header" style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding-bottom:20px; margin-bottom:20px;">
+        <div class="cart-header">
             <h2 style="color:var(--gold); font-family:var(--font-display);">YOUR STASH</h2>
             <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.5rem; color:#fff;" onclick="app.toggleCart()"></i>
         </div>
-        <div class="cart-items" id="cart-items-list" style="flex:1; overflow-y:auto; color:#888;">Bag is empty.</div>
-        <div class="cart-footer" style="border-top:1px solid #333; padding-top:20px;">
+        <div class="cart-items" id="cart-items-list">Bag is empty.</div>
+        <div class="cart-footer">
             <div style="display:flex; justify-content:space-between; font-weight:bold; color:#fff; margin-bottom:15px;">
                 <span>TOTAL</span><span id="cart-total" style="color:var(--gold);">$0</span>
             </div>
@@ -68,15 +68,15 @@
     </div>
 
     <div class="modal-overlay" id="auth-modal">
-        <div class="modal-box" style="background:#0b1624; padding:40px; border:1px solid #333; width:90%; max-width:400px; text-align:center;">
-            <h2 id="modal-title" style="color:#fff; font-family:var(--font-display); margin-bottom:20px;">ACCESS</h2>
+        <div class="modal-box">
+            <h2 id="modal-title">ACCESS</h2>
             <form onsubmit="app.handleAuth(event)">
-                <input type="text" id="reg-name" class="form-input" placeholder="Name" style="display:none; width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;">
-                <input type="email" id="email" class="form-input" placeholder="Email" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
-                <input type="password" id="password" class="form-input" placeholder="Password" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                <input type="text" id="reg-name" class="form-input" placeholder="Name" style="display:none;">
+                <input type="email" id="email" class="form-input" placeholder="Email" required>
+                <input type="password" id="password" class="form-input" placeholder="Password" required>
                 <div id="extra-fields" style="display:none;">
-                    <input type="tel" id="reg-phone" class="form-input" placeholder="Phone" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;">
-                    <input type="text" id="reg-car" class="form-input" placeholder="Car Model" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;">
+                    <input type="tel" id="reg-phone" class="form-input" placeholder="Phone">
+                    <input type="text" id="reg-car" class="form-input" placeholder="Car Model">
                 </div>
                 <button type="submit" class="btn-luxury" style="width:100%;" id="submit-btn">GO</button>
             </form>
@@ -86,15 +86,15 @@
     </div>
     
     <div class="modal-overlay" id="checkout-modal">
-        <div class="modal-box" style="background:#0b1624; padding:40px; border:1px solid #333; width:90%; max-width:500px;">
-            <h2 style="color:var(--gold); font-family:var(--font-display); margin-bottom:20px;">SHIPPING</h2>
+        <div class="modal-box" style="max-width:500px;">
+            <h2 style="color:var(--gold); margin-bottom:20px;">SHIPPING</h2>
             <form onsubmit="app.processCheckout(event)">
-                <input type="text" id="chk-address" placeholder="Address" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                <input type="text" id="chk-address" class="form-input" placeholder="Address" required>
                 <div style="display:flex; gap:10px;">
-                    <input type="text" id="chk-city" placeholder="City" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
-                    <input type="text" id="chk-zip" placeholder="Zip Code" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                    <input type="text" id="chk-city" class="form-input" placeholder="City" required>
+                    <input type="text" id="chk-zip" class="form-input" placeholder="Zip Code" required>
                 </div>
-                <select id="chk-payment" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;">
+                <select id="chk-payment" class="form-input">
                     <option value="ONLINE">Online Payment</option>
                     <option value="COD">Cash on Delivery</option>
                 </select>
@@ -106,10 +106,12 @@
 
     <div id="view-landing" class="section active">
         <div class="hero">
-            <div>
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                
                 <img src="logo.png" class="hero-logo" alt="RichBrat$ Logo">
                 
-                <h1>Next Gen<br><span style="color:var(--gold);">Customs</span></h1>
+                <h1>RICHBRAT$<br><span class="gold-glow-text">CUSTOMS</span></h1>
+                
                 <p style="color:#aaa; font-size:1.1rem; max-width:500px; margin:0 auto 40px; line-height:1.6;">
                     Premium modifications for the modern enthusiast. Aesthetics, Performance, and Identity.
                 </p>
@@ -125,23 +127,23 @@
 
     <div id="view-dashboard" class="section">
         <div class="content-box">
-            <h2 style="font-family:var(--font-display); font-size:2.5rem; margin-bottom:10px;">THE HUB</h2>
-            <p style="color:#888;">Select an action below.</p>
+            <h2 class="section-title">THE HUB</h2>
+            <p style="color:#888; text-align:center;">Select an action below.</p>
 
             <div class="dashboard-grid">
                 <div class="dash-card" onclick="app.loadStore()">
                     <i class="fa-solid fa-cart-shopping dash-icon"></i>
-                    <h3 style="color:#fff; font-family:var(--font-display); font-size:1.5rem;">Shop Mods</h3>
+                    <h3>Shop Mods</h3>
                     <p style="color:#666; margin-top:10px;">Browse Parts & Kits</p>
                 </div>
                 <div class="dash-card" onclick="app.navTo('view-booking')">
                     <i class="fa-regular fa-calendar-days dash-icon"></i>
-                    <h3 style="color:#fff; font-family:var(--font-display); font-size:1.5rem;">Book Appointment</h3>
+                    <h3>Book Appointment</h3>
                     <p style="color:#666; margin-top:10px;">Schedule Garage Visit</p>
                 </div>
                 <div class="dash-card" onclick="app.navTo('view-consultancy')">
                     <i class="fa-solid fa-pencil dash-icon"></i>
-                    <h3 style="color:#fff; font-family:var(--font-display); font-size:1.5rem;">Custom Design</h3>
+                    <h3>Custom Design</h3>
                     <p style="color:#666; margin-top:10px;">Consult with Experts</p>
                 </div>
             </div>
@@ -150,7 +152,7 @@
 
     <div id="view-store" class="section">
         <div class="content-box">
-            <h2 style="font-family:var(--font-display); font-size:2.5rem; color:var(--gold); margin-bottom:30px;">THE COLLECTION</h2>
+            <h2 class="section-title" style="color:var(--gold);">THE COLLECTION</h2>
             <div id="loading-store" style="text-align:center; padding:50px;">
                 <img src="logo.png" class="loader-logo" alt="Loading..." style="width:80px; height:auto;">
             </div>
@@ -160,18 +162,18 @@
 
     <div id="view-booking" class="section">
         <div class="content-box">
-            <h2 style="font-family:var(--font-display); font-size:2.5rem; color:var(--gold); margin-bottom:30px;">BOOK APPOINTMENT</h2>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px;">
+            <h2 class="section-title" style="color:var(--gold);">BOOK APPOINTMENT</h2>
+            <div class="booking-grid">
                 <form id="bookingForm" onsubmit="app.bookSlot(event)">
-                    <input type="date" id="b_date" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required onchange="app.checkSlots()">
-                    <select id="b_time" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" disabled><option>Select Date</option></select>
-                    <input type="text" id="b_name" placeholder="Name" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
-                    <input type="tel" id="b_phone" placeholder="Phone" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
-                    <input type="text" id="b_car" placeholder="Car Model" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
+                    <input type="date" id="b_date" class="form-input" required onchange="app.checkSlots()">
+                    <select id="b_time" class="form-input" disabled><option>Select Date</option></select>
+                    <input type="text" id="b_name" class="form-input" placeholder="Name" required>
+                    <input type="tel" id="b_phone" class="form-input" placeholder="Phone" required>
+                    <input type="text" id="b_car" class="form-input" placeholder="Car Model" required>
                     <button type="submit" id="bookBtn" class="btn-luxury" style="width:100%;">CONFIRM</button>
                     <div id="booking-status" style="margin-top:15px; text-align:center; color:var(--gold);"></div>
                 </form>
-                <div style="padding:30px; background:#0b1624; border:1px solid #333; border-radius:12px;">
+                <div class="vip-lounge-box">
                     <h3 style="color:#fff; font-family:var(--font-display);">VIP SERVICE</h3>
                     <p style="color:#888; margin-top:10px; line-height:1.6;">Relax in our lounge while we work on your car. Wi-Fi, Coffee, and Sim Racing available.</p>
                 </div>
@@ -181,20 +183,20 @@
 
     <div id="view-consultancy" class="section">
         <div class="content-box">
-            <h2 style="font-family:var(--font-display); font-size:2.5rem; color:var(--gold); margin-bottom:30px;">CUSTOM DESIGN</h2>
-            <div id="consultancy-form-container" style="max-width:700px;">
+            <h2 class="section-title" style="color:var(--gold);">CUSTOM DESIGN</h2>
+            <div id="consultancy-form-container" style="max-width:700px; margin:0 auto;">
                 <form onsubmit="app.submitConsultation(event)">
-                    <input type="text" id="c_name" placeholder="Name" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
-                    <input type="email" id="c_email" placeholder="Email" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
-                    <input type="tel" id="c_phone" placeholder="Phone" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
-                    <input type="text" id="c_car" placeholder="Car Model" style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required>
-                    <label style="display:block; color:#888; margin-bottom:5px;">Upload Inspiration (Image)</label>
-                    <input type="file" id="c_image" style="width:100%; padding:10px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;">
-                    <textarea id="c_message" rows="4" placeholder="Describe your idea..." style="width:100%; padding:15px; background:#111; border:1px solid #333; color:#fff; margin-bottom:15px;" required></textarea>
+                    <input type="text" id="c_name" class="form-input" placeholder="Name" required>
+                    <input type="email" id="c_email" class="form-input" placeholder="Email" required>
+                    <input type="tel" id="c_phone" class="form-input" placeholder="Phone" required>
+                    <input type="text" id="c_car" class="form-input" placeholder="Car Model" required>
+                    <label style="display:block; color:#888; margin-bottom:5px; text-align:left;">Upload Inspiration</label>
+                    <input type="file" id="c_image" class="form-input" style="padding:10px;">
+                    <textarea id="c_message" class="form-input" rows="4" placeholder="Describe your idea..." required></textarea>
                     <button type="submit" class="btn-luxury" style="width:100%;" id="consultBtn">SEND</button>
                 </form>
             </div>
-            <div id="consultancy-success" style="display:none; text-align:center; padding:40px; background:#0b1624; border:1px solid var(--gold);">
+            <div id="consultancy-success" style="display:none; text-align:center; padding:40px; background:#0b1624; border:1px solid var(--gold); margin-top:20px;">
                 <h3 style="color:#fff; font-family:var(--font-display);">RECEIVED</h3>
                 <p style="color:#888; margin:15px 0;">We'll get back to you shortly.</p>
                 <a href="https://wa.me/9999999999" target="_blank" class="btn-luxury" style="text-decoration:none; background:#25D366; color:#fff; display:inline-block;">WHATSAPP US</a>
@@ -204,18 +206,18 @@
 
     <div id="view-profile" class="section">
         <div class="content-box">
-            <h2 style="font-family:var(--font-display); font-size:2.5rem; margin-bottom:30px;">MY GARAGE</h2>
-            <div style="display:grid; grid-template-columns:1fr 2fr; gap:30px;">
-                <div style="background:#0b1624; padding:30px; border-radius:12px;">
+            <h2 class="section-title">MY GARAGE</h2>
+            <div class="profile-layout">
+                <div class="profile-card">
                     <h3 style="color:var(--gold); margin-bottom:20px;">PROFILE</h3>
                     <form onsubmit="app.updateProfile(event)">
-                        <input type="text" id="p_name" disabled style="width:100%; padding:10px; margin-bottom:10px; background:#222; border:none; color:#888;">
-                        <input type="text" id="p_phone" placeholder="Phone" style="width:100%; padding:10px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff;">
-                        <input type="text" id="p_car" placeholder="Car" style="width:100%; padding:10px; margin-bottom:10px; background:#111; border:1px solid #333; color:#fff;">
+                        <input type="text" id="p_name" disabled class="form-input" style="background:#222; border:none; color:#888;">
+                        <input type="text" id="p_phone" placeholder="Phone" class="form-input">
+                        <input type="text" id="p_car" placeholder="Car" class="form-input">
                         <button type="submit" id="updateProfileBtn" class="btn-luxury" style="width:100%; font-size:0.8rem;">SAVE</button>
                     </form>
                 </div>
-                <div style="background:#0b1624; padding:30px; border-radius:12px;">
+                <div class="profile-card">
                     <h3 style="color:var(--gold); margin-bottom:20px;">HISTORY</h3>
                     <div id="order-history-list"></div>
                 </div>
