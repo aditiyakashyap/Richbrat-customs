@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RichBrat$ Customs | High Performance Garage</title>
+    <title>RichBrat$ Customs | Car Tuning & Parts</title>
     
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500&f[]=clash-display@600,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,11 +16,12 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 </head>
 <body>
 
-    <div class="bg-carbon"></div>
-    <div class="bg-ambient"></div>
+    <div class="bg-navy"></div>
+    <div class="bg-accents"></div>
     
     <div class="auto-elements">
         <i class="fa-solid fa-gear part p1"></i>
@@ -35,7 +36,7 @@
 
         <div class="user-panel" id="nav-actions">
             <span style="cursor:pointer; font-size:0.9rem;" onclick="openModal('login')">LOGIN</span>
-            <button class="btn-luxury" style="padding: 8px 15px; font-size: 0.8rem;" onclick="openModal('register')">JOIN THE CREW</button>
+            <button class="btn-luxury" style="padding: 8px 15px; font-size: 0.8rem;" onclick="openModal('register')">SIGN UP</button>
         </div>
         <div class="user-panel" id="user-actions" style="display:none;">
             <span style="cursor:pointer; position:relative; font-size: 1.2rem; color:var(--gold);" onclick="app.toggleCart()">
@@ -43,17 +44,17 @@
                 <span id="cart-count">0</span>
             </span>
             <span id="nav-username" style="cursor:pointer; font-weight:bold; margin-left:15px;" onclick="app.navTo('view-dashboard')">USER</span>
-            <span style="cursor:pointer; color:#666; font-size:0.9rem;" onclick="app.logout()">LOGOUT</span>
+            <span style="cursor:pointer; color:#ccd6f6; font-size:0.9rem;" onclick="app.logout()">LOGOUT</span>
         </div>
     </nav>
 
     <div id="cart-panel">
         <div class="cart-header">
-            <h2 class="gold-text" style="font-family: var(--text-display);">YOUR BAG</h2>
+            <h2 class="gold-text" style="font-family: var(--text-display);">YOUR CART</h2>
             <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.5rem;" onclick="app.toggleCart()"></i>
         </div>
         <div class="cart-items" id="cart-items-list">
-            <p style="color:#666; text-align:center; margin-top:20px;">Your cart is empty.</p>
+            <p style="color:#8892b0; text-align:center; margin-top:20px;">Your cart is empty.</p>
         </div>
         <div class="cart-footer">
             <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size:1.2rem; font-weight:bold;">
@@ -68,17 +69,17 @@
             <h2 id="modal-title" style="margin-bottom: 30px; font-family: var(--text-display);">LOGIN</h2>
             <form onsubmit="app.handleAuth(event)">
                 <input type="text" id="reg-name" class="form-input" placeholder="FULL NAME" style="display:none;">
-                <input type="email" id="email" class="form-input" placeholder="EMAIL" required>
+                <input type="email" id="email" class="form-input" placeholder="EMAIL ADDRESS" required>
                 <input type="password" id="password" class="form-input" placeholder="PASSWORD" required>
                 <div id="extra-fields" style="display:none;">
                     <input type="tel" id="reg-phone" class="form-input" placeholder="PHONE NUMBER">
-                    <input type="text" id="reg-car" class="form-input" placeholder="CHASSIS / CAR MODEL">
+                    <input type="text" id="reg-car" class="form-input" placeholder="CAR MODEL (e.g. Honda City)">
                     <input type="text" id="reg-insta" class="form-input" placeholder="INSTAGRAM HANDLE">
                 </div>
                 <button type="submit" class="btn-luxury" style="width:100%;" id="submit-btn">ENTER</button>
             </form>
-            <p style="margin-top:20px; color:#666; cursor:pointer; font-size:0.8rem;" onclick="switchMode()">Toggle Login / Register</p>
-            <p style="margin-top:10px; color:#666; cursor:pointer; font-size:0.8rem;" onclick="closeModal()">Close</p>
+            <p style="margin-top:20px; color:#8892b0; cursor:pointer; font-size:0.8rem;" onclick="switchMode()">Create an account / Login</p>
+            <p style="margin-top:10px; color:#8892b0; cursor:pointer; font-size:0.8rem;" onclick="closeModal()">Close</p>
         </div>
     </div>
 
@@ -86,68 +87,68 @@
         <div class="modal-box" style="max-width: 500px;">
             <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">DELIVERY DETAILS</h2>
             <form onsubmit="app.processCheckout(event)">
-                <input type="text" id="chk-address" class="form-input" placeholder="FULL STREET ADDRESS" required>
+                <input type="text" id="chk-address" class="form-input" placeholder="STREET ADDRESS" required>
                 <div style="display:flex; gap:10px;">
                     <input type="text" id="chk-city" class="form-input" placeholder="CITY" required>
                     <input type="text" id="chk-zip" class="form-input" placeholder="POSTAL CODE" required>
                 </div>
-                <select id="chk-payment" class="form-input" style="background:#111; color:var(--gold);">
+                <select id="chk-payment" class="form-input" style="background:#112240; color:#fff;">
                     <option value="ONLINE">UPI / CREDIT CARD / NETBANKING</option>
                     <option value="COD">CASH ON DELIVERY</option>
                 </select>
                 <button type="submit" class="btn-luxury" style="width:100%; margin-top:20px;" id="chk-btn">PAY SECURELY ($<span id="chk-total">0</span>)</button>
             </form>
-            <p style="margin-top:10px; color:#666; cursor:pointer; font-size:0.8rem;" onclick="document.getElementById('checkout-modal').style.display='none'">Cancel</p>
+            <p style="margin-top:10px; color:#8892b0; cursor:pointer; font-size:0.8rem;" onclick="document.getElementById('checkout-modal').style.display='none'">Cancel</p>
         </div>
     </div>
 
     <div id="view-landing" class="section active">
         <div class="hero">
             <div>
-                <p style="color:#888; letter-spacing: 3px; font-size:clamp(0.8rem, 2vw, 1rem);">BUILT FOR THE STREETS. CRAFTED FOR THE SHOW.</p>
-                <h1>HIGH PERFORMANCE<br><span class="gold-text">TUNING</span></h1>
-                <p style="max-width:550px; margin: 0 auto 30px; color:#ccc; line-height:1.6;">Join an exclusive community of petrolheads. Precision aero-kits, custom wraps, and performance tuning by master mechanics.</p>
-                <button class="btn-luxury" onclick="openModal('register')"><i class="fa-solid fa-flag-checkered"></i> ENTER THE GARAGE</button>
+                <p style="color:#8892b0; letter-spacing: 3px; font-size:clamp(0.8rem, 2vw, 1rem); margin-bottom:10px;">PREMIUM AUTOMOTIVE CUSTOMIZATION</p>
+                <h1>YOUR CAR.<br><span class="gold-text">PERFECTED.</span></h1>
+                <p style="max-width:550px; margin: 0 auto 30px; color:#ccd6f6; line-height:1.6;">Body kits, performance tuning, and custom modifications for serious car enthusiasts. Quality parts, professional service.</p>
+                <button class="btn-luxury" onclick="app.enterGarage()"><i class="fa-solid fa-arrow-right"></i> EXPLORE SITE</button>
             </div>
         </div>
     </div>
 
     <div id="view-dashboard" class="section">
         <div class="content-box">
-            <h2 style="font-family: var(--text-display); font-size: clamp(1.8rem, 4vw, 2.5rem);">WELCOME BACK, <span id="dash-name" class="gold-text">PILOT</span></h2>
-            <p style="color:#666; letter-spacing: 1px;">Current Chassis: <span id="dash-car" style="color:#fff;">--</span></p>
+            <h2 style="font-family: var(--text-display); font-size: clamp(1.8rem, 4vw, 2.5rem);">WELCOME, <span id="dash-name" class="gold-text">GUEST</span></h2>
+            <p style="color:#8892b0; letter-spacing: 1px;">Vehicle: <span id="dash-car" style="color:#fff;">--</span></p>
 
             <div class="dashboard-grid">
                 <div class="dash-card" onclick="app.loadStore()">
-                    <i class="fa-solid fa-gauge-high dash-icon"></i>
-                    <h3 class="gold-text">PERFORMANCE SHOP</h3>
-                    <p style="color:#888; margin-top:10px;">Aero, Carbon, & Tuning Parts</p>
+                    <i class="fa-solid fa-store dash-icon"></i>
+                    <h3 class="gold-text">PARTS STORE</h3>
+                    <p style="color:#8892b0; margin-top:10px;">Buy body kits & accessories</p>
                 </div>
                 <div class="dash-card" onclick="app.navTo('view-booking')">
-                    <i class="fa-solid fa-calendar-check dash-icon"></i>
-                    <h3 class="gold-text">GARAGE SLOT</h3>
-                    <p style="color:#888; margin-top:10px;">Book the Paddock Lounge</p>
+                    <i class="fa-solid fa-calendar-days dash-icon"></i>
+                    <h3 class="gold-text">BOOK APPOINTMENT</h3>
+                    <p style="color:#8892b0; margin-top:10px;">Reserve a time at our garage</p>
                 </div>
-                <div class="dash-card" onclick="app.navTo('view-consult')">
-                    <i class="fa-solid fa-screwdriver-wrench dash-icon"></i>
-                    <h3 class="gold-text">MECHANIC LINK</h3>
-                    <p style="color:#888; margin-top:10px;">Chat with Design Chiefs</p>
+                <div class="dash-card" onclick="app.navTo('view-consultancy')">
+                    <i class="fa-solid fa-comments dash-icon"></i>
+                    <h3 class="gold-text">MODS CONSULTANCY</h3>
+                    <p style="color:#8892b0; margin-top:10px;">Talk to an expert about your build</p>
                 </div>
             </div>
             
-            <div style="margin-top: 50px; background: rgba(10,10,10,0.8); padding: 30px; border: 1px solid #222;">
-                <h3 class="gold-text" style="margin-bottom:20px;"><i class="fa-solid fa-box"></i> YOUR GARAGE HISTORY</h3>
-                <div id="order-history-list" style="color:#666; font-size:0.9rem;">No orders yet. Start your build in the Performance Shop.</div>
+            <div style="margin-top: 50px; background: var(--navy-light); padding: 30px; border-radius: 8px;">
+                <h3 class="gold-text" style="margin-bottom:20px;"><i class="fa-solid fa-clock-rotate-left"></i> ORDER HISTORY</h3>
+                <div id="order-history-list" style="color:#8892b0; font-size:0.9rem;">No orders yet. Visit the Parts Store to get started.</div>
             </div>
         </div>
     </div>
 
     <div id="view-store" class="section">
         <div class="content-box">
-            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">PERFORMANCE PARTS</h2>
-            <div id="loading-store" style="color:#666; text-align:center;"><i class="fa-solid fa-gear fa-spin"></i> ACCESSING INVENTORY...</div>
+            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">SHOP PARTS</h2>
+            <div id="loading-store" style="color:#8892b0; text-align:center;"><i class="fa-solid fa-circle-notch fa-spin"></i> LOADING PRODUCTS...</div>
             <div class="store-grid" id="product-list"></div>
-            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← RETURN</button>
+            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← GO BACK</button>
         </div>
     </div>
 
@@ -155,42 +156,62 @@
         <div class="content-box" style="max-width:1000px;">
             <div class="booking-grid">
                 <div class="vip-lounge">
-                    <h2 class="gold-text" style="font-family: var(--text-display); font-size:1.8rem;">THE PADDOCK LOUNGE</h2>
-                    <p style="margin-top:10px; color:#888; line-height:1.5;">Forget dirty waiting rooms. Bring your ride to our bays and relax in our private automotive lounge while our crew wrenches on your beast.</p>
-                    <div class="vip-feature"><i class="fa-solid fa-mug-hot vip-icon"></i><div><strong>Pit-Stop Cafe</strong><br>Fresh brews, energy drinks & snacks.</div></div>
-                    <div class="vip-feature"><i class="fa-solid fa-gamepad vip-icon"></i><div><strong>Sim-Racing & Lounge</strong><br>Hit the PS5 Forza tracks or watch 4K F1 streams.</div></div>
-                    <div class="vip-feature"><i class="fa-solid fa-eye vip-icon"></i><div><strong>Dyno View Deck</strong><br>Watch your car get modded through the glass wall.</div></div>
+                    <h2 class="gold-text" style="font-family: var(--text-display); font-size:1.8rem;">CUSTOMER WAITING AREA</h2>
+                    <p style="margin-top:10px; color:#8892b0; line-height:1.5;">Relax comfortably while we upgrade your car.</p>
+                    <div class="vip-feature"><i class="fa-solid fa-mug-hot vip-icon"></i><div><strong>Cafeteria</strong><br>Coffee, drinks & snacks.</div></div>
+                    <div class="vip-feature"><i class="fa-solid fa-gamepad vip-icon"></i><div><strong>Gaming & Lounge</strong><br>Play PS5 or watch TV while you wait.</div></div>
+                    <div class="vip-feature"><i class="fa-solid fa-eye vip-icon"></i><div><strong>Viewing Deck</strong><br>Watch our mechanics work on your car.</div></div>
                 </div>
 
                 <div class="booking-form" style="padding:20px;">
-                    <h3 style="margin-bottom:20px; color:#fff;">RESERVE A BAY</h3>
+                    <h3 style="margin-bottom:20px; color:#fff;">BOOK A SLOT</h3>
                     <form id="bookingForm" onsubmit="app.bookSlot(event)">
                         <input type="date" id="b_date" class="form-input" required onchange="app.checkSlots()">
-                        <select id="b_time" class="form-input" style="background:#121212;" disabled><option>Select Date First</option></select>
-                        <input type="text" id="b_name" class="form-input" placeholder="PILOT NAME" required>
-                        <input type="tel" id="b_phone" class="form-input" placeholder="CONTACT NUMBER" required>
-                        <input type="text" id="b_car" class="form-input" placeholder="CHASSIS (e.g. BMW M3 G80)" required>
-                        <button type="submit" id="bookBtn" class="btn-luxury" style="width:100%; margin-top:20px;">CONFIRM SLOT</button>
+                        <select id="b_time" class="form-input" style="background:#112240; color:#fff;" disabled><option>Select Date First</option></select>
+                        <input type="text" id="b_name" class="form-input" placeholder="YOUR NAME" required>
+                        <input type="tel" id="b_phone" class="form-input" placeholder="PHONE NUMBER" required>
+                        <input type="text" id="b_car" class="form-input" placeholder="CAR MODEL" required>
+                        <button type="submit" id="bookBtn" class="btn-luxury" style="width:100%; margin-top:20px;">CONFIRM BOOKING</button>
                         <div id="booking-status" style="margin-top:10px; text-align:center;"></div>
                     </form>
                 </div>
             </div>
-            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← RETURN</button>
+            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← GO BACK</button>
         </div>
     </div>
 
-    <div id="view-consult" class="section">
+    <div id="view-consultancy" class="section">
         <div class="content-box">
-            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">PROJECT BLUEPRINT</h2>
-            <p style="color:#888; margin-bottom:20px;">Send your specs directly to our head mechanic.</p>
-            <form onsubmit="app.sendMail(event)">
-                <input type="text" id="c_name" class="form-input" placeholder="YOUR NAME" required>
-                <input type="text" id="c_car" class="form-input" placeholder="CAR MODEL" required>
-                <textarea id="c_message" class="form-input" rows="4" placeholder="DESCRIBE THE BUILD..." required></textarea>
-                <button type="submit" class="btn-luxury" style="width:100%;" id="mailBtn">SEND SPECS</button>
-                <p id="mailStatus" style="text-align:center; margin-top:10px;"></p>
-            </form>
-            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← RETURN</button>
+            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">MODS CONSULTANCY</h2>
+            <p style="color:#8892b0; margin-bottom:30px;">Fill out the details below, and our experts will analyse your request and guide you with the best modifications for your vehicle.</p>
+            
+            <div id="consultancy-form-container">
+                <form onsubmit="app.submitConsultation(event)">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                        <input type="text" id="c_name" class="form-input" placeholder="YOUR NAME" required>
+                        <input type="tel" id="c_phone" class="form-input" placeholder="PHONE NUMBER" required>
+                    </div>
+                    <input type="email" id="c_email" class="form-input" placeholder="EMAIL ADDRESS" required>
+                    <input type="text" id="c_car" class="form-input" placeholder="CAR MODEL (e.g., Honda City 2023)" required>
+                    
+                    <label style="color:#8892b0; display:block; margin-bottom:10px; font-weight:bold;">UPLOAD CAR IMAGE</label>
+                    <input type="file" id="c_image" class="form-input" accept="image/*" required style="padding: 10px; height: auto;">
+                    
+                    <textarea id="c_message" class="form-input" rows="4" placeholder="DESCRIBE YOUR DESIRED LOOK / MODS..." required></textarea>
+                    
+                    <button type="submit" class="btn-luxury" style="width:100%;" id="consultBtn">SUBMIT REQUEST</button>
+                </form>
+            </div>
+
+            <div id="consultancy-success" style="display:none; text-align: center; padding: 40px; background: var(--navy-light); border-radius: 8px; border: 1px solid var(--gold); margin-top: 20px;">
+                <h3 class="gold-text" style="margin-bottom: 20px; font-family: var(--text-display); font-size: 1.5rem;">REQUEST SUBMITTED!</h3>
+                <p style="color:#ccd6f6; margin-bottom: 30px;">Your details have been sent to our team. For faster assistance, connect with us on WhatsApp.</p>
+                <a href="https://wa.me/9999999999" target="_blank" class="btn-luxury" style="text-decoration: none; display: inline-flex; background: #25D366; border-color: #25D366; color: #fff;">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i> TEXT ON WHATSAPP NOW
+                </a>
+            </div>
+
+            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← GO BACK</button>
         </div>
     </div>
 
