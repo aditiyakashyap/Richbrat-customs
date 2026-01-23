@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RichBrat$ | Terminal</title>
+    <title>RichBrat$ | Syndicate</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // YOUR FIREBASE CONFIGURATION
+        // 🔴 PASTE YOUR KEYS HERE 🔴
         const firebaseConfig = {
             apiKey: "AIzaSyDoU-ixQiMmjEofIAK_sQe729PZ86jseDY",
             authDomain: "richbart-customs.firebaseapp.com",
@@ -29,15 +29,15 @@
     </script>
 
     <style>
-        /* --- 1. CORE MECHANICS --- */
+        /* --- 1. THE "GODFATHER" THEME --- */
         :root {
-            --bg-deep: #030303;
-            --metal-dark: #111111;
-            --metal-light: #222222;
-            --gold-active: #D4AF37;
+            --bg-deep: #050505;        /* Midnight Black */
+            --metal-dark: #2A0A0A;     /* Deep Oxblood Leather */
+            --metal-light: #3D1111;    /* Lighter Oxblood */
+            --gold-active: #C5A059;    /* Vintage Watch Gold */
             --gold-dim: #5c4b16;
-            --font-ui: 'Share Tech Mono', monospace;
-            --font-head: 'Michroma', sans-serif;
+            --font-ui: 'Montserrat', sans-serif;
+            --font-head: 'Cinzel Decorative', cursive;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -51,14 +51,14 @@
             width: 100vw;
         }
 
-        /* --- 2. THE OBJECT: MAIN CONSOLE --- */
+        /* --- 2. THE CONSOLE LAYOUT --- */
         .console-wrapper {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 90vw; max-width: 1200px; height: 85vh;
             background: linear-gradient(145deg, var(--metal-dark), var(--bg-deep));
-            border: 1px solid #333;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1);
+            border: 1px solid #1a0606;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 1px 1px rgba(255,255,255,0.05);
             display: flex; 
             overflow: hidden;
         }
@@ -66,45 +66,46 @@
         /* --- NAV COLUMN --- */
         .side-nav {
             width: 300px; 
-            background: rgba(0,0,0,0.4);
-            border-right: 1px solid #222;
+            background: rgba(0,0,0,0.6);
+            border-right: 1px solid #111;
             padding: 30px 20px;
             display: flex; flex-direction: column; justify-content: space-between;
         }
 
-        .logo-tag { font-family: var(--font-head); color: var(--gold-active); font-size: 1.2rem; text-align: center; }
+        .logo-tag { font-family: var(--font-head); color: var(--gold-active); font-size: 1.5rem; text-align: center; }
 
         .nav-switch {
             width: 100%; padding: 15px; margin-top: 15px;
-            background: var(--metal-light); border: 1px solid #333; border-radius: 8px;
-            color: #888; font-family: var(--font-ui); font-size: 0.9rem;
+            background: var(--metal-light); border: 1px solid #111; border-radius: 4px;
+            color: #888; font-family: var(--font-ui); font-size: 0.9rem; font-weight: 500;
             text-align: left; cursor: pointer;
-            box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
-            transition: 0.2s; position: relative; overflow: hidden;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            transition: 0.2s; position: relative;
         }
-        .nav-switch.active { background: #1a1a1a; color: var(--gold-active); }
-
-        .status-monitor {
-            background: #000; padding: 15px; border-radius: 5px; border: 1px solid #222;
-            font-size: 0.8rem; color: #0f0; text-shadow: 0 0 5px #0f0;
-        }
+        .nav-switch.active { background: #000; color: var(--gold-active); border-color: var(--gold-active); }
 
         /* --- VIEWPORT --- */
-        .viewport { 
-            flex: 1; 
-            padding: 40px; 
-            overflow-y: auto; 
-        }
+        .viewport { flex: 1; padding: 40px; overflow-y: auto; }
 
         .view-layer { display: none; animation: fadeLoad 0.4s; }
         .view-layer.active { display: block; }
         @keyframes fadeLoad { from { opacity: 0; } to { opacity: 1; } }
 
+        /* --- HOME GRID (NEW PUBLIC VIEW) --- */
+        .home-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        .menu-card {
+            background: rgba(0,0,0,0.4); border: 1px solid #222;
+            padding: 40px; text-align: center; border-radius: 8px; cursor: pointer;
+            transition: 0.3s;
+        }
+        .menu-card:hover { border-color: var(--gold-active); background: var(--metal-dark); transform: translateY(-5px); }
+        .menu-card h2 { font-family: var(--font-head); color: var(--gold-active); margin-bottom: 10px; font-size: 1.5rem; }
+
         /* --- FORMS & BUTTONS --- */
         .data-input {
-            background: #000; border: 1px solid #333; color: var(--gold-active);
+            background: #000; border: 1px solid #222; color: #fff;
             padding: 15px; width: 100%; margin-bottom: 20px; font-family: var(--font-ui);
-            font-size: 1rem; border-radius: 4px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+            font-size: 0.9rem; border-radius: 4px;
         }
         .data-input:focus { outline: none; border-color: var(--gold-active); }
 
@@ -112,55 +113,21 @@
             background: var(--gold-active); color: #000; font-family: var(--font-head);
             font-size: 1rem; font-weight: bold; border: none; padding: 15px;
             border-radius: 4px; cursor: pointer; width: 100%;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 5px 15px rgba(197, 160, 89, 0.2);
         }
         .trigger-btn:active { transform: translateY(2px); box-shadow: none; }
 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-        /* --- 3D RENDER BOX --- */
-        .schematic-box {
-            width: 100%; height: 250px; margin-bottom: 30px; border-radius: 8px; overflow: hidden;
-            border: 1px solid #333; position: relative;
-        }
-
-
-        /* ==========================================================================
-           📱 MOBILE FIX FOR IPHONE 13 (and similar phones) 
-           ========================================================================== */
+        /* --- MOBILE FIX (IPHONE) --- */
         @media (max-width: 768px) {
-            
-            /* Fill the whole screen on mobile */
-            .console-wrapper {
-                width: 100vw; height: 100vh; max-width: 100%;
-                border-radius: 0; border: none;
-                flex-direction: column-reverse; /* Puts NAV at the bottom */
-            }
-
-            /* Adjust the Nav to be a horizontal bar at bottom */
-            .side-nav {
-                width: 100%; height: auto;
-                flex-direction: row; align-items: center; justify-content: space-around;
-                border-right: none; border-top: 1px solid #222;
-                padding: 10px; background: #080808;
-            }
-
-            /* Hide the large logo and status monitor on mobile to save space */
-            .logo-tag, .status-monitor { display: none; }
-
-            /* Make buttons fit horizontally */
-            .nav-switch { margin-top: 0; text-align: center; padding: 10px; font-size: 0.8rem; }
-            #nav-btns { display: flex; width: 100%; gap: 10px; }
-
-            /* Give the viewport padding appropriate for mobile */
+            .console-wrapper { width: 100vw; height: 100vh; max-width: 100%; border-radius: 0; border: none; flex-direction: column-reverse; }
+            .side-nav { width: 100%; height: auto; flex-direction: row; padding: 10px; background: #000; border-right: none; border-top: 1px solid #222; }
+            .logo-tag { display: none; }
+            #nav-btns { display: flex; width: 100%; gap: 5px; }
+            .nav-switch { margin-top: 0; text-align: center; padding: 10px; font-size: 0.75rem; }
             .viewport { padding: 20px; }
-
-            /* Stack grid elements on top of each other */
             .grid-2 { grid-template-columns: 1fr; gap: 10px; }
-
-            /* Scale down fonts */
-            h2 { font-size: 1.2rem; }
-            .schematic-box { height: 150px; margin-bottom: 20px; }
         }
     </style>
 </head>
@@ -169,59 +136,77 @@
     <main class="console-wrapper">
         
         <aside class="side-nav">
-            <div class="logo-tag">RICHBRAT$ // OS</div>
+            <div class="logo-tag">RICHBRAT$</div>
             <div id="nav-btns" style="width:100%;">
-                <button class="nav-switch active" id="btn-login" onclick="switchView('login')">[ LOGIN ]</button>
-                <button class="nav-switch" id="btn-register" onclick="switchView('register')">[ REGISTER ]</button>
-                <button class="nav-switch" id="btn-dash" onclick="switchView('dash')" style="display:none;">[ DASH ]</button>
+                <button class="nav-switch active" id="btn-home" onclick="switchView('home')">[ HUB ]</button>
+                <button class="nav-switch" id="btn-login" onclick="switchView('login')">[ LOGIN ]</button>
+                <button class="nav-switch" id="btn-register" onclick="switchView('register')">[ JOIN ]</button>
+                <button class="nav-switch" id="btn-dash" onclick="switchView('dash')" style="display:none; color:var(--gold-active);">[ MY GARAGE ]</button>
             </div>
-            <div class="status-monitor" id="sys-status">SYS: STANDBY...</div>
+            <div style="font-size: 0.7rem; color: #555; text-align: center;">MAFIA LUXURY EDITION</div>
         </aside>
 
         <section class="viewport">
 
-            <div class="view-layer active" id="view-login">
-                <div class="schematic-box">
-                    <img src="https://images.unsplash.com/photo-1617469767053-d3b523a0b982?q=80&w=1000&auto=format&fit=crop" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5; filter: sepia(100%) hue-rotate(320deg);" alt="Schematic">
+            <div class="view-layer active" id="view-home">
+                <h2 style="font-family: var(--font-head); color:var(--gold-active); margin-bottom: 20px;">THE SYNDICATE</h2>
+                <p style="color:#888;">Select a service below to proceed.</p>
+                <div class="home-grid">
+                    <div class="menu-card">
+                        <h2>STORE</h2>
+                        <p>> Acquire Parts</p>
+                    </div>
+                    <div class="menu-card">
+                        <h2>BOOKING</h2>
+                        <p>> Reserve Slot</p>
+                    </div>
+                    <div class="menu-card">
+                        <h2>CONSULT</h2>
+                        <p>> Talk to The Boss</p>
+                    </div>
                 </div>
+            </div>
+
+            <div class="view-layer" id="view-login">
+                <h2 style="font-family: var(--font-head); color:var(--gold-active); margin-bottom: 20px;">MEMBER ACCESS</h2>
                 <input type="email" id="log-email" class="data-input" placeholder=">> EMAIL">
-                <input type="password" id="log-pass" class="data-input" placeholder=">> PASSKEY">
-                <button class="trigger-btn" onclick="app.login()">ENGAGE</button>
+                <input type="password" id="log-pass" class="data-input" placeholder=">> PASSWORD">
+                <button class="trigger-btn" onclick="app.login()">ENTER</button>
             </div>
 
             <div class="view-layer" id="view-register">
-                <h2 style="font-family: var(--font-head); color:var(--gold-active); text-align:center; margin-bottom: 20px;">DEFINE ASSET</h2>
+                <h2 style="font-family: var(--font-head); color:var(--gold-active); text-align:center; margin-bottom: 20px;">BECOME A MEMBER</h2>
                 <div class="grid-2">
-                    <input type="text" id="reg-name" class="data-input" placeholder=">> PILOT_NAME">
+                    <input type="text" id="reg-name" class="data-input" placeholder=">> FULL NAME">
                     <input type="email" id="reg-email" class="data-input" placeholder=">> EMAIL">
-                    <input type="password" id="reg-pass" class="data-input" placeholder=">> PASSKEY">
-                    <input type="text" id="reg-car" class="data-input" placeholder=">> CAR_ID">
-                    <input type="text" id="reg-insta" class="data-input" placeholder=">> INSTA_TAG">
+                    <input type="password" id="reg-pass" class="data-input" placeholder=">> PASSWORD">
+                    <input type="text" id="reg-car" class="data-input" placeholder=">> CAR MODEL">
+                    <input type="text" id="reg-insta" class="data-input" placeholder=">> INSTA TAG">
                     <input type="tel" id="reg-phone" class="data-input" placeholder=">> PHONE">
                 </div>
-                <button class="trigger-btn" onclick="app.register()">INITIALIZE ACCOUNT</button>
+                <button class="trigger-btn" onclick="app.register()">SUBMIT DOSSIER</button>
             </div>
 
             <div class="view-layer" id="view-dash">
-                <h2 style="font-family: var(--font-head); color:var(--gold-active); margin-bottom: 20px;">WELCOME, <span id="user-display">DRIVER</span></h2>
+                <h2 style="font-family: var(--font-head); color:var(--gold-active); margin-bottom: 20px;">WELCOME, <span id="user-display">BOSS</span></h2>
                 
                 <div class="grid-2">
-                    <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
-                        <h3 style="color:#888; font-size:0.8rem; margin-bottom:10px;">VEHICLE</h3>
-                        <p style="font-size: 1.5rem; color:var(--gold-active); margin-bottom:20px;" id="dash-car">--</p>
-                        <h3 style="color:#888; font-size:0.8rem; margin-bottom:10px;">COMMS</h3>
+                    <div style="background: #111; padding: 20px; border: 1px solid #222; border-radius: 4px;">
+                        <h3 style="color:#666; font-size:0.8rem; margin-bottom:10px;">VEHICLE</h3>
+                        <p style="font-size: 1.5rem; color:var(--gold-active); font-family:var(--font-head); margin-bottom:20px;" id="dash-car">--</p>
+                        <h3 style="color:#666; font-size:0.8rem; margin-bottom:10px;">COMMS</h3>
                         <p style="font-size: 1.2rem;" id="dash-phone">--</p>
                     </div>
                     
-                    <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
-                        <h3 style="color:#888; font-size:0.8rem; margin-bottom:10px;">ORDER LOG</h3>
-                        <div style="color: #0f0; background: #000; padding: 10px; font-size: 0.8rem;">
-                            > NO ACTIVE MODS...
+                    <div style="background: #111; padding: 20px; border: 1px solid #222; border-radius: 4px;">
+                        <h3 style="color:#666; font-size:0.8rem; margin-bottom:10px;">ORDER LEDGER</h3>
+                        <div style="color: #888; background: #000; padding: 10px; font-size: 0.8rem;">
+                            > No open contracts found.
                         </div>
                     </div>
                 </div>
                 
-                <button class="trigger-btn" style="margin-top:20px; background:#444; color:#fff;" onclick="app.logout()">TERMINATE SESSION</button>
+                <button class="trigger-btn" style="margin-top:20px; background:#222; color:#fff;" onclick="app.logout()">EXIT</button>
             </div>
 
         </section>
@@ -235,19 +220,11 @@
 
             document.querySelectorAll('.view-layer').forEach(view => view.classList.remove('active'));
             document.getElementById(`view-${id}`).classList.add('active');
-
-            logStatus(`ROUTING TO: ${id.toUpperCase()}`);
-        }
-
-        function logStatus(msg) {
-            const monitor = document.getElementById('sys-status');
-            if(monitor) monitor.innerHTML = `> ${msg}`;
         }
 
         // --- 2. AUTHENTICATION CORE ---
         class AppCore {
             async register() {
-                logStatus("GENERATING CRYPTO-KEY...");
                 try {
                     const cred = await window.firebase.createUserWithEmailAndPassword(window.auth, 
                         document.getElementById('reg-email').value, 
@@ -260,22 +237,20 @@
                         insta: document.getElementById('reg-insta').value,
                         phone: document.getElementById('reg-phone').value,
                     });
-
-                    logStatus("ASSET SECURED.");
-                } catch(e) { logStatus(`ERR: ${e.message}`); }
+                    alert("Account Created.");
+                } catch(e) { alert(`ERR: ${e.message}`); }
             }
 
             async login() {
-                logStatus("ENGAGING...");
                 try {
                     await window.firebase.signInWithEmailAndPassword(window.auth, 
                         document.getElementById('log-email').value, 
                         document.getElementById('log-pass').value
                     );
-                } catch(e) { logStatus("ERR: CREDENTIALS REJECTED"); }
+                } catch(e) { alert("Invalid Credentials."); }
             }
 
-            logout() { window.firebase.signOut(window.auth); logStatus("SESSION TERMINATED."); }
+            logout() { window.firebase.signOut(window.auth); }
 
             loadDashboard(user) {
                 switchView('dash');
@@ -294,6 +269,7 @@
 
         const app = new AppCore();
 
+        // 🟢 THE FIX: If NOT logged in, show the PUBLIC HOME, not the login screen.
         setTimeout(() => {
             window.auth.onAuthStateChanged(user => {
                 if (user) app.loadDashboard(user);
@@ -301,7 +277,7 @@
                     document.getElementById('btn-login').style.display = 'block';
                     document.getElementById('btn-register').style.display = 'block';
                     document.getElementById('btn-dash').style.display = 'none';
-                    switchView('login');
+                    switchView('home'); // <--- NOW LANDS ON THE PUBLIC MENU
                 }
             });
         }, 1000);
