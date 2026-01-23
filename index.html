@@ -3,198 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RichBrat$ Customs | High Performance Garage</title>
-    
-    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500&f[]=clash-display@600,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="style.css">
+    <title>RichBrat$ | Terminal</title>
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // 🔴 PASTE YOUR FIREBASE CONFIG HERE 🔴
+        const firebaseConfig = {
+            apiKey: "AIzaSyDoU-ixQiMmjEofIAK_sQe729PZ86jseDY",
+            authDomain: "richbart-customs.firebaseapp.com",
+            projectId: "richbart-customs",
+            storageBucket: "richbart-customs.firebasestorage.app",
+            messagingSenderId: "717900685166",
+            appId: "1:717900685166:web:095f2354c75917907c6b7f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        window.auth = getAuth(app);
+        window.db = getFirestore(app);
+        window.firebase = { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, doc, setDoc, getDoc };
+    </script>
+
+    <style>
+        /* --- 1. CORE MECHANICS --- */
+        :root {
+            --bg-deep: #030303;
+            --metal-dark: #111111;
+            --metal-light: #222222;
+            --gold-active: #D4AF37;
+            --gold-dim: #5c4b16;
+            --font-ui: 'Share Tech Mono', monospace;
+            --font-head: 'Michroma', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg-deep); color: #fff; font-family: var(--font-ui); overflow: hidden; height: 100vh; }
+
+        /* --- 2. THE OBJECT: MAIN CONSOLE --- */
+        .console-wrapper {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90vw; max-width: 1400px; height: 85vh;
+            background: linear-gradient(145deg, var(--metal-dark), var(--bg-deep));
+            border: 1px solid #333;
+            border-radius: 20px;
+            box-shadow: 
+                0 20px 50px rgba(0,0,0,0.8),
+                inset 0 1px 1px rgba(255,255,255,0.1);
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            overflow: hidden;
+        }
+
+        /* TACTILE NAV COLUMN */
+        .side-nav {
+            background: rgba(0,0,0,0.4);
+            border-right: 1px solid #222;
+            padding: 40px 20px;
+            display: flex; flex-direction: column; justify-content: space-between;
+        }
+
+        .logo-tag { font-family: var(--font-head); color: var(--gold-active); font-size: 1.2rem; margin-bottom: 50px; text-align: center; }
+
+        /* Physical Button Objects */
+        .nav-switch {
+            width: 100%; padding: 20px; margin-bottom: 15px;
+            background: var(--metal-light);
+            border: 1px solid #333; border-radius: 8px;
+            color: #888; font-family: var(--font-ui); font-size: 1rem;
+            text-align: left; cursor: pointer;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.5), inset 1px 1px 1px rgba(255,255,255,0.05);
+            transition: 0.2s; position: relative; overflow: hidden;
+        }
+
+        .nav-switch::before {
+            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px;
+            background: var(--gold-active); transform: scaleY(0); transition: 0.2s;
+        }
+
+        .nav-switch:hover { background: #2a2a2a; color: #fff; transform: translateY(-2px); }
+        .nav-switch.active { background: #1a1a1a; color: var(--gold-active); box-shadow: inset 5px 5px 10px rgba(0,0,0,0.8); }
+        .nav-switch.active::before { transform: scaleY(1); }
+
+        /* STATUS MONITOR (Bottom Left) */
+        .status-monitor {
+            background: #000; padding: 15px; border-radius: 5px; border: 1px solid #222;
+            font-size: 0.8rem; color: #0f0; text-shadow: 0 0 5px #0f0;
+        }
+
+        /* --- 3. VIEWPORT (RIGHT SIDE) --- */
+        .viewport { position: relative; padding: 40px; }
+
+        .view-layer { display: none; height: 100%; animation: fadeLoad 0.4s; }
+        .view-layer.active { display: block; }
+        @keyframes fadeLoad { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        /* --- 4. DATA INPUTS (FORMS) --- */
+        .data-input {
+            background: #000; border: 1px solid #333; color: var(--gold-active);
+            padding: 15px; width: 100%; margin-bottom: 20px; font-family: var(--font-ui);
+            font-size: 1.1rem; border-radius: 4px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        .data-input:focus { outline: none; border-color: var(--gold-active); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 15px rgba(212, 175, 55, 0.2); }
+
+        /* TRIGGER BUTTON */
+        .trigger-btn {
+            background: var(--gold-active); color: #000; font-family: var(--font-head);
+            font-size: 1.2rem; font-weight: bold; border: none; padding: 15px 30px;
+            border-radius: 4px; cursor: pointer; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+            transition: 0.1s; width: 100%;
+        }
+        .trigger-btn:active { transform: translateY(4px); box-shadow: 0 1px 5px rgba(212, 175, 55, 0.4); }
+
+        /* --- 5. 3D OBJECT RENDERER (CSS ISOMETRIC) --- */
+        .schematic-container {
+            width: 100%; height: 300px; position: relative; margin-bottom: 40px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .holo-wireframe {
+            width: 80%; max-width: 600px;
+            filter: drop-shadow(0 0 15px var(--gold-dim));
+            animation: floatObj 6s ease-in-out infinite;
+        }
+        @keyframes floatObj { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+    </style>
 </head>
 <body>
 
-    <div class="bg-carbon"></div>
-    <div class="bg-ambient"></div>
-    
-    <div class="auto-elements">
-        <i class="fa-solid fa-gear part p1"></i>
-        <i class="fa-solid fa-dharmachakra part p2"></i> <i class="fa-solid fa-oil-can part p3"></i>
-        <i class="fa-solid fa-gauge-high part p4"></i>
-        <i class="fa-solid fa-truck-monster part p5"></i> <i class="fa-solid fa-wind part p6"></i> </div>
-
-    <nav>
-        <div class="logo-container" onclick="app.goHome()">
-            <img src="logo.png" alt="RichBrat$ Customs">
-        </div>
-
-        <div class="user-panel" id="nav-actions">
-            <span style="cursor:pointer; font-size:0.9rem;" onclick="openModal('login')">LOGIN</span>
-            <button class="btn-luxury" style="padding: 8px 15px; font-size: 0.8rem;" onclick="openModal('register')">JOIN THE CREW</button>
-        </div>
-        <div class="user-panel" id="user-actions" style="display:none;">
-            <span style="cursor:pointer; position:relative; font-size: 1.2rem; color:var(--gold);" onclick="app.toggleCart()">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <span id="cart-count">0</span>
-            </span>
-            <span id="nav-username" style="cursor:pointer; font-weight:bold; margin-left:15px;" onclick="app.navTo('view-dashboard')">USER</span>
-            <span style="cursor:pointer; color:#666; font-size:0.9rem;" onclick="app.logout()">LOGOUT</span>
-        </div>
-    </nav>
-
-    <div id="cart-panel">
-        <div class="cart-header">
-            <h2 class="gold-text" style="font-family: var(--text-display);">YOUR BAG</h2>
-            <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.5rem;" onclick="app.toggleCart()"></i>
-        </div>
-        <div class="cart-items" id="cart-items-list">
-            <p style="color:#666; text-align:center; margin-top:20px;">Your cart is empty.</p>
-        </div>
-        <div class="cart-footer">
-            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size:1.2rem; font-weight:bold;">
-                <span>TOTAL:</span><span id="cart-total" class="gold-text">$0</span>
-            </div>
-            <button class="btn-luxury" style="width:100%;" onclick="app.openCheckout()"><i class="fa-solid fa-credit-card"></i> SECURE CHECKOUT</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="auth-modal">
-        <div class="modal-box">
-            <h2 id="modal-title" style="margin-bottom: 30px; font-family: var(--text-display);">LOGIN</h2>
-            <form onsubmit="app.handleAuth(event)">
-                <input type="text" id="reg-name" class="form-input" placeholder="FULL NAME" style="display:none;">
-                <input type="email" id="email" class="form-input" placeholder="EMAIL" required>
-                <input type="password" id="password" class="form-input" placeholder="PASSWORD" required>
-                <div id="extra-fields" style="display:none;">
-                    <input type="tel" id="reg-phone" class="form-input" placeholder="PHONE NUMBER">
-                    <input type="text" id="reg-car" class="form-input" placeholder="CHASSIS / CAR MODEL">
-                    <input type="text" id="reg-insta" class="form-input" placeholder="INSTAGRAM HANDLE">
-                </div>
-                <button type="submit" class="btn-luxury" style="width:100%;" id="submit-btn">ENTER</button>
-            </form>
-            <p style="margin-top:20px; color:#666; cursor:pointer; font-size:0.8rem;" onclick="switchMode()">Toggle Login / Register</p>
-            <p style="margin-top:10px; color:#666; cursor:pointer; font-size:0.8rem;" onclick="closeModal()">Close</p>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="checkout-modal">
-        <div class="modal-box" style="max-width: 500px;">
-            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">DELIVERY DETAILS</h2>
-            <form onsubmit="app.processCheckout(event)">
-                <input type="text" id="chk-address" class="form-input" placeholder="FULL STREET ADDRESS" required>
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="chk-city" class="form-input" placeholder="CITY" required>
-                    <input type="text" id="chk-zip" class="form-input" placeholder="POSTAL CODE" required>
-                </div>
-                <select id="chk-payment" class="form-input" style="background:#111; color:var(--gold);">
-                    <option value="ONLINE">UPI / CREDIT CARD / NETBANKING</option>
-                    <option value="COD">CASH ON DELIVERY</option>
-                </select>
-                <button type="submit" class="btn-luxury" style="width:100%; margin-top:20px;" id="chk-btn">PAY SECURELY ($<span id="chk-total">0</span>)</button>
-            </form>
-            <p style="margin-top:10px; color:#666; cursor:pointer; font-size:0.8rem;" onclick="document.getElementById('checkout-modal').style.display='none'">Cancel</p>
-        </div>
-    </div>
-
-    <div id="view-landing" class="section active">
-        <div class="hero">
+    <main class="console-wrapper">
+        
+        <aside class="side-nav">
             <div>
-                <p style="color:#888; letter-spacing: 3px; font-size:clamp(0.8rem, 2vw, 1rem);">BUILT FOR THE STREETS. CRAFTED FOR THE SHOW.</p>
-                <h1>HIGH PERFORMANCE<br><span class="gold-text">TUNING</span></h1>
-                <p style="max-width:550px; margin: 0 auto 30px; color:#ccc; line-height:1.6;">Join an exclusive community of petrolheads. Precision aero-kits, custom wraps, and performance tuning by master mechanics.</p>
-                <button class="btn-luxury" onclick="openModal('register')"><i class="fa-solid fa-flag-checkered"></i> ENTER THE GARAGE</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="view-dashboard" class="section">
-        <div class="content-box">
-            <h2 style="font-family: var(--text-display); font-size: clamp(1.8rem, 4vw, 2.5rem);">WELCOME BACK, <span id="dash-name" class="gold-text">PILOT</span></h2>
-            <p style="color:#666; letter-spacing: 1px;">Current Chassis: <span id="dash-car" style="color:#fff;">--</span></p>
-
-            <div class="dashboard-grid">
-                <div class="dash-card" onclick="app.loadStore()">
-                    <i class="fa-solid fa-gauge-high dash-icon"></i>
-                    <h3 class="gold-text">PERFORMANCE SHOP</h3>
-                    <p style="color:#888; margin-top:10px;">Aero, Carbon, & Tuning Parts</p>
-                </div>
-                <div class="dash-card" onclick="app.navTo('view-booking')">
-                    <i class="fa-solid fa-calendar-check dash-icon"></i>
-                    <h3 class="gold-text">GARAGE SLOT</h3>
-                    <p style="color:#888; margin-top:10px;">Book the Paddock Lounge</p>
-                </div>
-                <div class="dash-card" onclick="app.navTo('view-consult')">
-                    <i class="fa-solid fa-screwdriver-wrench dash-icon"></i>
-                    <h3 class="gold-text">MECHANIC LINK</h3>
-                    <p style="color:#888; margin-top:10px;">Chat with Design Chiefs</p>
-                </div>
+                <div class="logo-tag">RICHBRAT$ // OS</div>
+                <button class="nav-switch active" id="btn-login" onclick="switchView('login')">[01] AUTHENTICATE</button>
+                <button class="nav-switch" id="btn-register" onclick="switchView('register')">[02] REGISTER_ASSET</button>
+                <button class="nav-switch" id="btn-dash" onclick="switchView('dash')" style="display:none;">[03] DASHBOARD</button>
             </div>
             
-            <div style="margin-top: 50px; background: rgba(10,10,10,0.8); padding: 30px; border: 1px solid #222;">
-                <h3 class="gold-text" style="margin-bottom:20px;"><i class="fa-solid fa-box"></i> YOUR GARAGE HISTORY</h3>
-                <div id="order-history-list" style="color:#666; font-size:0.9rem;">No orders yet. Start your build in the Performance Shop.</div>
+            <div class="status-monitor" id="sys-status">
+                SYS: STANDBY...
             </div>
-        </div>
-    </div>
+        </aside>
 
-    <div id="view-store" class="section">
-        <div class="content-box">
-            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">PERFORMANCE PARTS</h2>
-            <div id="loading-store" style="color:#666; text-align:center;"><i class="fa-solid fa-gear fa-spin"></i> ACCESSING INVENTORY...</div>
-            <div class="store-grid" id="product-list"></div>
-            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← RETURN</button>
-        </div>
-    </div>
+        <section class="viewport">
 
-    <div id="view-booking" class="section">
-        <div class="content-box" style="max-width:1000px;">
-            <div class="booking-grid">
-                <div class="vip-lounge">
-                    <h2 class="gold-text" style="font-family: var(--text-display); font-size:1.8rem;">THE PADDOCK LOUNGE</h2>
-                    <p style="margin-top:10px; color:#888; line-height:1.5;">Forget dirty waiting rooms. Bring your ride to our bays and relax in our private automotive lounge while our crew wrenches on your beast.</p>
-                    <div class="vip-feature"><i class="fa-solid fa-mug-hot vip-icon"></i><div><strong>Pit-Stop Cafe</strong><br>Fresh brews, energy drinks & snacks.</div></div>
-                    <div class="vip-feature"><i class="fa-solid fa-gamepad vip-icon"></i><div><strong>Sim-Racing & Lounge</strong><br>Hit the PS5 Forza tracks or watch 4K F1 streams.</div></div>
-                    <div class="vip-feature"><i class="fa-solid fa-eye vip-icon"></i><div><strong>Dyno View Deck</strong><br>Watch your car get modded through the glass wall.</div></div>
+            <div class="view-layer active" id="view-login">
+                <div class="schematic-container">
+                    <img src="https://images.unsplash.com/photo-1617469767053-d3b523a0b982?q=80&w=1000&auto=format&fit=crop" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px; opacity: 0.5; filter: sepia(100%) hue-rotate(320deg);" alt="Schematic">
                 </div>
-
-                <div class="booking-form" style="padding:20px;">
-                    <h3 style="margin-bottom:20px; color:#fff;">RESERVE A BAY</h3>
-                    <form id="bookingForm" onsubmit="app.bookSlot(event)">
-                        <input type="date" id="b_date" class="form-input" required onchange="app.checkSlots()">
-                        <select id="b_time" class="form-input" style="background:#121212;" disabled><option>Select Date First</option></select>
-                        <input type="text" id="b_name" class="form-input" placeholder="PILOT NAME" required>
-                        <input type="tel" id="b_phone" class="form-input" placeholder="CONTACT NUMBER" required>
-                        <input type="text" id="b_car" class="form-input" placeholder="CHASSIS (e.g. BMW M3 G80)" required>
-                        <button type="submit" id="bookBtn" class="btn-luxury" style="width:100%; margin-top:20px;">CONFIRM SLOT</button>
-                        <div id="booking-status" style="margin-top:10px; text-align:center;"></div>
-                    </form>
+                <div style="max-width: 400px; margin: 0 auto;">
+                    <input type="email" id="log-email" class="data-input" placeholder=">> INPUT_EMAIL">
+                    <input type="password" id="log-pass" class="data-input" placeholder=">> INPUT_PASSKEY">
+                    <button class="trigger-btn" onclick="app.login()">ENGAGE</button>
                 </div>
             </div>
-            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← RETURN</button>
-        </div>
-    </div>
 
-    <div id="view-consult" class="section">
-        <div class="content-box">
-            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">PROJECT BLUEPRINT</h2>
-            <p style="color:#888; margin-bottom:20px;">Send your specs directly to our head mechanic.</p>
-            <form onsubmit="app.sendMail(event)">
-                <input type="text" id="c_name" class="form-input" placeholder="YOUR NAME" required>
-                <input type="text" id="c_car" class="form-input" placeholder="CAR MODEL" required>
-                <textarea id="c_message" class="form-input" rows="4" placeholder="DESCRIBE THE BUILD..." required></textarea>
-                <button type="submit" class="btn-luxury" style="width:100%;" id="mailBtn">SEND SPECS</button>
-                <p id="mailStatus" style="text-align:center; margin-top:10px;"></p>
-            </form>
-            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← RETURN</button>
-        </div>
-    </div>
+            <div class="view-layer" id="view-register">
+                <h2 style="font-family: var(--font-head); color:var(--gold-active); text-align:center; margin-bottom: 30px;">DEFINE NEW ASSET</h2>
+                <div style="max-width: 600px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <input type="text" id="reg-name" class="data-input" placeholder=">> PILOT_NAME">
+                    <input type="email" id="reg-email" class="data-input" placeholder=">> COMMS_LINK (EMAIL)">
+                    <input type="password" id="reg-pass" class="data-input" placeholder=">> ENCRYPTION_KEY (PASS)">
+                    <input type="text" id="reg-car" class="data-input" placeholder=">> CHASSIS_ID (CAR)">
+                    <input type="text" id="reg-insta" class="data-input" placeholder=">> SOCIAL_TAG (INSTA)">
+                    <input type="tel" id="reg-phone" class="data-input" placeholder=">> SECURE_LINE (PHONE)">
+                    <button class="trigger-btn" style="grid-column: span 2;" onclick="app.register()">INITIALIZE ACCOUNT</button>
+                </div>
+            </div>
 
-    <script src="script.js"></script>
+            <div class="view-layer" id="view-dash">
+                <h2 style="font-family: var(--font-head); font-size: 2.5rem;">WELCOME, <span id="user-display" style="color:var(--gold-active);">DRIVER</span></h2>
+                <p style="color: #666; margin-bottom: 40px;">// SYSTEM AUTHORIZED</p>
 
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+                    <div style="background: #111; border: 1px solid #333; padding: 30px; border-radius: 10px;">
+                        <h3 style="color:var(--gold-active); margin-bottom: 15px;">ASSET SPECS</h3>
+                        <p style="color:#888; margin-bottom:5px;">VEHICLE</p>
+                        <p style="font-size: 1.5rem; margin-bottom: 20px;" id="dash-car">--</p>
+                        <p style="color:#888; margin-bottom:5px;">COMMS</p>
+                        <p style="font-size: 1.2rem;" id="dash-phone">--</p>
+                        <button class="trigger-btn" style="margin-top:30px; padding:10px; font-size:1rem;" onclick="app.logout()">TERMINATE SESSION</button>
+                    </div>
+                    <div style="background: #111; border: 1px solid #333; padding: 30px; border-radius: 10px;">
+                        <h3 style="color:var(--gold-active); margin-bottom: 15px;">ORDER LOG</h3>
+                        <div style="color: #0f0; background: #000; padding: 20px; font-family: var(--font-ui);">
+                            > QUERYING DATABASE...<br>
+                            > NO ACTIVE MODIFICATIONS FOUND.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // --- 1. VISUAL CONTROLLER ---
+        function switchView(id) {
+            // Update Buttons
+            document.querySelectorAll('.nav-switch').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${id}`).classList.add('active');
+
+            // Update Viewport
+            document.querySelectorAll('.view-layer').forEach(view => view.classList.remove('active'));
+            document.getElementById(`view-${id}`).classList.add('active');
+
+            logStatus(`ROUTING TO MODULE: ${id.toUpperCase()}`);
+        }
+
+        function logStatus(msg) {
+            const monitor = document.getElementById('sys-status');
+            monitor.innerHTML = `> ${msg}`;
+        }
+
+        // --- 2. AUTHENTICATION CORE ---
+        class AppCore {
+            async register() {
+                const btn = event.target;
+                btn.innerText = "PROCESSING...";
+                logStatus("GENERATING CRYPTO-KEY...");
+
+                try {
+                    const cred = await window.firebase.createUserWithEmailAndPassword(window.auth, 
+                        document.getElementById('reg-email').value, 
+                        document.getElementById('reg-pass').value
+                    );
+                    
+                    // Store the 'Object' data in Firestore
+                    await window.firebase.setDoc(window.firebase.doc(window.db, "users", cred.user.uid), {
+                        name: document.getElementById('reg-name').value,
+                        car: document.getElementById('reg-car').value,
+                        insta: document.getElementById('reg-insta').value,
+                        phone: document.getElementById('reg-phone').value,
+                    });
+
+                    logStatus("ASSET SECURED. LOGGING IN.");
+                    btn.innerText = "INITIALIZE ACCOUNT";
+                } catch(e) {
+                    logStatus(`ERR: ${e.message}`);
+                    btn.innerText = "INITIALIZE ACCOUNT";
+                }
+            }
+
+            async login() {
+                const btn = event.target;
+                btn.innerText = "ENGAGING...";
+                try {
+                    await window.firebase.signInWithEmailAndPassword(window.auth, 
+                        document.getElementById('log-email').value, 
+                        document.getElementById('log-pass').value
+                    );
+                } catch(e) { logStatus("ERR: CREDENTIALS REJECTED"); btn.innerText = "ENGAGE"; }
+            }
+
+            logout() { window.firebase.signOut(window.auth); logStatus("SESSION TERMINATED."); }
+
+            loadDashboard(user) {
+                switchView('dash');
+                document.getElementById('btn-login').style.display = 'none';
+                document.getElementById('btn-register').style.display = 'none';
+                document.getElementById('btn-dash').style.display = 'block';
+
+                window.firebase.getDoc(window.firebase.doc(window.db, "users", user.uid)).then(doc => {
+                    const data = doc.data();
+                    document.getElementById('user-display').innerText = data.name.toUpperCase();
+                    document.getElementById('dash-car').innerText = data.car.toUpperCase();
+                    document.getElementById('dash-phone').innerText = data.phone;
+                    logStatus("DATA SYNC COMPLETE.");
+                });
+            }
+        }
+
+        const app = new AppCore();
+
+        // AUTH LISTENER
+        setTimeout(() => {
+            window.auth.onAuthStateChanged(user => {
+                if (user) app.loadDashboard(user);
+                else {
+                    document.getElementById('btn-login').style.display = 'block';
+                    document.getElementById('btn-register').style.display = 'block';
+                    document.getElementById('btn-dash').style.display = 'none';
+                    switchView('login');
+                }
+            });
+        }, 1000);
+
+    </script>
 </body>
 </html>
