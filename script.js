@@ -1,8 +1,4 @@
-// --- 1. FIREBASE SETUP ---
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
-
+// --- 1. FIREBASE SETUP (Using Compat for Vanilla JS) ---
 const firebaseConfig = {
     apiKey: "AIzaSyDoU-ixQiMmjEofIAK_sQe729PZ86jseDY",
     authDomain: "richbart-customs.firebaseapp.com",
@@ -12,15 +8,16 @@ const firebaseConfig = {
     appId: "1:717900685166:web:095f2354c75917907c6b7f"
 };
 
-const appInstance = initializeApp(firebaseConfig);
-const auth = getAuth(appInstance);
-const db = getFirestore(appInstance);
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
 // --- 2. CONFIGURATION ---
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPKr6-zQ3fGQITAm5qBpKeCGrnWTHsWMeiw7Hsl9liaNcI4tdLRD6U94jpKCMN6Ru7KQ/exec";
 emailjs.init("9-7GR7Lab7wUNI5sH");
 
-// --- 3. UI & MODAL CONTROL (Global Scope for HTML) ---
+// --- 3. UI & MODAL CONTROL (Global Scope for HTML Buttons) ---
 let authMode = 'login';
 window.openModal = (mode) => { authMode = mode; updateModalUI(); document.getElementById('auth-modal').style.display = 'flex'; }
 window.closeModal = () => document.getElementById('auth-modal').style.display = 'none';
@@ -72,8 +69,8 @@ class App {
         const password = document.getElementById('password').value;
         try {
             if (authMode === 'register') {
-                const cred = await createUserWithEmailAndPassword(auth, email, password);
-                await setDoc(doc(db, "users", cred.user.uid), {
+                const cred = await auth.createUserWithEmailAndPassword(email, password);
+                await db.collection("users").doc(cred.user.uid).set({
                     name: document.getElementById('reg-name').value,
                     phone: document.getElementById('reg-phone').value,
                     car: document.getElementById('reg-car').value,
@@ -82,15 +79,15 @@ class App {
                     orders: []
                 });
             } else {
-                await signInWithEmailAndPassword(auth, email, password);
+                await auth.signInWithEmailAndPassword(email, password);
             }
             window.closeModal();
         } catch (error) { alert("Access Denied: " + error.message); }
     }
 
     async loadProfile(uid) {
-        const docSnap = await getDoc(doc(db, "users", uid));
-        if (docSnap.exists()) {
+        const docSnap = await db.collection("users").doc(uid).get();
+        if (docSnap.exists) {
             const data = docSnap.data();
             document.getElementById('dash-name').innerText = data.name.toUpperCase();
             document.getElementById('nav-username').innerText = data.name.split(' ')[0].toUpperCase();
@@ -116,7 +113,7 @@ class App {
         }
     }
 
-    logout() { signOut(auth); }
+    logout() { auth.signOut(); }
 
     // --- E-COMMERCE LOGIC ---
     async loadStore() {
@@ -235,8 +232,8 @@ class App {
         };
 
         try {
-            await updateDoc(doc(db, "users", this.uid), {
-                orders: arrayUnion(order)
+            await db.collection("users").doc(this.uid).update({
+                orders: firebase.firestore.FieldValue.arrayUnion(order)
             });
 
             this.cart = []; this.renderCart();
