@@ -21,6 +21,12 @@
 
     <div class="bg-carbon"></div>
     <div class="bg-ambient"></div>
+    
+    <div class="auto-elements">
+        <i class="fa-solid fa-gear part p1"></i>
+        <i class="fa-solid fa-dharmachakra part p2"></i> <i class="fa-solid fa-oil-can part p3"></i>
+        <i class="fa-solid fa-gauge-high part p4"></i>
+        <i class="fa-solid fa-truck-monster part p5"></i> <i class="fa-solid fa-wind part p6"></i> </div>
 
     <nav>
         <div class="logo-container" onclick="app.goHome()">
@@ -53,7 +59,7 @@
             <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size:1.2rem; font-weight:bold;">
                 <span>TOTAL:</span><span id="cart-total" class="gold-text">$0</span>
             </div>
-            <button class="btn-luxury" style="width:100%;" onclick="app.openCheckout()">SECURE CHECKOUT</button>
+            <button class="btn-luxury" style="width:100%;" onclick="app.openCheckout()"><i class="fa-solid fa-credit-card"></i> SECURE CHECKOUT</button>
         </div>
     </div>
 
@@ -139,7 +145,7 @@
     <div id="view-store" class="section">
         <div class="content-box">
             <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">PERFORMANCE PARTS</h2>
-            <div id="loading-store" style="color:#666; text-align:center;">ACCESSING INVENTORY...</div>
+            <div id="loading-store" style="color:#666; text-align:center;"><i class="fa-solid fa-gear fa-spin"></i> ACCESSING INVENTORY...</div>
             <div class="store-grid" id="product-list"></div>
             <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← RETURN</button>
         </div>
