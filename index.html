@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
@@ -208,11 +209,10 @@
                     <input type="text" id="chk-zip" class="form-input" placeholder="POSTAL CODE" required>
                 </div>
                 <select id="chk-payment" class="form-input" style="background:#111; color:var(--gold);">
-                    <option value="CARD">CREDIT CARD / DEBIT</option>
-                    <option value="UPI">UPI / WALLET</option>
+                    <option value="ONLINE">UPI / CREDIT CARD / NETBANKING</option>
                     <option value="COD">CASH ON DELIVERY</option>
                 </select>
-                <button type="submit" class="btn-luxury" style="width:100%; margin-top:20px;" id="chk-btn">CONFIRM ORDER ($<span id="chk-total">0</span>)</button>
+                <button type="submit" class="btn-luxury" style="width:100%; margin-top:20px;" id="chk-btn">PAY SECURELY ($<span id="chk-total">0</span>)</button>
             </form>
             <p style="margin-top:10px; color:#666; cursor:pointer; font-size:0.8rem;" onclick="document.getElementById('checkout-modal').style.display='none'">Cancel</p>
         </div>
@@ -375,7 +375,7 @@
                             orders: [] // Initialize empty order history
                         });
                     } else {
-                        await window.firebase.signInWithEmailAndPassword(window.auth, email, password);
+                        await window.firebase.signInWithEmailAndPassword(window.auth, email, paslosword);
                     }
                     closeModal();
                 } catch (error) { alert("Access Denied: " + error.message); }
@@ -388,6 +388,7 @@
                     document.getElementById('dash-name').innerText = data.name.toUpperCase();
                     document.getElementById('nav-username').innerText = data.name.split(' ')[0].toUpperCase();
                     document.getElementById('dash-car').innerText = data.car || "NOT SET";
+                    
                     document.getElementById('c_name').value = data.name; document.getElementById('c_car').value = data.car;
                     document.getElementById('b_name').value = data.name; document.getElementById('b_phone').value = data.phone; document.getElementById('b_car').value = data.car;
                     
@@ -399,6 +400,7 @@
                             historyList.innerHTML += `
                                 <div style="border-bottom:1px solid #333; padding: 10px 0;">
                                     <span style="color:#fff;">${order.date}</span> - $${order.total} (${order.items.length} items) - <span class="gold-text">[${order.status}]</span>
+                                    <br><span style="font-size:0.75rem;">Payment ID: ${order.transaction_id || 'COD'}</span>
                                 </div>
                             `;
                         });
@@ -470,34 +472,78 @@
                 document.getElementById('checkout-modal').style.display = 'flex';
             }
 
+            // --- RAZORPAY PAYMENT INTEGRATION ---
             async processCheckout(e) {
                 e.preventDefault();
                 const btn = document.getElementById('chk-btn');
+                const paymentMethod = document.getElementById('chk-payment').value;
+                const totalAmount = parseFloat(document.getElementById('chk-total').innerText);
+
                 btn.innerText = "PROCESSING..."; btn.disabled = true;
 
-                // Create Order Object
+                // 1. CASH ON DELIVERY
+                if (paymentMethod === "COD") {
+                    this.saveOrderToDatabase("Cash on Delivery", "PENDING_PAYMENT");
+                    return;
+                }
+
+                // 2. ONLINE PAYMENT (RAZORPAY)
+                const options = {
+                    key: "rzp_test_S78l8FsaqvBc3n", // YOUR RAZORPAY KEY ID
+                    amount: totalAmount * 100, // Amount in paise
+                    currency: "INR",
+                    name: "RichBrat$ Customs",
+                    description: "Performance Parts Transaction",
+                    image: "logo.PNG",
+                    
+                    handler: (response) => {
+                        alert("PAYMENT SUCCESSFUL! Payment ID: " + response.razorpay_payment_id);
+                        this.saveOrderToDatabase("Online Paid", response.razorpay_payment_id);
+                    },
+                    
+                    prefill: {
+                        name: document.getElementById('c_name').value,
+                        email: window.auth.currentUser.email,
+                        contact: document.getElementById('b_phone').value || ""
+                    },
+                    theme: { color: "#D4AF37" }
+                };
+
+                const rzp = new Razorpay(options);
+                
+                rzp.on('payment.failed', function (response){
+                    alert("Payment Failed. Reason: " + response.error.description);
+                    btn.innerText = "PAY SECURELY"; btn.disabled = false;
+                });
+
+                rzp.open();
+            }
+
+            // Helper to save order details to Firebase
+            async saveOrderToDatabase(payMethod, transactionId) {
+                const btn = document.getElementById('chk-btn');
+                
                 const order = {
                     date: new Date().toLocaleDateString(),
                     items: this.cart,
                     total: document.getElementById('chk-total').innerText,
-                    status: "PREPARING",
-                    address: document.getElementById('chk-address').value + ", " + document.getElementById('chk-city').value,
-                    payment: document.getElementById('chk-payment').value
+                    status: "PREPARING SHIPMENT",
+                    address: document.getElementById('chk-address').value + ", " + document.getElementById('chk-city').value + " - " + document.getElementById('chk-zip').value,
+                    payment_method: payMethod,
+                    transaction_id: transactionId
                 };
 
                 try {
-                    // Save to Firebase User Profile
                     await window.firebase.updateDoc(window.firebase.doc(window.db, "users", this.uid), {
                         orders: window.firebase.arrayUnion(order)
                     });
 
-                    alert("ORDER CONFIRMED! Your parts are being prepped.");
                     this.cart = []; this.renderCart();
                     document.getElementById('checkout-modal').style.display = 'none';
-                    btn.innerText = "CONFIRM ORDER"; btn.disabled = false;
-                    this.loadProfile(this.uid); // Refresh dashboard to show new order
+                    btn.innerText = "PAY SECURELY"; btn.disabled = false;
+                    this.loadProfile(this.uid); // Refresh dashboard to show order
                     this.navTo('view-dashboard');
-                } catch (error) { alert("Checkout Failed: " + error.message); }
+                } catch (error) { alert("Database Error: " + error.message); }
             }
 
             // --- BOOKING LOGIC ---
@@ -543,7 +589,7 @@
                 const params = { from_name: document.getElementById('c_name').value, car_model: document.getElementById('c_car').value, message: document.getElementById('c_message').value };
 
                 emailjs.send("service_ilkre51", "template_hu62u55", params)
-                .then(() => { status.innerText = "SENT TO EXPERT!"; status.style.color = "#d4af37"; btn.innerText = "SEND"; })
+                .then(() => { status.innerText = "SENT TO EXPERT!"; status.style.color = "#d4af37"; btn.innerText = "SEND SPECS"; })
                 .catch(() => { status.innerText = "ERROR!"; status.style.color = "red"; btn.innerText = "RETRY"; });
             }
         }
