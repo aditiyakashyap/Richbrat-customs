@@ -1,10 +1,9 @@
-/* --- CORE UI: LUXURY TUNER VIBE --- */
 :root {
-    --gold: #D4AF37;
-    --black: #050505;
-    --carbon: #111;
-    --text-main: 'Satoshi', sans-serif;
-    --text-display: 'Clash Display', sans-serif;
+    --bg-deep: #000000;
+    --metal-dark: #121212;
+    --metal-light: #1F1F1F;
+    --gold-active: #E5E4E2; /* Platinum */
+    --gold-dim: #6B2A8A; /* Royal Purple */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
