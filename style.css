@@ -1,9 +1,10 @@
+/* --- CORE UI: LUXURY TUNER VIBE --- */
 :root {
-    --bg-deep: #000000;
-    --metal-dark: #121212;
-    --metal-light: #1F1F1F;
-    --gold-active: #E5E4E2; /* Platinum */
-    --gold-dim: #6B2A8A; /* Royal Purple */
+    --gold: #D4AF37;
+    --black: #050505;
+    --carbon: #111;
+    --text-main: 'Satoshi', sans-serif;
+    --text-display: 'Clash Display', sans-serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -37,44 +38,20 @@ body { background-color: var(--black); color: #fff; font-family: var(--text-main
 }
 
 /* --- FLOATING CAR PARTS LAYER --- */
-.auto-elements {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-    z-index: -1; pointer-events: none; overflow: hidden;
-}
+.auto-elements { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden; }
+.part { position: absolute; color: #222; font-size: 5rem; opacity: 0.3; transition: 0.5s; filter: blur(1px); }
 
-.part {
-    position: absolute;
-    /* Change color to a dark gold for better visibility */
-    color: #7a6015;
-    font-size: 5rem;
-    /* Increase opacity dramatically from 0.3 to 0.7 */
-    opacity: 0.7;
-    transition: 0.5s;
-    /* Sharpen them by removing the blur */
-    filter: blur(0px) drop-shadow(0 0 10px rgba(212, 175, 55, 0.4));
-}
+/* Part Positions */
+.p1 { top: 10%; left: 5%; animation: float 6s infinite ease-in-out; } /* Gear */
+.p2 { bottom: 15%; right: 5%; font-size: 8rem; animation: float 8s infinite ease-in-out reverse; } /* Steering */
+.p3 { top: 40%; right: 10%; font-size: 4rem; animation: float 5s infinite ease-in-out; } /* Oil */
+.p4 { bottom: 30%; left: 8%; font-size: 6rem; animation: float 7s infinite ease-in-out; color: rgba(212, 175, 55, 0.05); } /* Speedo */
+.p5 { top: 70%; left: 40%; font-size: 10rem; color: #111; animation: rotate 30s linear infinite; } /* Monster Tyre */
+.p6 { top: 15%; right: 30%; font-size: 7rem; opacity: 0.1; } /* Exhaust */
 
-/* Part Positions & Specific Highlights */
-/* Gear - Make it a brighter gold highlight */
-.p1 { top: 10%; left: 5%; color: var(--gold); opacity: 0.9; animation: float 6s infinite ease-in-out, rotate 20s linear infinite; }
-
-/* Steering Wheel */
-.p2 { bottom: 15%; right: 5%; font-size: 8rem; animation: float 8s infinite ease-in-out reverse; }
-
-/* Oil Can */
-.p3 { top: 40%; right: 10%; font-size: 4rem; animation: float 5s infinite ease-in-out; }
-
-/* Turbo/Gauge Highlight */
-.p4 { bottom: 30%; left: 8%; font-size: 7rem; color: var(--gold); opacity: 0.8; animation: float 7s infinite ease-in-out; }
-
-/* Big Tyre */
-.p5 { top: 60%; left: 35%; font-size: 12rem; opacity: 0.5; animation: rotate 40s linear infinite; }
-
-/* Exhaust */
-.p6 { top: 15%; right: 30%; font-size: 7rem; opacity: 0.6; }
-
-@keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-25px); } 100% { transform: translateY(0px); } }
+@keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-20px); } 100% { transform: translateY(0px); } }
 @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
 /* --- NAV & MODALS --- */
 nav { position: fixed; top: 0; width: 100%; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(5,5,5,0.95); border-bottom: 1px solid #222; }
 .logo-container { cursor: pointer; display: flex; align-items: center; }
@@ -133,6 +110,7 @@ nav { position: fixed; top: 0; width: 100%; padding: 20px 40px; display: flex; j
 @media (max-width: 768px) {
     nav { padding: 15px 20px; }
     .logo-container img { height: 45px; }
+    .auto-elements { display: none; } /* Hide floating parts on mobile for performance */
     .booking-grid { grid-template-columns: 1fr; gap: 20px; }
     .vip-lounge { padding: 30px; order: 2; } 
     .booking-form { order: 1; }
