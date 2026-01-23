@@ -1,0 +1,103 @@
+/* --- CORE UI: LURXURY TUNER VIBE --- */
+:root {
+    --gold: #D4AF37;
+    --black: #050505;
+    --carbon: #111;
+    --text-main: 'Satoshi', sans-serif;
+    --text-display: 'Clash Display', sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background-color: var(--black); color: #fff; font-family: var(--text-main); overflow-x: hidden; }
+
+.gold-text { color: var(--gold); }
+
+.btn-luxury {
+    background: transparent; border: 1px solid var(--gold); color: var(--gold);
+    padding: 12px 30px; font-family: var(--text-display); text-transform: uppercase;
+    letter-spacing: 2px; cursor: pointer; transition: 0.3s; font-size: 0.9rem;
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+}
+.btn-luxury:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+
+/* --- CARBON FIBER BACKGROUND --- */
+.bg-carbon {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -2;
+    background: 
+        linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
+        linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
+        linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
+        linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px,
+        linear-gradient(90deg, #1b1b1b 10px, transparent 10px),
+        linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424 100%);
+    background-color: #131313; background-size: 20px 20px;
+    opacity: 0.4;
+}
+.bg-ambient {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1;
+    background: radial-gradient(circle at 50% 10%, rgba(212, 175, 55, 0.15), transparent 70%);
+}
+
+/* --- NAV & MODALS --- */
+nav { position: fixed; top: 0; width: 100%; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(5,5,5,0.95); border-bottom: 1px solid #222; }
+.logo-container { cursor: pointer; display: flex; align-items: center; }
+.logo-container img { height: 60px; filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3)); transition: 0.3s; }
+.logo-container img:hover { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5)); }
+
+.user-panel { display: flex; gap: 20px; align-items: center; }
+
+/* CART SYSTEM */
+#cart-panel {
+    position: fixed; top: 0; right: -400px; width: 400px; height: 100vh;
+    background: var(--carbon); border-left: 1px solid #333; z-index: 3000;
+    transition: 0.3s; padding: 30px; display: flex; flex-direction: column;
+}
+#cart-panel.open { right: 0; }
+.cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
+.cart-items { flex: 1; overflow-y: auto; }
+.cart-item { display: flex; justify-content: space-between; align-items: center; background: #0a0a0a; padding: 15px; border: 1px solid #222; margin-bottom: 10px; }
+.cart-footer { border-top: 1px solid #333; padding-top: 20px; }
+#cart-count { position:absolute; top:-10px; right:-10px; background:red; color:white; font-size:0.7rem; padding: 2px 6px; border-radius:50%; }
+
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; justify-content: center; align-items: center; }
+.modal-box { width: 90%; max-width: 400px; background: var(--carbon); padding: 40px; text-align: center; border: 1px solid #333; max-height: 90vh; overflow-y: auto; }
+.form-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; padding: 15px 0; color: #fff; margin-bottom: 20px; font-family: var(--text-main); font-size: 1rem;}
+.form-input:focus { outline: none; border-bottom-color: var(--gold); }
+
+/* --- SECTIONS --- */
+.section { display: none; min-height: 100vh; padding: 120px 20px 50px; }
+.section.active { display: block; animation: fadeIn 0.5s; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* HERO */
+.hero { display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; }
+.hero h1 { font-family: var(--text-display); font-size: clamp(2.5rem, 8vw, 4.5rem); margin-bottom: 20px; line-height: 1.1; letter-spacing: -1px; }
+
+/* DASHBOARD & CONTENT BOXES */
+.content-box { max-width: 1000px; margin: 0 auto; }
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px; }
+.dash-card { background: rgba(10,10,10,0.9); padding: 40px; text-align: center; border: 1px solid #222; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
+.dash-card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.dash-icon { font-size: 2.5rem; color: #333; margin-bottom: 20px; transition: 0.3s; }
+.dash-card:hover .dash-icon { color: var(--gold); }
+
+/* THE PADDOCK LOUNGE (Booking) */
+.booking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px; }
+.vip-lounge { background: rgba(10,10,10,0.9); border: 1px solid #333; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+.vip-feature { display: flex; align-items: center; gap: 15px; margin-top: 25px; font-size: 0.9rem; color: #ccc; }
+.vip-icon { font-size: 1.5rem; color: var(--gold); width: 40px; text-align: center; }
+
+/* STORE LAYOUT */
+.store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 30px; }
+.product-item { background: rgba(10,10,10,0.9); padding: 15px; text-align: center; border: 1px solid #333; }
+.prod-img { width: 100%; height: 160px; background-size: cover; background-position: center; margin-bottom: 15px; }
+
+/* MOBILE ADJUSTMENTS */
+@media (max-width: 768px) {
+    nav { padding: 15px 20px; }
+    .logo-container img { height: 45px; }
+    .booking-grid { grid-template-columns: 1fr; gap: 20px; }
+    .vip-lounge { padding: 30px; order: 2; } 
+    .booking-form { order: 1; }
+    #cart-panel { width: 100%; right: -100%; }
+}
