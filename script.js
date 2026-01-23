@@ -12,10 +12,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage(); // Initialize Storage
 
 // --- 2. CONFIGURATION ---
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPKr6-zQ3fGQITAm5qBpKeCGrnWTHsWMeiw7Hsl9liaNcI4tdLRD6U94jpKCMN6Ru7KQ/exec";
-emailjs.init("9-7GR7Lab7wUNI5sH");
+// emailjs.init("9-7GR7Lab7wUNI5sH"); // Removed EmailJS as it's no longer used
 
 // --- 3. UI & MODAL CONTROL (Global Scope for HTML Buttons) ---
 let authMode = 'login';
@@ -24,8 +25,8 @@ window.closeModal = () => document.getElementById('auth-modal').style.display = 
 window.switchMode = () => { authMode = authMode === 'login' ? 'register' : 'login'; updateModalUI(); }
 
 function updateModalUI() {
-    document.getElementById('modal-title').innerText = authMode === 'register' ? "DRIVER REGISTRATION" : "LOGIN";
-    document.getElementById('submit-btn').innerText = authMode === 'register' ? "REGISTER" : "ENTER";
+    document.getElementById('modal-title').innerText = authMode === 'register' ? "CREATE ACCOUNT" : "LOGIN";
+    document.getElementById('submit-btn').innerText = authMode === 'register' ? "SIGN UP" : "LOGIN";
     document.getElementById('reg-name').style.display = authMode === 'register' ? 'block' : 'none';
     document.getElementById('extra-fields').style.display = authMode === 'register' ? 'block' : 'none';
 }
@@ -40,26 +41,44 @@ class App {
         setTimeout(() => {
             auth.onAuthStateChanged(user => {
                 if (user) {
+                    // LOGGED IN USER
                     this.uid = user.uid;
                     this.loadProfile(user.uid);
                     document.getElementById('nav-actions').style.display = 'none';
                     document.getElementById('user-actions').style.display = 'flex';
-                    this.navTo('view-dashboard');
+                    
+                    if(document.getElementById('view-landing').classList.contains('active')) {
+                        this.navTo('view-dashboard');
+                    }
                 } else {
+                    // GUEST USER
+                    this.uid = null;
+                    this.loadGuestProfile();
                     document.getElementById('nav-actions').style.display = 'flex';
                     document.getElementById('user-actions').style.display = 'none';
-                    this.navTo('view-landing');
                 }
             });
         }, 1000);
     }
 
-    goHome() { if (auth.currentUser) this.navTo('view-dashboard'); else this.navTo('view-landing'); }
+    enterGarage() {
+        this.navTo('view-dashboard');
+    }
+
+    goHome() { 
+        this.navTo('view-dashboard'); 
+    }
 
     navTo(id) {
         window.scrollTo(0,0);
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
+        
+        // Reset consultancy form UI if navigating away and back
+        if(id === 'view-consultancy') {
+             document.getElementById('consultancy-form-container').style.display = 'block';
+             document.getElementById('consultancy-success').style.display = 'none';
+        }
     }
 
     // --- AUTHENTICATION ---
@@ -85,17 +104,37 @@ class App {
         } catch (error) { alert("Access Denied: " + error.message); }
     }
 
+    loadGuestProfile() {
+        document.getElementById('dash-name').innerText = "GUEST";
+        document.getElementById('dash-car').innerText = "Not Connected";
+        document.getElementById('order-history-list').innerText = "Login to view your history.";
+        
+        // Clear forms
+        document.getElementById('b_name').value = ""; 
+        document.getElementById('b_phone').value = ""; 
+        document.getElementById('b_car').value = "";
+        document.getElementById('c_name').value = "";
+        document.getElementById('c_phone').value = "";
+        document.getElementById('c_email').value = "";
+        document.getElementById('c_car').value = "";
+    }
+
     async loadProfile(uid) {
         const docSnap = await db.collection("users").doc(uid).get();
         if (docSnap.exists) {
             const data = docSnap.data();
             document.getElementById('dash-name').innerText = data.name.toUpperCase();
             document.getElementById('nav-username').innerText = data.name.split(' ')[0].toUpperCase();
-            document.getElementById('dash-car').innerText = data.car || "NOT SET";
+            document.getElementById('dash-car').innerText = data.car || "Not Set";
             
-            // Auto-fill forms
-            document.getElementById('c_name').value = data.name; document.getElementById('c_car').value = data.car;
+            // Auto-fill booking form
             document.getElementById('b_name').value = data.name; document.getElementById('b_phone').value = data.phone; document.getElementById('b_car').value = data.car;
+
+            // Auto-fill consultancy form
+            document.getElementById('c_name').value = data.name; 
+            document.getElementById('c_phone').value = data.phone || "";
+            document.getElementById('c_email').value = data.email || "";
+            document.getElementById('c_car').value = data.car;
             
             // Render Order History
             if (data.orders && data.orders.length > 0) {
@@ -105,22 +144,30 @@ class App {
                     historyList.innerHTML += `
                         <div style="border-bottom:1px solid #333; padding: 10px 0;">
                             <span style="color:#fff;">${order.date}</span> - $${order.total} (${order.items.length} items) - <span class="gold-text">[${order.status}]</span>
-                            <br><span style="font-size:0.75rem;">Payment ID: ${order.transaction_id || 'COD'}</span>
+                            <br><span style="font-size:0.75rem;">Transaction ID: ${order.transaction_id || 'COD'}</span>
                         </div>
                     `;
                 });
+            } else {
+                document.getElementById('order-history-list').innerText = "No orders yet.";
             }
         }
     }
 
-    logout() { auth.signOut(); }
+    logout() { 
+        auth.signOut();
+        this.navTo('view-landing'); 
+    }
 
     // --- E-COMMERCE LOGIC ---
     async loadStore() {
         this.navTo('view-store');
         const list = document.getElementById('product-list');
         const loader = document.getElementById('loading-store');
-        list.innerHTML = ""; loader.style.display = 'block';
+        
+        if(list.children.length > 0) return;
+
+        loader.style.display = 'block';
 
         try {
             const res = await fetch(`${SCRIPT_URL}?action=getInventory`);
@@ -129,16 +176,17 @@ class App {
 
             if(data.length === 0) { list.innerHTML = "<p>OUT OF STOCK</p>"; return; }
 
+            list.innerHTML = "";
             data.forEach(p => {
                 list.innerHTML += `
                 <div class="product-item">
                     <div class="prod-img" style="background-image:url('${p.image}')"></div>
                     <h3 style="font-family:var(--text-display);">${p.name}</h3>
                     <p style="color:var(--gold); margin: 10px 0;">$${p.price}</p>
-                    <button class="btn-luxury" style="padding:10px; font-size:0.8rem;" onclick="app.addToCart('${p.name}', ${p.price})"><i class="fa-solid fa-cart-plus"></i> ADD TO BAG</button>
+                    <button class="btn-luxury" style="padding:10px; font-size:0.8rem;" onclick="app.addToCart('${p.name}', ${p.price})"><i class="fa-solid fa-cart-plus"></i> ADD TO CART</button>
                 </div>`;
             });
-        } catch(e) { loader.innerText = "DATA ERROR"; }
+        } catch(e) { loader.innerText = "Error loading products."; }
     }
 
     addToCart(name, price) {
@@ -153,14 +201,14 @@ class App {
         list.innerHTML = "";
         let total = 0;
 
-        if (this.cart.length === 0) { list.innerHTML = "<p style='color:#666; text-align:center;'>Your cart is empty.</p>"; }
+        if (this.cart.length === 0) { list.innerHTML = "<p style='color:#8892b0; text-align:center;'>Your cart is empty.</p>"; }
         
         this.cart.forEach((item, index) => {
             total += Number(item.price);
             list.innerHTML += `
             <div class="cart-item">
                 <span>${item.name}</span>
-                <span>$${item.price} <i class="fa-solid fa-trash" style="color:red; cursor:pointer; margin-left:10px;" onclick="app.removeFromCart(${index})"></i></span>
+                <span>$${item.price} <i class="fa-solid fa-trash" style="color:#ff6b6b; cursor:pointer; margin-left:10px;" onclick="app.removeFromCart(${index})"></i></span>
             </div>`;
         });
 
@@ -173,11 +221,18 @@ class App {
 
     openCheckout() {
         if (this.cart.length === 0) { alert("Cart is empty!"); return; }
+        
+        if (!this.uid) {
+            alert("Please login to complete your purchase.");
+            this.toggleCart(); 
+            window.openModal('login');
+            return;
+        }
+
         this.toggleCart();
         document.getElementById('checkout-modal').style.display = 'flex';
     }
 
-    // --- RAZORPAY PAYMENT ---
     async processCheckout(e) {
         e.preventDefault();
         const btn = document.getElementById('chk-btn');
@@ -196,7 +251,7 @@ class App {
             amount: totalAmount * 100,
             currency: "INR",
             name: "RichBrat$ Customs",
-            description: "Performance Parts Transaction",
+            description: "Car Parts Purchase",
             image: "logo.png",
             
             handler: (response) => {
@@ -208,7 +263,7 @@ class App {
                 email: auth.currentUser.email,
                 contact: document.getElementById('b_phone').value || ""
             },
-            theme: { color: "#D4AF37" }
+            theme: { color: "#ffcc00" }
         };
 
         const rzp = new Razorpay(options);
@@ -225,7 +280,7 @@ class App {
             date: new Date().toLocaleDateString(),
             items: this.cart,
             total: document.getElementById('chk-total').innerText,
-            status: "PREPARING SHIPMENT",
+            status: "PREPARING",
             address: document.getElementById('chk-address').value + ", " + document.getElementById('chk-city').value + " - " + document.getElementById('chk-zip').value,
             payment_method: payMethod,
             transaction_id: transactionId
@@ -244,7 +299,6 @@ class App {
         } catch (error) { alert("Database Error: " + error.message); }
     }
 
-    // --- BOOKING LOGIC ---
     async checkSlots() {
         const date = document.getElementById('b_date').value;
         const sel = document.getElementById('b_time');
@@ -264,6 +318,13 @@ class App {
 
     async bookSlot(e) {
         e.preventDefault();
+
+        if (!this.uid) {
+            alert("Please login to confirm your booking.");
+            window.openModal('login');
+            return;
+        }
+
         const btn = document.getElementById('bookBtn');
         const stat = document.getElementById('booking-status');
         btn.innerText = "BOOKING...";
@@ -273,24 +334,78 @@ class App {
 
         try {
             await fetch(SCRIPT_URL, {method:'POST', body:fd});
-            stat.innerText = "CONFIRMED!"; stat.style.color = "#d4af37";
+            stat.innerText = "CONFIRMED!"; stat.style.color = "#ffcc00";
             document.getElementById('bookingForm').reset();
-            setTimeout(() => { this.goHome(); stat.innerText=""; btn.innerText="CONFIRM VIP SLOT"; }, 2000);
+            setTimeout(() => { this.goHome(); stat.innerText=""; btn.innerText="CONFIRM BOOKING"; }, 2000);
         } catch(e) { stat.innerText = "FAILED"; }
     }
 
-    // --- EMAIL LOGIC ---
-    sendMail(e) {
+    // --- NEW: MODS CONSULTANCY LOGIC ---
+    async submitConsultation(e) {
         e.preventDefault();
-        const btn = document.getElementById('mailBtn'); const status = document.getElementById('mailStatus');
-        btn.innerText = "SENDING...";
-        const params = { from_name: document.getElementById('c_name').value, car_model: document.getElementById('c_car').value, message: document.getElementById('c_message').value };
+        
+        // Optional: Require login for consultancy
+        if (!this.uid) {
+             alert("Please login to submit a consultancy request.");
+             window.openModal('login');
+             return;
+        }
 
-        emailjs.send("service_ilkre51", "template_hu62u55", params)
-        .then(() => { status.innerText = "SENT TO EXPERT!"; status.style.color = "#d4af37"; btn.innerText = "SEND SPECS"; })
-        .catch(() => { status.innerText = "ERROR!"; status.style.color = "red"; btn.innerText = "RETRY"; });
+        const btn = document.getElementById('consultBtn');
+        const formContainer = document.getElementById('consultancy-form-container');
+        const successContainer = document.getElementById('consultancy-success');
+        
+        btn.innerText = "UPLOADING & SUBMITTING...";
+        btn.disabled = true;
+
+        const fileInput = document.getElementById('c_image');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            alert("Please select an image of your car.");
+            btn.innerText = "SUBMIT REQUEST";
+            btn.disabled = false;
+            return;
+        }
+
+        try {
+            // 1. Upload Image to Firebase Storage
+            // Create a unique file name
+            const storageRef = storage.ref(`consultations/${this.uid}_${Date.now()}_${file.name}`);
+            const snapshot = await storageRef.put(file);
+            const downloadURL = await snapshot.ref.getDownloadURL();
+
+            // 2. Prepare data for Google Sheet
+            const fd = new FormData();
+            fd.append('action', 'consultationRequest'); // New action type for Apps Script
+            fd.append('name', document.getElementById('c_name').value);
+            fd.append('phone', document.getElementById('c_phone').value);
+            fd.append('email', document.getElementById('c_email').value);
+            fd.append('car', document.getElementById('c_car').value);
+            fd.append('desired_look', document.getElementById('c_message').value);
+            fd.append('image_url', downloadURL);
+
+            // 3. Send to Google Sheet Script
+            // NOTE: Your Google Apps Script MUST handle the 'consultationRequest' action.
+            await fetch(SCRIPT_URL, {method:'POST', body:fd});
+
+            // 4. Show Success UI
+            formContainer.style.display = 'none';
+            successContainer.style.display = 'block';
+            
+            // Reset form for next time
+            document.getElementById('c_image').value = ""; 
+            document.getElementById('c_message').value = "";
+            btn.innerText = "SUBMIT REQUEST";
+            btn.disabled = false;
+
+        } catch (error) {
+            console.error("Consultation Submission Error:", error);
+            alert("Failed to submit request. Please try again.");
+            btn.innerText = "SUBMIT REQUEST";
+            btn.disabled = false;
+        }
     }
 }
 
-// Make App globally available to HTML buttons
 window.app = new App();
