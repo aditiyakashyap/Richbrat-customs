@@ -2,19 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RichBrat$ | Terminal</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Michroma&family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // 🔴 PASTE YOUR FIREBASE CONFIG HERE 🔴
+        // YOUR FIREBASE CONFIGURATION
         const firebaseConfig = {
             apiKey: "AIzaSyDoU-ixQiMmjEofIAK_sQe729PZ86jseDY",
             authDomain: "richbart-customs.firebaseapp.com",
@@ -43,96 +41,127 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg-deep); color: #fff; font-family: var(--font-ui); overflow: hidden; height: 100vh; }
+        
+        body { 
+            background: var(--bg-deep); 
+            color: #fff; 
+            font-family: var(--font-ui); 
+            overflow: hidden; 
+            height: 100vh;
+            width: 100vw;
+        }
 
         /* --- 2. THE OBJECT: MAIN CONSOLE --- */
         .console-wrapper {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 90vw; max-width: 1400px; height: 85vh;
+            width: 90vw; max-width: 1200px; height: 85vh;
             background: linear-gradient(145deg, var(--metal-dark), var(--bg-deep));
             border: 1px solid #333;
             border-radius: 20px;
-            box-shadow: 
-                0 20px 50px rgba(0,0,0,0.8),
-                inset 0 1px 1px rgba(255,255,255,0.1);
-            display: grid;
-            grid-template-columns: 350px 1fr;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.1);
+            display: flex; 
             overflow: hidden;
         }
 
-        /* TACTILE NAV COLUMN */
+        /* --- NAV COLUMN --- */
         .side-nav {
+            width: 300px; 
             background: rgba(0,0,0,0.4);
             border-right: 1px solid #222;
-            padding: 40px 20px;
+            padding: 30px 20px;
             display: flex; flex-direction: column; justify-content: space-between;
         }
 
-        .logo-tag { font-family: var(--font-head); color: var(--gold-active); font-size: 1.2rem; margin-bottom: 50px; text-align: center; }
+        .logo-tag { font-family: var(--font-head); color: var(--gold-active); font-size: 1.2rem; text-align: center; }
 
-        /* Physical Button Objects */
         .nav-switch {
-            width: 100%; padding: 20px; margin-bottom: 15px;
-            background: var(--metal-light);
-            border: 1px solid #333; border-radius: 8px;
-            color: #888; font-family: var(--font-ui); font-size: 1rem;
+            width: 100%; padding: 15px; margin-top: 15px;
+            background: var(--metal-light); border: 1px solid #333; border-radius: 8px;
+            color: #888; font-family: var(--font-ui); font-size: 0.9rem;
             text-align: left; cursor: pointer;
-            box-shadow: 5px 5px 10px rgba(0,0,0,0.5), inset 1px 1px 1px rgba(255,255,255,0.05);
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.5);
             transition: 0.2s; position: relative; overflow: hidden;
         }
+        .nav-switch.active { background: #1a1a1a; color: var(--gold-active); }
 
-        .nav-switch::before {
-            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px;
-            background: var(--gold-active); transform: scaleY(0); transition: 0.2s;
-        }
-
-        .nav-switch:hover { background: #2a2a2a; color: #fff; transform: translateY(-2px); }
-        .nav-switch.active { background: #1a1a1a; color: var(--gold-active); box-shadow: inset 5px 5px 10px rgba(0,0,0,0.8); }
-        .nav-switch.active::before { transform: scaleY(1); }
-
-        /* STATUS MONITOR (Bottom Left) */
         .status-monitor {
             background: #000; padding: 15px; border-radius: 5px; border: 1px solid #222;
             font-size: 0.8rem; color: #0f0; text-shadow: 0 0 5px #0f0;
         }
 
-        /* --- 3. VIEWPORT (RIGHT SIDE) --- */
-        .viewport { position: relative; padding: 40px; }
+        /* --- VIEWPORT --- */
+        .viewport { 
+            flex: 1; 
+            padding: 40px; 
+            overflow-y: auto; 
+        }
 
-        .view-layer { display: none; height: 100%; animation: fadeLoad 0.4s; }
+        .view-layer { display: none; animation: fadeLoad 0.4s; }
         .view-layer.active { display: block; }
-        @keyframes fadeLoad { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeLoad { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- 4. DATA INPUTS (FORMS) --- */
+        /* --- FORMS & BUTTONS --- */
         .data-input {
             background: #000; border: 1px solid #333; color: var(--gold-active);
             padding: 15px; width: 100%; margin-bottom: 20px; font-family: var(--font-ui);
-            font-size: 1.1rem; border-radius: 4px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
-            transition: 0.3s;
+            font-size: 1rem; border-radius: 4px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
         }
-        .data-input:focus { outline: none; border-color: var(--gold-active); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 15px rgba(212, 175, 55, 0.2); }
+        .data-input:focus { outline: none; border-color: var(--gold-active); }
 
-        /* TRIGGER BUTTON */
         .trigger-btn {
             background: var(--gold-active); color: #000; font-family: var(--font-head);
-            font-size: 1.2rem; font-weight: bold; border: none; padding: 15px 30px;
-            border-radius: 4px; cursor: pointer; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
-            transition: 0.1s; width: 100%;
+            font-size: 1rem; font-weight: bold; border: none; padding: 15px;
+            border-radius: 4px; cursor: pointer; width: 100%;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
         }
-        .trigger-btn:active { transform: translateY(4px); box-shadow: 0 1px 5px rgba(212, 175, 55, 0.4); }
+        .trigger-btn:active { transform: translateY(2px); box-shadow: none; }
 
-        /* --- 5. 3D OBJECT RENDERER (CSS ISOMETRIC) --- */
-        .schematic-container {
-            width: 100%; height: 300px; position: relative; margin-bottom: 40px;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .holo-wireframe {
-            width: 80%; max-width: 600px;
-            filter: drop-shadow(0 0 15px var(--gold-dim));
-            animation: floatObj 6s ease-in-out infinite;
-        }
-        @keyframes floatObj { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
+        /* --- 3D RENDER BOX --- */
+        .schematic-box {
+            width: 100%; height: 250px; margin-bottom: 30px; border-radius: 8px; overflow: hidden;
+            border: 1px solid #333; position: relative;
+        }
+
+
+        /* ==========================================================================
+           📱 MOBILE FIX FOR IPHONE 13 (and similar phones) 
+           ========================================================================== */
+        @media (max-width: 768px) {
+            
+            /* Fill the whole screen on mobile */
+            .console-wrapper {
+                width: 100vw; height: 100vh; max-width: 100%;
+                border-radius: 0; border: none;
+                flex-direction: column-reverse; /* Puts NAV at the bottom */
+            }
+
+            /* Adjust the Nav to be a horizontal bar at bottom */
+            .side-nav {
+                width: 100%; height: auto;
+                flex-direction: row; align-items: center; justify-content: space-around;
+                border-right: none; border-top: 1px solid #222;
+                padding: 10px; background: #080808;
+            }
+
+            /* Hide the large logo and status monitor on mobile to save space */
+            .logo-tag, .status-monitor { display: none; }
+
+            /* Make buttons fit horizontally */
+            .nav-switch { margin-top: 0; text-align: center; padding: 10px; font-size: 0.8rem; }
+            #nav-btns { display: flex; width: 100%; gap: 10px; }
+
+            /* Give the viewport padding appropriate for mobile */
+            .viewport { padding: 20px; }
+
+            /* Stack grid elements on top of each other */
+            .grid-2 { grid-template-columns: 1fr; gap: 10px; }
+
+            /* Scale down fonts */
+            h2 { font-size: 1.2rem; }
+            .schematic-box { height: 150px; margin-bottom: 20px; }
+        }
     </style>
 </head>
 <body>
@@ -140,65 +169,59 @@
     <main class="console-wrapper">
         
         <aside class="side-nav">
-            <div>
-                <div class="logo-tag">RICHBRAT$ // OS</div>
-                <button class="nav-switch active" id="btn-login" onclick="switchView('login')">[01] AUTHENTICATE</button>
-                <button class="nav-switch" id="btn-register" onclick="switchView('register')">[02] REGISTER_ASSET</button>
-                <button class="nav-switch" id="btn-dash" onclick="switchView('dash')" style="display:none;">[03] DASHBOARD</button>
+            <div class="logo-tag">RICHBRAT$ // OS</div>
+            <div id="nav-btns" style="width:100%;">
+                <button class="nav-switch active" id="btn-login" onclick="switchView('login')">[ LOGIN ]</button>
+                <button class="nav-switch" id="btn-register" onclick="switchView('register')">[ REGISTER ]</button>
+                <button class="nav-switch" id="btn-dash" onclick="switchView('dash')" style="display:none;">[ DASH ]</button>
             </div>
-            
-            <div class="status-monitor" id="sys-status">
-                SYS: STANDBY...
-            </div>
+            <div class="status-monitor" id="sys-status">SYS: STANDBY...</div>
         </aside>
 
         <section class="viewport">
 
             <div class="view-layer active" id="view-login">
-                <div class="schematic-container">
-                    <img src="https://images.unsplash.com/photo-1617469767053-d3b523a0b982?q=80&w=1000&auto=format&fit=crop" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px; opacity: 0.5; filter: sepia(100%) hue-rotate(320deg);" alt="Schematic">
+                <div class="schematic-box">
+                    <img src="https://images.unsplash.com/photo-1617469767053-d3b523a0b982?q=80&w=1000&auto=format&fit=crop" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.5; filter: sepia(100%) hue-rotate(320deg);" alt="Schematic">
                 </div>
-                <div style="max-width: 400px; margin: 0 auto;">
-                    <input type="email" id="log-email" class="data-input" placeholder=">> INPUT_EMAIL">
-                    <input type="password" id="log-pass" class="data-input" placeholder=">> INPUT_PASSKEY">
-                    <button class="trigger-btn" onclick="app.login()">ENGAGE</button>
-                </div>
+                <input type="email" id="log-email" class="data-input" placeholder=">> EMAIL">
+                <input type="password" id="log-pass" class="data-input" placeholder=">> PASSKEY">
+                <button class="trigger-btn" onclick="app.login()">ENGAGE</button>
             </div>
 
             <div class="view-layer" id="view-register">
-                <h2 style="font-family: var(--font-head); color:var(--gold-active); text-align:center; margin-bottom: 30px;">DEFINE NEW ASSET</h2>
-                <div style="max-width: 600px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <h2 style="font-family: var(--font-head); color:var(--gold-active); text-align:center; margin-bottom: 20px;">DEFINE ASSET</h2>
+                <div class="grid-2">
                     <input type="text" id="reg-name" class="data-input" placeholder=">> PILOT_NAME">
-                    <input type="email" id="reg-email" class="data-input" placeholder=">> COMMS_LINK (EMAIL)">
-                    <input type="password" id="reg-pass" class="data-input" placeholder=">> ENCRYPTION_KEY (PASS)">
-                    <input type="text" id="reg-car" class="data-input" placeholder=">> CHASSIS_ID (CAR)">
-                    <input type="text" id="reg-insta" class="data-input" placeholder=">> SOCIAL_TAG (INSTA)">
-                    <input type="tel" id="reg-phone" class="data-input" placeholder=">> SECURE_LINE (PHONE)">
-                    <button class="trigger-btn" style="grid-column: span 2;" onclick="app.register()">INITIALIZE ACCOUNT</button>
+                    <input type="email" id="reg-email" class="data-input" placeholder=">> EMAIL">
+                    <input type="password" id="reg-pass" class="data-input" placeholder=">> PASSKEY">
+                    <input type="text" id="reg-car" class="data-input" placeholder=">> CAR_ID">
+                    <input type="text" id="reg-insta" class="data-input" placeholder=">> INSTA_TAG">
+                    <input type="tel" id="reg-phone" class="data-input" placeholder=">> PHONE">
                 </div>
+                <button class="trigger-btn" onclick="app.register()">INITIALIZE ACCOUNT</button>
             </div>
 
             <div class="view-layer" id="view-dash">
-                <h2 style="font-family: var(--font-head); font-size: 2.5rem;">WELCOME, <span id="user-display" style="color:var(--gold-active);">DRIVER</span></h2>
-                <p style="color: #666; margin-bottom: 40px;">// SYSTEM AUTHORIZED</p>
-
-                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
-                    <div style="background: #111; border: 1px solid #333; padding: 30px; border-radius: 10px;">
-                        <h3 style="color:var(--gold-active); margin-bottom: 15px;">ASSET SPECS</h3>
-                        <p style="color:#888; margin-bottom:5px;">VEHICLE</p>
-                        <p style="font-size: 1.5rem; margin-bottom: 20px;" id="dash-car">--</p>
-                        <p style="color:#888; margin-bottom:5px;">COMMS</p>
+                <h2 style="font-family: var(--font-head); color:var(--gold-active); margin-bottom: 20px;">WELCOME, <span id="user-display">DRIVER</span></h2>
+                
+                <div class="grid-2">
+                    <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
+                        <h3 style="color:#888; font-size:0.8rem; margin-bottom:10px;">VEHICLE</h3>
+                        <p style="font-size: 1.5rem; color:var(--gold-active); margin-bottom:20px;" id="dash-car">--</p>
+                        <h3 style="color:#888; font-size:0.8rem; margin-bottom:10px;">COMMS</h3>
                         <p style="font-size: 1.2rem;" id="dash-phone">--</p>
-                        <button class="trigger-btn" style="margin-top:30px; padding:10px; font-size:1rem;" onclick="app.logout()">TERMINATE SESSION</button>
                     </div>
-                    <div style="background: #111; border: 1px solid #333; padding: 30px; border-radius: 10px;">
-                        <h3 style="color:var(--gold-active); margin-bottom: 15px;">ORDER LOG</h3>
-                        <div style="color: #0f0; background: #000; padding: 20px; font-family: var(--font-ui);">
-                            > QUERYING DATABASE...<br>
-                            > NO ACTIVE MODIFICATIONS FOUND.
+                    
+                    <div style="background: #111; padding: 20px; border: 1px solid #333; border-radius: 8px;">
+                        <h3 style="color:#888; font-size:0.8rem; margin-bottom:10px;">ORDER LOG</h3>
+                        <div style="color: #0f0; background: #000; padding: 10px; font-size: 0.8rem;">
+                            > NO ACTIVE MODS...
                         </div>
                     </div>
                 </div>
+                
+                <button class="trigger-btn" style="margin-top:20px; background:#444; color:#fff;" onclick="app.logout()">TERMINATE SESSION</button>
             </div>
 
         </section>
@@ -207,36 +230,30 @@
     <script>
         // --- 1. VISUAL CONTROLLER ---
         function switchView(id) {
-            // Update Buttons
             document.querySelectorAll('.nav-switch').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`btn-${id}`).classList.add('active');
 
-            // Update Viewport
             document.querySelectorAll('.view-layer').forEach(view => view.classList.remove('active'));
             document.getElementById(`view-${id}`).classList.add('active');
 
-            logStatus(`ROUTING TO MODULE: ${id.toUpperCase()}`);
+            logStatus(`ROUTING TO: ${id.toUpperCase()}`);
         }
 
         function logStatus(msg) {
             const monitor = document.getElementById('sys-status');
-            monitor.innerHTML = `> ${msg}`;
+            if(monitor) monitor.innerHTML = `> ${msg}`;
         }
 
         // --- 2. AUTHENTICATION CORE ---
         class AppCore {
             async register() {
-                const btn = event.target;
-                btn.innerText = "PROCESSING...";
                 logStatus("GENERATING CRYPTO-KEY...");
-
                 try {
                     const cred = await window.firebase.createUserWithEmailAndPassword(window.auth, 
                         document.getElementById('reg-email').value, 
                         document.getElementById('reg-pass').value
                     );
                     
-                    // Store the 'Object' data in Firestore
                     await window.firebase.setDoc(window.firebase.doc(window.db, "users", cred.user.uid), {
                         name: document.getElementById('reg-name').value,
                         car: document.getElementById('reg-car').value,
@@ -244,23 +261,18 @@
                         phone: document.getElementById('reg-phone').value,
                     });
 
-                    logStatus("ASSET SECURED. LOGGING IN.");
-                    btn.innerText = "INITIALIZE ACCOUNT";
-                } catch(e) {
-                    logStatus(`ERR: ${e.message}`);
-                    btn.innerText = "INITIALIZE ACCOUNT";
-                }
+                    logStatus("ASSET SECURED.");
+                } catch(e) { logStatus(`ERR: ${e.message}`); }
             }
 
             async login() {
-                const btn = event.target;
-                btn.innerText = "ENGAGING...";
+                logStatus("ENGAGING...");
                 try {
                     await window.firebase.signInWithEmailAndPassword(window.auth, 
                         document.getElementById('log-email').value, 
                         document.getElementById('log-pass').value
                     );
-                } catch(e) { logStatus("ERR: CREDENTIALS REJECTED"); btn.innerText = "ENGAGE"; }
+                } catch(e) { logStatus("ERR: CREDENTIALS REJECTED"); }
             }
 
             logout() { window.firebase.signOut(window.auth); logStatus("SESSION TERMINATED."); }
@@ -276,14 +288,12 @@
                     document.getElementById('user-display').innerText = data.name.toUpperCase();
                     document.getElementById('dash-car').innerText = data.car.toUpperCase();
                     document.getElementById('dash-phone').innerText = data.phone;
-                    logStatus("DATA SYNC COMPLETE.");
                 });
             }
         }
 
         const app = new AppCore();
 
-        // AUTH LISTENER
         setTimeout(() => {
             window.auth.onAuthStateChanged(user => {
                 if (user) app.loadDashboard(user);
