@@ -130,68 +130,89 @@ nav {
 .dash-icon, .dash-text { position: relative; z-index: 1; }
 .dash-icon { font-size: 2.5rem; color: var(--text-muted); margin-bottom: 25px; transition: 0.4s; }
 .dash-card:hover .dash-icon { color: var(--gold); }
-
 /* --- DRAG RACE HOLOGRAM ANIMATION --- */
 #drag-run-overlay {
     position: fixed; bottom: 0; left: 0; width: 100%; height: 100vh;
     z-index: 9999; pointer-events: none; display: none;
     overflow: hidden;
-    background: linear-gradient(to top, rgba(5, 14, 26, 0.95) 0%, transparent 100%);
+    /* Darker gradient to make the hologram pop */
+    background: linear-gradient(to top, rgba(5, 14, 26, 1) 0%, rgba(5, 14, 26, 0.8) 50%, transparent 100%);
 }
 
-/* UPDATED: IMAGE STYLING */
 .hologram-car {
     position: absolute; 
-    bottom: -300px; /* Start further down to hide larger image */
+    bottom: -50vh; /* Start well below screen */
     left: 50%; 
-    width: 200px; /* Set a reasonable size for the car */
+    
+    /* DYNAMIC SIZING: */
+    /* Minimum 180px (Mobile), Preferred 25vw, Max 350px (Desktop) */
+    width: clamp(180px, 25vw, 350px); 
     height: auto;
-    /* Center horizontal, Rotate -90deg so front points UP */
+    
+    /* ORIENTATION: Rotate -90deg so the car faces UP */
     transform: translateX(-50%) rotate(-90deg); 
+    
     opacity: 0;
-    /* Create the hologram blue glow effect */
-    filter: drop-shadow(0 0 15px var(--blueprint-blue)) brightness(1.5) contrast(1.2);
-    /* If png has black background, screen mode helps blend it */
-    mix-blend-mode: screen; 
+    
+    /* HOLOGRAM EFFECT */
+    /* 'lighten' or 'screen' drops the gray background, keeping cyan lines */
+    mix-blend-mode: lighten; 
+    filter:  contrast(1.5) brightness(1.2) drop-shadow(0 0 15px var(--blueprint-blue));
 }
 
 .skid-marks {
     position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-    width: 140px; height: 0;
-    border-left: 2px dashed var(--blueprint-blue);
-    border-right: 2px dashed var(--blueprint-blue);
+    
+    /* Match width to the car's wheelbase roughly */
+    width: clamp(100px, 15vw, 200px); 
+    height: 0;
+    
+    /* Neon Blue Skid Marks */
+    border-left: 3px dashed var(--blueprint-blue);
+    border-right: 3px dashed var(--blueprint-blue);
+    
     opacity: 0;
-    box-shadow: 0 0 20px var(--blueprint-blue);
+    box-shadow: 0 0 30px var(--blueprint-blue);
+    filter: blur(2px);
 }
 
-/* Animation Classes */
-.animate-drag .hologram-car { animation: dragLaunch 1.5s cubic-bezier(0.6, 0.05, 0.01, 0.99) forwards; }
-.animate-drag .skid-marks { animation: skidGrow 1.5s cubic-bezier(0.6, 0.05, 0.01, 0.99) forwards; }
+/* --- ANIMATION KEYFRAMES --- */
+.animate-drag .hologram-car { 
+    animation: dragLaunch 1.8s cubic-bezier(0.5, 0, 0.1, 1) forwards; 
+}
+.animate-drag .skid-marks { 
+    animation: skidGrow 1.8s cubic-bezier(0.5, 0, 0.1, 1) forwards; 
+}
 
 @keyframes dragLaunch {
     0% { 
-        bottom: -300px; 
+        bottom: -50vh; 
         opacity: 0; 
-        /* Keep rotation in keyframes! */
+        /* Maintain rotation start */
         transform: translateX(-50%) rotate(-90deg) scale(0.8); 
     }
-    10% { 
+    15% { 
         opacity: 1; 
-        transform: translateX(-50%) rotate(-90deg) scale(1) translate(2px, 2px); /* Engine Rumble */
-    } 
+        bottom: 5%; 
+        /* Engine Idle Vibrate */
+        transform: translateX(-50%) rotate(-90deg) scale(1) translate(2px, -2px); 
+    }
+    25% {
+        transform: translateX(-50%) rotate(-90deg) scale(1) translate(-2px, 2px); 
+    }
     100% { 
-        bottom: 150%; /* Shoot off screen */
-        opacity: 0; 
-        transform: translateX(-50%) rotate(-90deg) scale(1.1); 
+        bottom: 120vh; /* Fly off top */
+        opacity: 1; 
+        /* Speed Stretch effect */
+        transform: translateX(-50%) rotate(-90deg) scaleY(1.2); 
     } 
 }
 
 @keyframes skidGrow {
     0% { height: 0; opacity: 0; }
-    20% { height: 60vh; opacity: 0.6; }
-    100% { height: 100vh; opacity: 0; bottom: 100%; }
+    20% { height: 60vh; opacity: 0.8; } /* Trails grow behind car */
+    100% { height: 100vh; opacity: 0; bottom: 100%; } /* Fade out moving up */
 }
-
 /* PROFILE & STORE */
 .profile-container { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
 .profile-sidebar, .profile-main { background: var(--navy-card); padding: 30px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
