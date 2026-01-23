@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RichBrat$ Customs | Members Only</title>
+    <title>RichBrat$ Customs | The VIP Garage</title>
     
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500&f[]=clash-display@600,700&display=swap" rel="stylesheet">
     
@@ -36,7 +36,7 @@
         /* --- CORE UI --- */
         :root {
             --gold: #D4AF37;
-            --black: #0a0a0a;
+            --black: #050505;
             --dark-grey: #121212;
             --text-main: 'Satoshi', sans-serif;
             --text-display: 'Clash Display', sans-serif;
@@ -50,53 +50,84 @@
         .btn-luxury {
             background: transparent; border: 1px solid var(--gold); color: var(--gold);
             padding: 12px 30px; font-family: var(--text-display); text-transform: uppercase;
-            letter-spacing: 2px; cursor: pointer; transition: 0.3s;
+            letter-spacing: 2px; cursor: pointer; transition: 0.3s; font-size: 0.9rem;
         }
         .btn-luxury:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
 
+        /* --- DYNAMIC GARAGE BACKGROUND (No Images) --- */
+        .bg-ambient {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -2;
+            background: radial-gradient(circle at 50% 120%, rgba(212, 175, 55, 0.15), transparent 60%), #050505;
+        }
+        .bg-grid {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1;
+            background-image: linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            transform: perspective(600px) rotateX(60deg);
+            transform-origin: bottom;
+            animation: moveGrid 10s linear infinite;
+        }
+        @keyframes moveGrid { 0% { background-position: 0 0; } 100% { background-position: 0 40px; } }
+
         /* --- NAV & MODALS --- */
-        nav { position: fixed; top: 0; width: 100%; padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(10,10,10,0.9); }
+        nav { position: fixed; top: 0; width: 100%; padding: 25px 50px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(5,5,5,0.85); backdrop-filter: blur(10px); }
         .logo { font-family: var(--text-display); font-size: 1.5rem; font-weight: 700; cursor: pointer; }
         .user-panel { display: flex; gap: 20px; align-items: center; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; justify-content: center; align-items: center; }
-        .modal-box { width: 400px; background: var(--dark-grey); padding: 40px; text-align: center; border: 1px solid #333; }
-        .form-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; padding: 15px 0; color: #fff; margin-bottom: 20px; font-family: var(--text-main); }
+        .modal-box { width: 90%; max-width: 400px; background: var(--dark-grey); padding: 40px; text-align: center; border: 1px solid #333; }
+        .form-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; padding: 15px 0; color: #fff; margin-bottom: 20px; font-family: var(--text-main); font-size: 1rem;}
         .form-input:focus { outline: none; border-bottom-color: var(--gold); }
 
         /* --- SECTIONS --- */
-        .section { display: none; min-height: 100vh; padding: 120px 50px; }
+        .section { display: none; min-height: 100vh; padding: 120px 20px 50px; }
         .section.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* HERO */
-        .hero { display: flex; align-items: center; justify-content: center; height: 100vh; background: url('https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?q=80&w=2070') center/cover; }
-        .hero-content { background: rgba(0,0,0,0.8); padding: 50px; border: 1px solid var(--gold); text-align: center; }
-        .hero h1 { font-family: var(--text-display); font-size: 4rem; margin-bottom: 20px; }
+        .hero { display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; }
+        .hero h1 { font-family: var(--text-display); font-size: clamp(2.5rem, 8vw, 4.5rem); margin-bottom: 20px; line-height: 1.1; }
 
         /* DASHBOARD GRID */
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 40px; }
-        .dash-card { background: var(--dark-grey); padding: 40px; text-align: center; border: 1px solid #222; cursor: pointer; transition: 0.3s; }
+        .content-box { max-width: 900px; margin: 0 auto; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px; }
+        .dash-card { background: rgba(18,18,18,0.8); backdrop-filter: blur(5px); padding: 40px; text-align: center; border: 1px solid #222; cursor: pointer; transition: 0.3s; }
         .dash-card:hover { border-color: var(--gold); transform: translateY(-5px); }
 
-        /* CONTENT LAYOUTS */
-        .content-box { max-width: 800px; margin: 0 auto; background: var(--dark-grey); padding: 50px; border: 1px solid #222; }
-        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 30px; }
+        /* VIP BOOKING LAYOUT */
+        .booking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px; }
+        .vip-lounge { background: rgba(18,18,18,0.9); border: 1px solid #333; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+        .vip-feature { display: flex; align-items: center; gap: 15px; margin-top: 20px; font-size: 0.9rem; color: #ccc; }
+        .vip-icon { font-size: 1.5rem; color: var(--gold); }
+
+        /* STORE LAYOUT */
+        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 30px; }
         .product-item { background: #000; padding: 15px; text-align: center; border: 1px solid #333; }
         .prod-img { width: 100%; height: 150px; background-size: cover; background-position: center; margin-bottom: 15px; }
+
+        /* MOBILE ADJUSTMENTS */
+        @media (max-width: 768px) {
+            nav { padding: 20px; }
+            .booking-grid { grid-template-columns: 1fr; gap: 20px; }
+            .vip-lounge { padding: 30px; order: 2; } /* Put form first on mobile */
+            .booking-form { order: 1; }
+        }
     </style>
 </head>
 <body>
 
+    <div class="bg-ambient"></div>
+    <div class="bg-grid"></div>
+
     <nav>
-        <div class="logo" onclick="app.navTo('view-landing')">RICHBRAT<span class="gold-text">$</span></div>
+        <div class="logo" onclick="app.goHome()">RICHBRAT<span class="gold-text">$</span></div>
         <div class="user-panel" id="nav-actions">
-            <span style="cursor:pointer;" onclick="openModal('login')">LOGIN</span>
+            <span style="cursor:pointer; font-size:0.9rem;" onclick="openModal('login')">LOGIN</span>
             <button class="btn-luxury" style="padding: 8px 15px; font-size: 0.8rem;" onclick="openModal('register')">JOIN</button>
         </div>
         <div class="user-panel" id="user-actions" style="display:none;">
             <span id="nav-username" style="cursor:pointer; font-weight:bold;" onclick="app.navTo('view-dashboard')">USER</span>
-            <span style="cursor:pointer; color:#666;" onclick="app.logout()">LOGOUT</span>
+            <span style="cursor:pointer; color:#666; font-size:0.9rem;" onclick="app.logout()">LOGOUT</span>
         </div>
     </nav>
 
@@ -114,37 +145,40 @@
                 </div>
                 <button type="submit" class="btn-luxury" style="width:100%;" id="submit-btn">ENTER</button>
             </form>
-            <p style="margin-top:20px; color:#666; cursor:pointer;" onclick="switchMode()">Toggle Login / Register</p>
-            <p style="margin-top:10px; color:#666; cursor:pointer;" onclick="closeModal()">Close</p>
+            <p style="margin-top:20px; color:#666; cursor:pointer; font-size:0.8rem;" onclick="switchMode()">Toggle Login / Register</p>
+            <p style="margin-top:10px; color:#666; cursor:pointer; font-size:0.8rem;" onclick="closeModal()">Close</p>
         </div>
     </div>
 
     <div id="view-landing" class="section active">
         <div class="hero">
-            <div class="hero-content">
-                <p style="color:#888; letter-spacing: 3px;">BESPOKE AUTOMOTIVE ART</p>
-                <h1>WELCOME TO THE<br><span class="gold-text">GARAGE</span></h1>
+            <div>
+                <p style="color:#888; letter-spacing: 3px; font-size:clamp(0.8rem, 2vw, 1rem);">BESPOKE AUTOMOTIVE ART</p>
+                <h1>WELCOME TO<br><span class="gold-text">THE GARAGE</span></h1>
+                <p style="max-width:500px; margin: 0 auto 30px; color:#ccc;">Forget average body shops. Experience the ultimate VIP treatment while your car undergoes a masterpiece transformation.</p>
                 <button class="btn-luxury" onclick="openModal('register')">BECOME A MEMBER</button>
             </div>
         </div>
     </div>
 
     <div id="view-dashboard" class="section">
-        <h2 style="font-family: var(--text-display); font-size: 2.5rem;">WELCOME, <span id="dash-name" class="gold-text">DRIVER</span></h2>
-        <p style="color:#666;">Vehicle: <span id="dash-car">--</span></p>
+        <div class="content-box">
+            <h2 style="font-family: var(--text-display); font-size: clamp(1.8rem, 4vw, 2.5rem);">WELCOME, <span id="dash-name" class="gold-text">DRIVER</span></h2>
+            <p style="color:#666;">Vehicle: <span id="dash-car">--</span></p>
 
-        <div class="dashboard-grid">
-            <div class="dash-card" onclick="app.loadStore()">
-                <h3 class="gold-text">STORE</h3>
-                <p style="color:#888; margin-top:10px;">Purchase Parts & Merch</p>
-            </div>
-            <div class="dash-card" onclick="app.navTo('view-booking')">
-                <h3 class="gold-text">BOOKING</h3>
-                <p style="color:#888; margin-top:10px;">Reserve a Garage Slot</p>
-            </div>
-            <div class="dash-card" onclick="app.navTo('view-consult')">
-                <h3 class="gold-text">CONSULT</h3>
-                <p style="color:#888; margin-top:10px;">Chat with our Experts</p>
+            <div class="dashboard-grid">
+                <div class="dash-card" onclick="app.loadStore()">
+                    <h3 class="gold-text">STORE</h3>
+                    <p style="color:#888; margin-top:10px;">Purchase Parts</p>
+                </div>
+                <div class="dash-card" onclick="app.navTo('view-booking')">
+                    <h3 class="gold-text">BOOKING</h3>
+                    <p style="color:#888; margin-top:10px;">Reserve a Garage Slot</p>
+                </div>
+                <div class="dash-card" onclick="app.navTo('view-consult')">
+                    <h3 class="gold-text">CONSULT</h3>
+                    <p style="color:#888; margin-top:10px;">Chat with Experts</p>
+                </div>
             </div>
         </div>
     </div>
@@ -159,20 +193,42 @@
     </div>
 
     <div id="view-booking" class="section">
-        <div class="content-box">
-            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">RESERVATION</h2>
-            <form id="bookingForm" onsubmit="app.bookSlot(event)">
-                <input type="date" id="b_date" class="form-input" required onchange="app.checkSlots()">
-                <select id="b_time" class="form-input" style="background:#121212;" disabled>
-                    <option>Select Date First</option>
-                </select>
-                <input type="text" id="b_name" class="form-input" placeholder="DRIVER NAME" required>
-                <input type="tel" id="b_phone" class="form-input" placeholder="PHONE" required>
-                <input type="text" id="b_car" class="form-input" placeholder="CAR MODEL" required>
-                
-                <button type="submit" id="bookBtn" class="btn-luxury" style="width:100%;">CONFIRM SLOT</button>
-                <div id="booking-status" style="margin-top:10px; text-align:center;"></div>
-            </form>
+        <div class="content-box" style="max-width:1000px; padding: 20px;">
+            <div class="booking-grid">
+                <div class="vip-lounge">
+                    <h2 class="gold-text" style="font-family: var(--text-display); font-size:2rem;">THE VIP LOUNGE</h2>
+                    <p style="margin-top:10px; color:#888;">No stress. No oily waiting rooms. Relax in ultimate comfort while our pros handle your build.</p>
+                    
+                    <div class="vip-feature">
+                        <span class="vip-icon">☕</span>
+                        <div><strong>Barista Cafe</strong><br>Premium coffee & gourmet snacks.</div>
+                    </div>
+                    <div class="vip-feature">
+                        <span class="vip-icon">🎮</span>
+                        <div><strong>Entertainment Zone</strong><br>PlayStation 5, Netfix, & High-Speed WiFi.</div>
+                    </div>
+                    <div class="vip-feature">
+                        <span class="vip-icon">👁️</span>
+                        <div><strong>The Glass Deck</strong><br>Watch your car's transformation live.</div>
+                    </div>
+                </div>
+
+                <div class="booking-form" style="padding:20px;">
+                    <h3 style="margin-bottom:20px;">RESERVE YOUR VISIT</h3>
+                    <form id="bookingForm" onsubmit="app.bookSlot(event)">
+                        <input type="date" id="b_date" class="form-input" required onchange="app.checkSlots()">
+                        <select id="b_time" class="form-input" style="background:#121212;" disabled>
+                            <option>Select Date First</option>
+                        </select>
+                        <input type="text" id="b_name" class="form-input" placeholder="DRIVER NAME" required>
+                        <input type="tel" id="b_phone" class="form-input" placeholder="PHONE" required>
+                        <input type="text" id="b_car" class="form-input" placeholder="CAR MODEL" required>
+                        
+                        <button type="submit" id="bookBtn" class="btn-luxury" style="width:100%; margin-top:20px;">CONFIRM VIP SLOT</button>
+                        <div id="booking-status" style="margin-top:10px; text-align:center;"></div>
+                    </form>
+                </div>
+            </div>
             <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← BACK</button>
         </div>
     </div>
@@ -192,14 +248,11 @@
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        // 1. Google Sheets App Script URL
+        // --- GOOGLE SHEETS & EMAILJS ---
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPKr6-zQ3fGQITAm5qBpKeCGrnWTHsWMeiw7Hsl9liaNcI4tdLRD6U94jpKCMN6Ru7KQ/exec";
-        
-        // 2. EmailJS Config
         emailjs.init("9-7GR7Lab7wUNI5sH");
 
-        // --- UI & MODAL CONTROL ---
+        // --- UI CONTROL ---
         let authMode = 'login';
         window.openModal = (mode) => { authMode = mode; updateModalUI(); document.getElementById('auth-modal').style.display = 'flex'; }
         window.closeModal = () => document.getElementById('auth-modal').style.display = 'none';
@@ -212,10 +265,9 @@
             document.getElementById('extra-fields').style.display = authMode === 'register' ? 'block' : 'none';
         }
 
-        // --- MASTER APP LOGIC ---
+        // --- MASTER APP ---
         class App {
             constructor() {
-                // Firebase Auth Listener
                 setTimeout(() => {
                     window.auth.onAuthStateChanged(user => {
                         if (user) {
@@ -232,12 +284,22 @@
                 }, 1000);
             }
 
+            // SMART HOME NAVIGATION
+            goHome() {
+                if (window.auth.currentUser) {
+                    this.navTo('view-dashboard');
+                } else {
+                    this.navTo('view-landing');
+                }
+            }
+
             navTo(id) {
+                window.scrollTo(0,0);
                 document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
                 document.getElementById(id).classList.add('active');
             }
 
-            // 1. FIREBASE AUTHENTICATION
+            // AUTH & DATABASE
             async handleAuth(e) {
                 e.preventDefault();
                 const email = document.getElementById('email').value;
@@ -263,16 +325,13 @@
                 const docSnap = await window.firebase.getDoc(window.firebase.doc(window.db, "users", uid));
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    // Dashboard Text
                     document.getElementById('dash-name').innerText = data.name.toUpperCase();
                     document.getElementById('nav-username').innerText = data.name.split(' ')[0].toUpperCase();
                     document.getElementById('dash-car').innerText = data.car || "NOT SET";
                     
-                    // Auto-fill Consult Form
                     document.getElementById('c_name').value = data.name;
                     document.getElementById('c_car').value = data.car;
 
-                    // Auto-fill Booking Form
                     document.getElementById('b_name').value = data.name;
                     document.getElementById('b_phone').value = data.phone;
                     document.getElementById('b_car').value = data.car;
@@ -281,13 +340,12 @@
 
             logout() { window.firebase.signOut(window.auth); }
 
-            // 2. GOOGLE SHEETS: STORE INVENTORY
+            // SHEETS: STORE
             async loadStore() {
                 this.navTo('view-store');
                 const list = document.getElementById('product-list');
                 const loader = document.getElementById('loading-store');
-                list.innerHTML = "";
-                loader.style.display = 'block';
+                list.innerHTML = ""; loader.style.display = 'block';
 
                 try {
                     const res = await fetch(`${SCRIPT_URL}?action=getInventory`);
@@ -305,10 +363,10 @@
                             <button class="btn-luxury" style="padding:10px; font-size:0.8rem;" onclick="window.open('https://wa.me/919999999999?text=Buy ${p.name}')">ORDER</button>
                         </div>`;
                     });
-                } catch(e) { loader.innerText = "DATA ERROR - CHECK SCRIPT URL"; }
+                } catch(e) { loader.innerText = "DATA ERROR"; }
             }
 
-            // 3. GOOGLE SHEETS: BOOKING SLOTS
+            // SHEETS: BOOKING
             async checkSlots() {
                 const date = document.getElementById('b_date').value;
                 const sel = document.getElementById('b_time');
@@ -321,15 +379,10 @@
                     const res = await fetch(`${SCRIPT_URL}?action=checkSlots&date=${date}`);
                     const taken = await res.json();
                     const hours = ["10:00","11:00","12:00","13:00","14:00","15:00","16:00"];
-                    
                     const avail = hours.filter(h => !taken.includes(h));
                     sel.innerHTML = "";
-                    
                     if(avail.length === 0) { sel.innerHTML = "<option>FULL</option>"; }
-                    else {
-                        avail.forEach(h => sel.innerHTML += `<option value="${h}">${h}</option>`);
-                        sel.disabled = false; btn.disabled = false;
-                    }
+                    else { avail.forEach(h => sel.innerHTML += `<option value="${h}">${h}</option>`); sel.disabled = false; btn.disabled = false; }
                 } catch(e) { sel.innerHTML = "<option>ERROR</option>"; }
             }
 
@@ -350,11 +403,11 @@
                     await fetch(SCRIPT_URL, {method:'POST', body:fd});
                     stat.innerText = "CONFIRMED!"; stat.style.color = "#d4af37";
                     document.getElementById('bookingForm').reset();
-                    setTimeout(() => { this.navTo('view-dashboard'); stat.innerText=""; btn.innerText="CONFIRM SLOT"; }, 2000);
+                    setTimeout(() => { this.goHome(); stat.innerText=""; btn.innerText="CONFIRM VIP SLOT"; }, 2000);
                 } catch(e) { stat.innerText = "FAILED"; }
             }
 
-            // 4. EMAILJS: CONSULT
+            // EMAILJS: CONSULT
             sendMail(e) {
                 e.preventDefault();
                 const btn = document.getElementById('mailBtn');
