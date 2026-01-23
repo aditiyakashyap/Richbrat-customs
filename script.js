@@ -15,7 +15,7 @@ const db = firebase.firestore();
 const storage = firebase.storage(); // Initialize Storage
 
 // --- 2. CONFIGURATION ---
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxPKr6-zQ3fGQITAm5qBpKeCGrnWTHsWMeiw7Hsl9liaNcI4tdLRD6U94jpKCMN6Ru7KQ/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKWST3IhiMjYIS6hLfBQhOdftghIZr9lvrU5rZZWu7uaOnDfhAhPPUnTxnmAbI33wgdg/exec";
 // emailjs.init("9-7GR7Lab7wUNI5sH"); // Removed EmailJS as it's no longer used
 
 // --- 3. UI & MODAL CONTROL (Global Scope for HTML Buttons) ---
