@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RichBrat$ Customs | The VIP Garage</title>
+    <title>RichBrat$ Customs | High Performance Garage</title>
     
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500&f[]=clash-display@600,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
         // --- FIREBASE CONFIG ---
         const firebaseConfig = {
@@ -29,15 +30,15 @@
         const db = getFirestore(app);
 
         window.auth = auth; window.db = db;
-        window.firebase = { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, doc, setDoc, getDoc };
+        window.firebase = { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, doc, setDoc, getDoc, updateDoc, arrayUnion };
     </script>
 
     <style>
-        /* --- CORE UI --- */
+        /* --- CORE UI: LURXURY TUNER VIBE --- */
         :root {
             --gold: #D4AF37;
             --black: #050505;
-            --dark-grey: #121212;
+            --carbon: #111;
             --text-main: 'Satoshi', sans-serif;
             --text-display: 'Clash Display', sans-serif;
         }
@@ -51,31 +52,50 @@
             background: transparent; border: 1px solid var(--gold); color: var(--gold);
             padding: 12px 30px; font-family: var(--text-display); text-transform: uppercase;
             letter-spacing: 2px; cursor: pointer; transition: 0.3s; font-size: 0.9rem;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
         }
         .btn-luxury:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
 
-        /* --- DYNAMIC GARAGE BACKGROUND (No Images) --- */
-        .bg-ambient {
+        /* --- CARBON FIBER BACKGROUND --- */
+        .bg-carbon {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -2;
-            background: radial-gradient(circle at 50% 120%, rgba(212, 175, 55, 0.15), transparent 60%), #050505;
+            background: 
+                linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
+                linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
+                linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
+                linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px,
+                linear-gradient(90deg, #1b1b1b 10px, transparent 10px),
+                linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424 100%);
+            background-color: #131313; background-size: 20px 20px;
+            opacity: 0.4;
         }
-        .bg-grid {
+        .bg-ambient {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -1;
-            background-image: linear-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(212, 175, 55, 0.05) 1px, transparent 1px);
-            background-size: 40px 40px;
-            transform: perspective(600px) rotateX(60deg);
-            transform-origin: bottom;
-            animation: moveGrid 10s linear infinite;
+            background: radial-gradient(circle at 50% 10%, rgba(212, 175, 55, 0.15), transparent 70%);
         }
-        @keyframes moveGrid { 0% { background-position: 0 0; } 100% { background-position: 0 40px; } }
 
         /* --- NAV & MODALS --- */
-        nav { position: fixed; top: 0; width: 100%; padding: 25px 50px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(5,5,5,0.85); backdrop-filter: blur(10px); }
-        .logo { font-family: var(--text-display); font-size: 1.5rem; font-weight: 700; cursor: pointer; }
+        nav { position: fixed; top: 0; width: 100%; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; background: rgba(5,5,5,0.95); border-bottom: 1px solid #222; }
+        .logo-container { cursor: pointer; display: flex; align-items: center; }
+        .logo-container img { height: 60px; filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3)); transition: 0.3s; }
+        .logo-container img:hover { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.5)); }
+
         .user-panel { display: flex; gap: 20px; align-items: center; }
         
+        /* CART SLIDER */
+        #cart-panel {
+            position: fixed; top: 0; right: -400px; width: 400px; height: 100vh;
+            background: var(--carbon); border-left: 1px solid #333; z-index: 3000;
+            transition: 0.3s; padding: 30px; display: flex; flex-direction: column;
+        }
+        #cart-panel.open { right: 0; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 15px; }
+        .cart-items { flex: 1; overflow-y: auto; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; background: #0a0a0a; padding: 15px; border: 1px solid #222; margin-bottom: 10px; }
+        .cart-footer { border-top: 1px solid #333; padding-top: 20px; }
+
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; justify-content: center; align-items: center; }
-        .modal-box { width: 90%; max-width: 400px; background: var(--dark-grey); padding: 40px; text-align: center; border: 1px solid #333; }
+        .modal-box { width: 90%; max-width: 400px; background: var(--carbon); padding: 40px; text-align: center; border: 1px solid #333; max-height: 90vh; overflow-y: auto; }
         .form-input { width: 100%; background: transparent; border: none; border-bottom: 1px solid #333; padding: 15px 0; color: #fff; margin-bottom: 20px; font-family: var(--text-main); font-size: 1rem;}
         .form-input:focus { outline: none; border-bottom-color: var(--gold); }
 
@@ -86,50 +106,78 @@
 
         /* HERO */
         .hero { display: flex; align-items: center; justify-content: center; height: 100%; text-align: center; }
-        .hero h1 { font-family: var(--text-display); font-size: clamp(2.5rem, 8vw, 4.5rem); margin-bottom: 20px; line-height: 1.1; }
+        .hero h1 { font-family: var(--text-display); font-size: clamp(2.5rem, 8vw, 4.5rem); margin-bottom: 20px; line-height: 1.1; letter-spacing: -1px; }
 
-        /* DASHBOARD GRID */
-        .content-box { max-width: 900px; margin: 0 auto; }
+        /* DASHBOARD - "THE GARAGE" */
+        .content-box { max-width: 1000px; margin: 0 auto; }
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px; }
-        .dash-card { background: rgba(18,18,18,0.8); backdrop-filter: blur(5px); padding: 40px; text-align: center; border: 1px solid #222; cursor: pointer; transition: 0.3s; }
-        .dash-card:hover { border-color: var(--gold); transform: translateY(-5px); }
+        .dash-card { background: rgba(10,10,10,0.9); padding: 40px; text-align: center; border: 1px solid #222; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; }
+        .dash-card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .dash-icon { font-size: 2.5rem; color: #333; margin-bottom: 20px; transition: 0.3s; }
+        .dash-card:hover .dash-icon { color: var(--gold); }
 
-        /* VIP BOOKING LAYOUT */
+        /* THE PADDOCK LOUNGE (Booking) */
         .booking-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 30px; }
-        .vip-lounge { background: rgba(18,18,18,0.9); border: 1px solid #333; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
-        .vip-feature { display: flex; align-items: center; gap: 15px; margin-top: 20px; font-size: 0.9rem; color: #ccc; }
-        .vip-icon { font-size: 1.5rem; color: var(--gold); }
+        .vip-lounge { background: rgba(10,10,10,0.9); border: 1px solid #333; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
+        .vip-feature { display: flex; align-items: center; gap: 15px; margin-top: 25px; font-size: 0.9rem; color: #ccc; }
+        .vip-icon { font-size: 1.5rem; color: var(--gold); width: 40px; text-align: center; }
 
         /* STORE LAYOUT */
         .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 30px; }
-        .product-item { background: #000; padding: 15px; text-align: center; border: 1px solid #333; }
-        .prod-img { width: 100%; height: 150px; background-size: cover; background-position: center; margin-bottom: 15px; }
+        .product-item { background: rgba(10,10,10,0.9); padding: 15px; text-align: center; border: 1px solid #333; }
+        .prod-img { width: 100%; height: 160px; background-size: cover; background-position: center; margin-bottom: 15px; }
 
         /* MOBILE ADJUSTMENTS */
         @media (max-width: 768px) {
-            nav { padding: 20px; }
+            nav { padding: 15px 20px; }
+            .logo-container img { height: 45px; }
             .booking-grid { grid-template-columns: 1fr; gap: 20px; }
-            .vip-lounge { padding: 30px; order: 2; } /* Put form first on mobile */
+            .vip-lounge { padding: 30px; order: 2; } 
             .booking-form { order: 1; }
+            #cart-panel { width: 100%; right: -100%; }
         }
     </style>
 </head>
 <body>
 
+    <div class="bg-carbon"></div>
     <div class="bg-ambient"></div>
-    <div class="bg-grid"></div>
 
     <nav>
-        <div class="logo" onclick="app.goHome()">RICHBRAT<span class="gold-text">$</span></div>
+        <div class="logo-container" onclick="app.goHome()">
+            <img src="logo.png" alt="RichBrat$ Customs">
+        </div>
+
         <div class="user-panel" id="nav-actions">
             <span style="cursor:pointer; font-size:0.9rem;" onclick="openModal('login')">LOGIN</span>
-            <button class="btn-luxury" style="padding: 8px 15px; font-size: 0.8rem;" onclick="openModal('register')">JOIN</button>
+            <button class="btn-luxury" style="padding: 8px 15px; font-size: 0.8rem;" onclick="openModal('register')">JOIN THE CREW</button>
         </div>
         <div class="user-panel" id="user-actions" style="display:none;">
-            <span id="nav-username" style="cursor:pointer; font-weight:bold;" onclick="app.navTo('view-dashboard')">USER</span>
+            <span style="cursor:pointer; position:relative; font-size: 1.2rem; color:var(--gold);" onclick="app.toggleCart()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="cart-count" style="position:absolute; top:-10px; right:-10px; background:red; color:white; font-size:0.7rem; padding: 2px 6px; border-radius:50%;">0</span>
+            </span>
+            <span id="nav-username" style="cursor:pointer; font-weight:bold; margin-left:15px;" onclick="app.navTo('view-dashboard')">USER</span>
             <span style="cursor:pointer; color:#666; font-size:0.9rem;" onclick="app.logout()">LOGOUT</span>
         </div>
     </nav>
+
+    <div id="cart-panel">
+        <div class="cart-header">
+            <h2 class="gold-text" style="font-family: var(--text-display);">YOUR BAG</h2>
+            <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.5rem;" onclick="app.toggleCart()"></i>
+        </div>
+        <div class="cart-items" id="cart-items-list">
+            <p style="color:#666; text-align:center; margin-top:20px;">Your cart is empty.</p>
+        </div>
+        <div class="cart-footer">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-size:1.2rem; font-weight:bold;">
+                <span>TOTAL:</span>
+                <span id="cart-total" class="gold-text">$0</span>
+            </div>
+            <button class="btn-luxury" style="width:100%;" onclick="app.openCheckout()">SECURE CHECKOUT</button>
+        </div>
+    </div>
 
     <div class="modal-overlay" id="auth-modal">
         <div class="modal-box">
@@ -140,7 +188,7 @@
                 <input type="password" id="password" class="form-input" placeholder="PASSWORD" required>
                 <div id="extra-fields" style="display:none;">
                     <input type="tel" id="reg-phone" class="form-input" placeholder="PHONE NUMBER">
-                    <input type="text" id="reg-car" class="form-input" placeholder="YOUR CAR">
+                    <input type="text" id="reg-car" class="form-input" placeholder="CHASSIS / CAR MODEL">
                     <input type="text" id="reg-insta" class="form-input" placeholder="INSTAGRAM HANDLE">
                 </div>
                 <button type="submit" class="btn-luxury" style="width:100%;" id="submit-btn">ENTER</button>
@@ -150,100 +198,116 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="modal-box" style="max-width: 500px;">
+            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">DELIVERY DETAILS</h2>
+            <form onsubmit="app.processCheckout(event)">
+                <input type="text" id="chk-address" class="form-input" placeholder="FULL STREET ADDRESS" required>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="chk-city" class="form-input" placeholder="CITY" required>
+                    <input type="text" id="chk-zip" class="form-input" placeholder="POSTAL CODE" required>
+                </div>
+                <select id="chk-payment" class="form-input" style="background:#111; color:var(--gold);">
+                    <option value="CARD">CREDIT CARD / DEBIT</option>
+                    <option value="UPI">UPI / WALLET</option>
+                    <option value="COD">CASH ON DELIVERY</option>
+                </select>
+                <button type="submit" class="btn-luxury" style="width:100%; margin-top:20px;" id="chk-btn">CONFIRM ORDER ($<span id="chk-total">0</span>)</button>
+            </form>
+            <p style="margin-top:10px; color:#666; cursor:pointer; font-size:0.8rem;" onclick="document.getElementById('checkout-modal').style.display='none'">Cancel</p>
+        </div>
+    </div>
+
     <div id="view-landing" class="section active">
         <div class="hero">
             <div>
-                <p style="color:#888; letter-spacing: 3px; font-size:clamp(0.8rem, 2vw, 1rem);">BESPOKE AUTOMOTIVE ART</p>
-                <h1>WELCOME TO<br><span class="gold-text">THE GARAGE</span></h1>
-                <p style="max-width:500px; margin: 0 auto 30px; color:#ccc;">Forget average body shops. Experience the ultimate VIP treatment while your car undergoes a masterpiece transformation.</p>
-                <button class="btn-luxury" onclick="openModal('register')">BECOME A MEMBER</button>
+                <p style="color:#888; letter-spacing: 3px; font-size:clamp(0.8rem, 2vw, 1rem);">BUILT FOR THE STREETS. CRAFTED FOR THE SHOW.</p>
+                <h1>HIGH PERFORMANCE<br><span class="gold-text">TUNING</span></h1>
+                <p style="max-width:550px; margin: 0 auto 30px; color:#ccc; line-height:1.6;">Join an exclusive community of petrolheads. Precision aero-kits, custom wraps, and performance tuning by master mechanics.</p>
+                <button class="btn-luxury" onclick="openModal('register')"><i class="fa-solid fa-flag-checkered"></i> ENTER THE GARAGE</button>
             </div>
         </div>
     </div>
 
     <div id="view-dashboard" class="section">
         <div class="content-box">
-            <h2 style="font-family: var(--text-display); font-size: clamp(1.8rem, 4vw, 2.5rem);">WELCOME, <span id="dash-name" class="gold-text">DRIVER</span></h2>
-            <p style="color:#666;">Vehicle: <span id="dash-car">--</span></p>
+            <h2 style="font-family: var(--text-display); font-size: clamp(1.8rem, 4vw, 2.5rem);">WELCOME BACK, <span id="dash-name" class="gold-text">PILOT</span></h2>
+            <p style="color:#666; letter-spacing: 1px;">Current Chassis: <span id="dash-car" style="color:#fff;">--</span></p>
 
             <div class="dashboard-grid">
                 <div class="dash-card" onclick="app.loadStore()">
-                    <h3 class="gold-text">STORE</h3>
-                    <p style="color:#888; margin-top:10px;">Purchase Parts</p>
+                    <i class="fa-solid fa-gauge-high dash-icon"></i>
+                    <h3 class="gold-text">PERFORMANCE SHOP</h3>
+                    <p style="color:#888; margin-top:10px;">Aero, Carbon, & Tuning Parts</p>
                 </div>
                 <div class="dash-card" onclick="app.navTo('view-booking')">
-                    <h3 class="gold-text">BOOKING</h3>
-                    <p style="color:#888; margin-top:10px;">Reserve a Garage Slot</p>
+                    <i class="fa-solid fa-calendar-check dash-icon"></i>
+                    <h3 class="gold-text">GARAGE SLOT</h3>
+                    <p style="color:#888; margin-top:10px;">Book the Paddock Lounge</p>
                 </div>
                 <div class="dash-card" onclick="app.navTo('view-consult')">
-                    <h3 class="gold-text">CONSULT</h3>
-                    <p style="color:#888; margin-top:10px;">Chat with Experts</p>
+                    <i class="fa-solid fa-screwdriver-wrench dash-icon"></i>
+                    <h3 class="gold-text">MECHANIC LINK</h3>
+                    <p style="color:#888; margin-top:10px;">Chat with Design Chiefs</p>
                 </div>
+            </div>
+            
+            <div style="margin-top: 50px; background: rgba(10,10,10,0.8); padding: 30px; border: 1px solid #222;">
+                <h3 class="gold-text" style="margin-bottom:20px;"><i class="fa-solid fa-box"></i> YOUR GARAGE HISTORY</h3>
+                <div id="order-history-list" style="color:#666; font-size:0.9rem;">No orders yet. Start your build in the Performance Shop.</div>
             </div>
         </div>
     </div>
 
     <div id="view-store" class="section">
         <div class="content-box">
-            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">INVENTORY</h2>
-            <div id="loading-store" style="color:#666; text-align:center;">FETCHING INVENTORY...</div>
+            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">PERFORMANCE PARTS</h2>
+            <div id="loading-store" style="color:#666; text-align:center;">ACCESSING INVENTORY...</div>
             <div class="store-grid" id="product-list"></div>
-            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← BACK</button>
+            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← RETURN</button>
         </div>
     </div>
 
     <div id="view-booking" class="section">
-        <div class="content-box" style="max-width:1000px; padding: 20px;">
+        <div class="content-box" style="max-width:1000px;">
             <div class="booking-grid">
                 <div class="vip-lounge">
-                    <h2 class="gold-text" style="font-family: var(--text-display); font-size:2rem;">THE VIP LOUNGE</h2>
-                    <p style="margin-top:10px; color:#888;">No stress. No oily waiting rooms. Relax in ultimate comfort while our pros handle your build.</p>
-                    
-                    <div class="vip-feature">
-                        <span class="vip-icon">☕</span>
-                        <div><strong>Barista Cafe</strong><br>Premium coffee & gourmet snacks.</div>
-                    </div>
-                    <div class="vip-feature">
-                        <span class="vip-icon">🎮</span>
-                        <div><strong>Entertainment Zone</strong><br>PlayStation 5, Netfix, & High-Speed WiFi.</div>
-                    </div>
-                    <div class="vip-feature">
-                        <span class="vip-icon">👁️</span>
-                        <div><strong>The Glass Deck</strong><br>Watch your car's transformation live.</div>
-                    </div>
+                    <h2 class="gold-text" style="font-family: var(--text-display); font-size:1.8rem;">THE PADDOCK LOUNGE</h2>
+                    <p style="margin-top:10px; color:#888; line-height:1.5;">Forget dirty waiting rooms. Bring your ride to our bays and relax in our private automotive lounge while our crew wrenches on your beast.</p>
+                    <div class="vip-feature"><i class="fa-solid fa-mug-hot vip-icon"></i><div><strong>Pit-Stop Cafe</strong><br>Fresh brews, energy drinks & snacks.</div></div>
+                    <div class="vip-feature"><i class="fa-solid fa-gamepad vip-icon"></i><div><strong>Sim-Racing & Lounge</strong><br>Hit the PS5 Forza tracks or watch 4K F1 streams.</div></div>
+                    <div class="vip-feature"><i class="fa-solid fa-eye vip-icon"></i><div><strong>Dyno View Deck</strong><br>Watch your car get modded through the glass wall.</div></div>
                 </div>
 
                 <div class="booking-form" style="padding:20px;">
-                    <h3 style="margin-bottom:20px;">RESERVE YOUR VISIT</h3>
+                    <h3 style="margin-bottom:20px; color:#fff;">RESERVE A BAY</h3>
                     <form id="bookingForm" onsubmit="app.bookSlot(event)">
                         <input type="date" id="b_date" class="form-input" required onchange="app.checkSlots()">
-                        <select id="b_time" class="form-input" style="background:#121212;" disabled>
-                            <option>Select Date First</option>
-                        </select>
-                        <input type="text" id="b_name" class="form-input" placeholder="DRIVER NAME" required>
-                        <input type="tel" id="b_phone" class="form-input" placeholder="PHONE" required>
-                        <input type="text" id="b_car" class="form-input" placeholder="CAR MODEL" required>
-                        
-                        <button type="submit" id="bookBtn" class="btn-luxury" style="width:100%; margin-top:20px;">CONFIRM VIP SLOT</button>
+                        <select id="b_time" class="form-input" style="background:#121212;" disabled><option>Select Date First</option></select>
+                        <input type="text" id="b_name" class="form-input" placeholder="PILOT NAME" required>
+                        <input type="tel" id="b_phone" class="form-input" placeholder="CONTACT NUMBER" required>
+                        <input type="text" id="b_car" class="form-input" placeholder="CHASSIS (e.g. BMW M3 G80)" required>
+                        <button type="submit" id="bookBtn" class="btn-luxury" style="width:100%; margin-top:20px;">CONFIRM SLOT</button>
                         <div id="booking-status" style="margin-top:10px; text-align:center;"></div>
                     </form>
                 </div>
             </div>
-            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← BACK</button>
+            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← RETURN</button>
         </div>
     </div>
 
     <div id="view-consult" class="section">
         <div class="content-box">
-            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">PROJECT BRIEF</h2>
+            <h2 class="gold-text" style="font-family: var(--text-display); margin-bottom: 20px;">PROJECT BLUEPRINT</h2>
+            <p style="color:#888; margin-bottom:20px;">Send your specs directly to our head mechanic.</p>
             <form onsubmit="app.sendMail(event)">
                 <input type="text" id="c_name" class="form-input" placeholder="YOUR NAME" required>
                 <input type="text" id="c_car" class="form-input" placeholder="CAR MODEL" required>
                 <textarea id="c_message" class="form-input" rows="4" placeholder="DESCRIBE THE BUILD..." required></textarea>
-                <button type="submit" class="btn-luxury" style="width:100%;" id="mailBtn">SEND TO EXPERT</button>
+                <button type="submit" class="btn-luxury" style="width:100%;" id="mailBtn">SEND SPECS</button>
                 <p id="mailStatus" style="text-align:center; margin-top:10px;"></p>
             </form>
-            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← BACK</button>
+            <button class="btn-luxury" style="margin-top:30px;" onclick="app.navTo('view-dashboard')">← RETURN</button>
         </div>
     </div>
 
@@ -259,7 +323,7 @@
         window.switchMode = () => { authMode = authMode === 'login' ? 'register' : 'login'; updateModalUI(); }
 
         function updateModalUI() {
-            document.getElementById('modal-title').innerText = authMode === 'register' ? "CREATE ACCOUNT" : "LOGIN";
+            document.getElementById('modal-title').innerText = authMode === 'register' ? "DRIVER REGISTRATION" : "LOGIN";
             document.getElementById('submit-btn').innerText = authMode === 'register' ? "REGISTER" : "ENTER";
             document.getElementById('reg-name').style.display = authMode === 'register' ? 'block' : 'none';
             document.getElementById('extra-fields').style.display = authMode === 'register' ? 'block' : 'none';
@@ -268,9 +332,11 @@
         // --- MASTER APP ---
         class App {
             constructor() {
+                this.cart = [];
                 setTimeout(() => {
                     window.auth.onAuthStateChanged(user => {
                         if (user) {
+                            this.uid = user.uid;
                             this.loadProfile(user.uid);
                             document.getElementById('nav-actions').style.display = 'none';
                             document.getElementById('user-actions').style.display = 'flex';
@@ -284,14 +350,7 @@
                 }, 1000);
             }
 
-            // SMART HOME NAVIGATION
-            goHome() {
-                if (window.auth.currentUser) {
-                    this.navTo('view-dashboard');
-                } else {
-                    this.navTo('view-landing');
-                }
-            }
+            goHome() { if (window.auth.currentUser) this.navTo('view-dashboard'); else this.navTo('view-landing'); }
 
             navTo(id) {
                 window.scrollTo(0,0);
@@ -299,7 +358,7 @@
                 document.getElementById(id).classList.add('active');
             }
 
-            // AUTH & DATABASE
+            // --- AUTHENTICATION ---
             async handleAuth(e) {
                 e.preventDefault();
                 const email = document.getElementById('email').value;
@@ -312,7 +371,8 @@
                             phone: document.getElementById('reg-phone').value,
                             car: document.getElementById('reg-car').value,
                             insta: document.getElementById('reg-insta').value,
-                            email: email
+                            email: email,
+                            orders: [] // Initialize empty order history
                         });
                     } else {
                         await window.firebase.signInWithEmailAndPassword(window.auth, email, password);
@@ -328,19 +388,27 @@
                     document.getElementById('dash-name').innerText = data.name.toUpperCase();
                     document.getElementById('nav-username').innerText = data.name.split(' ')[0].toUpperCase();
                     document.getElementById('dash-car').innerText = data.car || "NOT SET";
+                    document.getElementById('c_name').value = data.name; document.getElementById('c_car').value = data.car;
+                    document.getElementById('b_name').value = data.name; document.getElementById('b_phone').value = data.phone; document.getElementById('b_car').value = data.car;
                     
-                    document.getElementById('c_name').value = data.name;
-                    document.getElementById('c_car').value = data.car;
-
-                    document.getElementById('b_name').value = data.name;
-                    document.getElementById('b_phone').value = data.phone;
-                    document.getElementById('b_car').value = data.car;
+                    // Render Order History
+                    if (data.orders && data.orders.length > 0) {
+                        const historyList = document.getElementById('order-history-list');
+                        historyList.innerHTML = "";
+                        data.orders.reverse().forEach(order => {
+                            historyList.innerHTML += `
+                                <div style="border-bottom:1px solid #333; padding: 10px 0;">
+                                    <span style="color:#fff;">${order.date}</span> - $${order.total} (${order.items.length} items) - <span class="gold-text">[${order.status}]</span>
+                                </div>
+                            `;
+                        });
+                    }
                 }
             }
 
             logout() { window.firebase.signOut(window.auth); }
 
-            // SHEETS: STORE
+            // --- E-COMMERCE CART SYSTEM ---
             async loadStore() {
                 this.navTo('view-store');
                 const list = document.getElementById('product-list');
@@ -360,20 +428,84 @@
                             <div class="prod-img" style="background-image:url('${p.image}')"></div>
                             <h3 style="font-family:var(--text-display);">${p.name}</h3>
                             <p style="color:var(--gold); margin: 10px 0;">$${p.price}</p>
-                            <button class="btn-luxury" style="padding:10px; font-size:0.8rem;" onclick="window.open('https://wa.me/919999999999?text=Buy ${p.name}')">ORDER</button>
+                            <button class="btn-luxury" style="padding:10px; font-size:0.8rem;" onclick="app.addToCart('${p.name}', ${p.price})"><i class="fa-solid fa-cart-plus"></i> ADD TO BAG</button>
                         </div>`;
                     });
                 } catch(e) { loader.innerText = "DATA ERROR"; }
             }
 
-            // SHEETS: BOOKING
+            addToCart(name, price) {
+                this.cart.push({name, price});
+                this.renderCart();
+                document.getElementById('cart-panel').classList.add('open');
+            }
+
+            renderCart() {
+                document.getElementById('cart-count').innerText = this.cart.length;
+                const list = document.getElementById('cart-items-list');
+                list.innerHTML = "";
+                let total = 0;
+
+                if (this.cart.length === 0) { list.innerHTML = "<p style='color:#666; text-align:center;'>Your cart is empty.</p>"; }
+                
+                this.cart.forEach((item, index) => {
+                    total += Number(item.price);
+                    list.innerHTML += `
+                    <div class="cart-item">
+                        <span>${item.name}</span>
+                        <span>$${item.price} <i class="fa-solid fa-trash" style="color:red; cursor:pointer; margin-left:10px;" onclick="app.removeFromCart(${index})"></i></span>
+                    </div>`;
+                });
+
+                document.getElementById('cart-total').innerText = `$${total}`;
+                document.getElementById('chk-total').innerText = total;
+            }
+
+            removeFromCart(index) { this.cart.splice(index, 1); this.renderCart(); }
+            toggleCart() { document.getElementById('cart-panel').classList.toggle('open'); }
+
+            openCheckout() {
+                if (this.cart.length === 0) { alert("Cart is empty!"); return; }
+                this.toggleCart();
+                document.getElementById('checkout-modal').style.display = 'flex';
+            }
+
+            async processCheckout(e) {
+                e.preventDefault();
+                const btn = document.getElementById('chk-btn');
+                btn.innerText = "PROCESSING..."; btn.disabled = true;
+
+                // Create Order Object
+                const order = {
+                    date: new Date().toLocaleDateString(),
+                    items: this.cart,
+                    total: document.getElementById('chk-total').innerText,
+                    status: "PREPARING",
+                    address: document.getElementById('chk-address').value + ", " + document.getElementById('chk-city').value,
+                    payment: document.getElementById('chk-payment').value
+                };
+
+                try {
+                    // Save to Firebase User Profile
+                    await window.firebase.updateDoc(window.firebase.doc(window.db, "users", this.uid), {
+                        orders: window.firebase.arrayUnion(order)
+                    });
+
+                    alert("ORDER CONFIRMED! Your parts are being prepped.");
+                    this.cart = []; this.renderCart();
+                    document.getElementById('checkout-modal').style.display = 'none';
+                    btn.innerText = "CONFIRM ORDER"; btn.disabled = false;
+                    this.loadProfile(this.uid); // Refresh dashboard to show new order
+                    this.navTo('view-dashboard');
+                } catch (error) { alert("Checkout Failed: " + error.message); }
+            }
+
+            // --- BOOKING LOGIC ---
             async checkSlots() {
                 const date = document.getElementById('b_date').value;
                 const sel = document.getElementById('b_time');
                 const btn = document.getElementById('bookBtn');
-                
-                sel.innerHTML = "<option>SCANNING...</option>";
-                sel.disabled = true; btn.disabled = true;
+                sel.innerHTML = "<option>SCANNING...</option>"; sel.disabled = true; btn.disabled = true;
 
                 try {
                     const res = await fetch(`${SCRIPT_URL}?action=checkSlots&date=${date}`);
@@ -391,13 +523,9 @@
                 const btn = document.getElementById('bookBtn');
                 const stat = document.getElementById('booking-status');
                 btn.innerText = "BOOKING...";
-                
                 const fd = new FormData();
-                fd.append('date', document.getElementById('b_date').value);
-                fd.append('time', document.getElementById('b_time').value);
-                fd.append('name', document.getElementById('b_name').value);
-                fd.append('phone', document.getElementById('b_phone').value);
-                fd.append('car', document.getElementById('b_car').value);
+                fd.append('date', document.getElementById('b_date').value); fd.append('time', document.getElementById('b_time').value);
+                fd.append('name', document.getElementById('b_name').value); fd.append('phone', document.getElementById('b_phone').value); fd.append('car', document.getElementById('b_car').value);
 
                 try {
                     await fetch(SCRIPT_URL, {method:'POST', body:fd});
@@ -407,18 +535,12 @@
                 } catch(e) { stat.innerText = "FAILED"; }
             }
 
-            // EMAILJS: CONSULT
+            // --- EMAIL LOGIC ---
             sendMail(e) {
                 e.preventDefault();
-                const btn = document.getElementById('mailBtn');
-                const status = document.getElementById('mailStatus');
+                const btn = document.getElementById('mailBtn'); const status = document.getElementById('mailStatus');
                 btn.innerText = "SENDING...";
-
-                const params = {
-                    from_name: document.getElementById('c_name').value,
-                    car_model: document.getElementById('c_car').value,
-                    message: document.getElementById('c_message').value
-                };
+                const params = { from_name: document.getElementById('c_name').value, car_model: document.getElementById('c_car').value, message: document.getElementById('c_message').value };
 
                 emailjs.send("service_ilkre51", "template_hu62u55", params)
                 .then(() => { status.innerText = "SENT TO EXPERT!"; status.style.color = "#d4af37"; btn.innerText = "SEND"; })
