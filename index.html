@@ -7,6 +7,8 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -28,7 +30,7 @@
     </script>
 
     <style>
-        /* --- 1. LUXURY AESTHETICS --- */
+        /* --- LUXURY AESTHETICS --- */
         :root {
             --bg-dark: #0a0a0a;
             --champagne: #D4AF37;
@@ -39,255 +41,326 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            background: var(--bg-dark); 
-            color: var(--text-light); 
-            font-family: var(--font-body); 
-            overflow-x: hidden; 
-            -webkit-font-smoothing: antialiased;
-        }
+        body { background: var(--bg-dark); color: var(--text-light); font-family: var(--font-body); overflow-x: hidden; }
 
-        /* --- 2. MINIMALIST NAVIGATION --- */
+        /* --- NAVIGATION --- */
         nav {
             position: fixed; top: 0; width: 100%; padding: 30px 60px;
             display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; mix-blend-mode: difference;
+            z-index: 100; background: rgba(10,10,10,0.8); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .logo { font-family: var(--font-head); font-size: 1.8rem; font-weight: 600; letter-spacing: 2px; }
+        .logo { font-family: var(--font-head); font-size: 1.5rem; letter-spacing: 2px; cursor: pointer; }
         .logo span { color: var(--champagne); }
 
-        .nav-links { display: flex; gap: 40px; }
-        .nav-item {
-            font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
-            cursor: pointer; transition: 0.3s; position: relative;
-        }
-        .nav-item:hover { color: var(--champagne); }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-item { font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: 0.3s; color: var(--text-muted); }
+        .nav-item:hover, .nav-item.active { color: var(--champagne); }
 
-        /* --- 3. IMMERSIVE HERO SECTION --- */
-        .hero {
-            height: 100vh; width: 100vw; position: relative;
-            display: flex; align-items: center; justify-content: center;
-        }
-        
+        /* --- SECTIONS (PAGES) --- */
+        .page-section { display: none; padding-top: 100px; min-height: 100vh; animation: fadeIn 0.5s; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- HERO (HOME) --- */
+        #page-home { padding-top: 0; }
+        .hero { height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
         .hero-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(10,10,10,1) 0%, rgba(10,10,10,0.2) 100%), 
-                        url('https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2000&auto=format&fit=crop');
-            background-size: cover; background-position: center; z-index: -1;
-            filter: grayscale(80%); transition: filter 1s;
+            background: linear-gradient(to top, rgba(10,10,10,1) 0%, rgba(10,10,10,0.2) 100%), url('https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=2000&auto=format&fit=crop');
+            background-size: cover; background-position: center; z-index: -1; filter: grayscale(50%);
         }
-        .hero:hover .hero-bg { filter: grayscale(20%); }
-
-        .hero-text { text-align: center; max-width: 800px; padding: 0 20px; animation: fadeUp 1.5s ease-out; }
-        .hero-text h1 { font-family: var(--font-head); font-size: 4.5rem; line-height: 1.1; margin-bottom: 20px; font-weight: 400; }
+        .hero-text { text-align: center; }
+        .hero-text h1 { font-family: var(--font-head); font-size: 4rem; margin-bottom: 20px; font-weight: 400; }
         .hero-text p { font-size: 0.9rem; letter-spacing: 4px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 40px; }
 
+        /* --- BUTTONS & FORMS --- */
         .btn-gold {
             background: transparent; border: 1px solid var(--champagne); color: var(--champagne);
-            padding: 15px 40px; font-family: var(--font-body); font-size: 0.8rem; letter-spacing: 2px;
-            text-transform: uppercase; cursor: pointer; transition: 0.4s;
+            padding: 15px 40px; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
+            cursor: pointer; transition: 0.4s;
         }
-        .btn-gold:hover { background: var(--champagne); color: #000; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2); }
+        .btn-gold:hover { background: var(--champagne); color: #000; }
+        .btn-full { width: 100%; }
 
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- 4. MODALS & FORMS (CLEAN & ELEGANT) --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(10,10,10,0.95); backdrop-filter: blur(10px);
-            z-index: 200; display: none; align-items: center; justify-content: center;
-            opacity: 0; transition: 0.3s;
-        }
-        .modal-overlay.active { display: flex; opacity: 1; }
-
-        .modal-box {
-            width: 100%; max-width: 450px; background: #111; padding: 50px;
-            border: 1px solid #222; position: relative;
-        }
-
-        .close-btn {
-            position: absolute; top: 20px; right: 20px; color: #555;
-            font-size: 1.5rem; cursor: pointer; transition: 0.3s;
-        }
-        .close-btn:hover { color: #fff; }
-
-        .modal-title { font-family: var(--font-head); font-size: 2rem; color: #fff; margin-bottom: 30px; text-align: center; font-weight: 400; }
-
-        .input-group { position: relative; margin-bottom: 30px; }
-        .input-group input {
+        .input-group { margin-bottom: 30px; }
+        input, select, textarea {
             width: 100%; background: transparent; border: none; border-bottom: 1px solid #333;
-            color: #fff; font-size: 1rem; padding: 10px 0; font-family: var(--font-body); transition: 0.3s;
+            color: #fff; font-size: 1rem; padding: 10px 0; font-family: var(--font-body);
         }
-        .input-group input:focus { outline: none; border-bottom-color: var(--champagne); }
+        input:focus, select:focus, textarea:focus { outline: none; border-bottom-color: var(--champagne); }
 
-        /* --- 5. DASHBOARD LAYOUT --- */
-        .dashboard-container { display: none; padding: 150px 60px 50px 60px; max-width: 1200px; margin: 0 auto; }
+        /* --- STORE / BOUTIQUE GRID --- */
+        .content-container { max-width: 1200px; margin: 0 auto; padding: 60px; }
+        .section-title { font-family: var(--font-head); font-size: 2.5rem; text-align: center; margin-bottom: 60px; }
         
-        .dash-header { border-bottom: 1px solid #222; padding-bottom: 30px; margin-bottom: 50px; }
-        .dash-header h1 { font-family: var(--font-head); font-size: 3rem; font-weight: 400; }
+        .boutique-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 40px; }
+        .item-card { text-align: center; }
+        .item-img { width: 100%; height: 350px; background-size: cover; background-position: center; margin-bottom: 20px; background-color: #111; }
+        .item-name { font-family: var(--font-head); font-size: 1.2rem; margin-bottom: 5px; }
+        .item-price { color: var(--champagne); font-size: 0.9rem; margin-bottom: 20px; letter-spacing: 1px; }
 
-        .dash-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
-        .dash-card { background: #111; padding: 40px; }
+        /* --- FORMS LAYOUT (BOOKING & CONSULT) --- */
+        .form-wrapper { max-width: 600px; margin: 0 auto; background: #111; padding: 50px; border: 1px solid #222; }
+
+        /* --- DASHBOARD --- */
+        .dash-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; margin-top: 40px; }
+        .dash-card { background: #111; padding: 40px; border: 1px solid #222; }
         .dash-card h3 { font-family: var(--font-head); font-size: 1.5rem; color: var(--champagne); margin-bottom: 30px; }
         .dash-label { font-size: 0.7rem; color: #666; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; }
-        .dash-value { font-size: 1.2rem; color: #fff; margin-bottom: 25px; }
+        .dash-val { font-size: 1.2rem; margin-bottom: 25px; }
 
-        /* --- MOBILE RESPONSIVENESS --- */
+        /* --- MOBILE --- */
         @media (max-width: 768px) {
-            nav { padding: 20px; }
-            .nav-links { display: none; } /* Use a hamburger menu later if needed */
+            nav { padding: 20px; flex-direction: column; gap: 15px; }
             .hero-text h1 { font-size: 2.5rem; }
-            .modal-box { padding: 30px; margin: 20px; }
-            .dashboard-container { padding: 120px 20px; }
+            .content-container { padding: 40px 20px; }
             .dash-grid { grid-template-columns: 1fr; }
+            .form-wrapper { padding: 30px; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">RICHBRAT<span>$</span></div>
-        <div class="nav-links" id="nav-guest">
-            <div class="nav-item" onclick="openModal('login')">Client Login</div>
-            <div class="nav-item" onclick="openModal('register')">Register</div>
-        </div>
-        <div class="nav-links" id="nav-user" style="display:none;">
-            <div class="nav-item" onclick="switchView('dash')">My Garage</div>
-            <div class="nav-item" onclick="app.logout()">Sign Out</div>
+        <div class="logo" onclick="switchPage('home')">RICHBRAT<span>$</span></div>
+        <div class="nav-links">
+            <span class="nav-item" onclick="app.loadStore()">Boutique</span>
+            <span class="nav-item" onclick="switchPage('booking')">Commissions</span>
+            <span class="nav-item" onclick="switchPage('consult')">Consultation</span>
+            
+            <span class="nav-item" id="nav-login" onclick="switchPage('login')">Client Login</span>
+            <span class="nav-item" id="nav-dash" style="display:none;" onclick="switchPage('dash')">My Garage</span>
+            <span class="nav-item" id="nav-logout" style="display:none;" onclick="app.logout()">Sign Out</span>
         </div>
     </nav>
 
-    <section class="hero" id="page-hero">
-        <div class="hero-bg"></div>
-        <div class="hero-text">
-            <p>Bespoke Automotive Art</p>
-            <h1>Redefining Modern Luxury</h1>
-            <button class="btn-gold" onclick="openModal('register')">Request Access</button>
-        </div>
-    </section>
-
-    <section class="dashboard-container" id="page-dash">
-        <div class="dash-header">
-            <p style="color:var(--champagne); letter-spacing: 2px;">WELCOME BACK</p>
-            <h1 id="user-display">Client</h1>
-        </div>
-        <div class="dash-grid">
-            <div class="dash-card">
-                <h3>Client Profile</h3>
-                <div class="dash-label">Vehicle</div>
-                <div class="dash-value" id="dash-car">--</div>
-                
-                <div class="dash-label">Contact</div>
-                <div class="dash-value" id="dash-phone">--</div>
-                
-                <button class="btn-gold" style="width:100%; font-size: 0.7rem;">Update Details</button>
-            </div>
-            <div class="dash-card">
-                <h3>Acquisitions & Bookings</h3>
-                <div style="color: #666; font-style: italic; font-size: 0.9rem;">No active commissions on file.</div>
+    <section class="page-section active" id="page-home">
+        <div class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-text">
+                <p>Bespoke Automotive Art</p>
+                <h1>Redefining Modern Luxury</h1>
+                <button class="btn-gold" onclick="switchPage('booking')">Commission a Build</button>
             </div>
         </div>
     </section>
 
-    <div class="modal-overlay" id="auth-modal">
-        <div class="modal-box">
-            <div class="close-btn" onclick="closeModal()">✕</div>
-            <h2 class="modal-title" id="modal-title">Sign In</h2>
-            
-            <form id="auth-form" onsubmit="event.preventDefault(); app.handleAuth();">
-                <div id="reg-fields" style="display:none;">
-                    <div class="input-group"><input type="text" id="reg-name" placeholder="Full Name"></div>
-                    <div class="input-group"><input type="text" id="reg-car" placeholder="Car Make & Model"></div>
-                    <div class="input-group"><input type="text" id="reg-insta" placeholder="Instagram Handle"></div>
-                    <div class="input-group"><input type="tel" id="reg-phone" placeholder="Phone Number"></div>
+    <section class="page-section" id="page-store">
+        <div class="content-container">
+            <h2 class="section-title">The Boutique</h2>
+            <div id="loader-store" style="text-align:center; color:#666; letter-spacing:2px;">FETCHING INVENTORY...</div>
+            <div class="boutique-grid" id="product-list"></div>
+        </div>
+    </section>
+
+    <section class="page-section" id="page-booking">
+        <div class="content-container">
+            <h2 class="section-title">Schedule a Consultation</h2>
+            <div class="form-wrapper">
+                <form id="bookingForm" onsubmit="app.bookSlot(event)">
+                    <div class="input-group">
+                        <input type="date" id="dateInput" required onchange="app.checkSlots()">
+                    </div>
+                    <div class="input-group">
+                        <select id="timeInput" disabled><option>Select Date First</option></select>
+                    </div>
+                    <div class="input-group"><input type="text" id="b_name" placeholder="Full Name" required></div>
+                    <div class="input-group"><input type="tel" id="b_phone" placeholder="Contact Number" required></div>
+                    <div class="input-group"><input type="text" id="b_car" placeholder="Vehicle Details" required></div>
+                    <button class="btn-gold btn-full" id="bookBtn">Confirm Appointment</button>
+                    <div id="booking-status" style="margin-top:20px; text-align:center; font-style:italic;"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="page-consult">
+        <div class="content-container">
+            <h2 class="section-title">Bespoke Inquiry</h2>
+            <div class="form-wrapper">
+                <form id="consultForm" onsubmit="event.preventDefault(); app.sendMail();">
+                    <div class="input-group"><input type="text" id="u_name" placeholder="Client Name" required></div>
+                    <div class="input-group"><input type="email" id="u_email" placeholder="Email Address" required></div>
+                    <div class="input-group"><input type="text" id="u_car" placeholder="Base Vehicle" required></div>
+                    <div class="input-group">
+                        <textarea id="u_message" rows="4" placeholder="Describe your vision..." required></textarea>
+                    </div>
+                    <button class="btn-gold btn-full" id="sendBtn">Submit Inquiry</button>
+                    <div id="mail-status" style="margin-top:20px; text-align:center; font-style:italic;"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="page-login">
+        <div class="content-container">
+            <h2 class="section-title" id="auth-title">Client Access</h2>
+            <div class="form-wrapper">
+                <form onsubmit="app.handleAuth(event)">
+                    <div id="reg-fields" style="display:none;">
+                        <div class="input-group"><input type="text" id="reg-name" placeholder="Full Name"></div>
+                        <div class="input-group"><input type="text" id="reg-car" placeholder="Vehicle Model"></div>
+                        <div class="input-group"><input type="tel" id="reg-phone" placeholder="Phone"></div>
+                    </div>
+                    <div class="input-group"><input type="email" id="email" placeholder="Email Address" required></div>
+                    <div class="input-group"><input type="password" id="password" placeholder="Password" required></div>
+                    <button class="btn-gold btn-full" id="auth-btn">Sign In</button>
+                </form>
+                <div style="text-align:center; margin-top:20px; color:#666; cursor:pointer;" onclick="app.toggleAuthMode()" id="auth-toggle">Not a member? Apply for Access</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section" id="page-dash">
+        <div class="content-container">
+            <h2 class="section-title" style="text-align:left;">Welcome, <span id="dash-name" style="color:var(--champagne);">Client</span></h2>
+            <div class="dash-grid">
+                <div class="dash-card">
+                    <h3>Driver Profile</h3>
+                    <div class="dash-label">Vehicle</div>
+                    <div class="dash-val" id="dash-car-val">--</div>
+                    <div class="dash-label">Contact</div>
+                    <div class="dash-val" id="dash-phone-val">--</div>
                 </div>
-
-                <div class="input-group"><input type="email" id="email" placeholder="Email Address" required></div>
-                <div class="input-group"><input type="password" id="password" placeholder="Password" required></div>
-
-                <button type="submit" class="btn-gold" style="width:100%;" id="submit-btn">Enter</button>
-            </form>
-            
-            <p style="margin-top: 20px; font-size: 0.8rem; color:#888; text-align:center; cursor:pointer;" onclick="toggleAuthMode()">
-                <span id="switch-txt">Not a member? Apply for Access</span>
-            </p>
+                <div class="dash-card">
+                    <h3>Acquisitions & Log</h3>
+                    <div style="color:#666; font-style:italic;">No active projects on file.</div>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
     <script>
-        let isRegistering = false;
+        // --- 1. CONFIGURATION ---
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMnw6q1Og3viC8gKoMx690O8mkw3wCBgNXnMGap3yK4MHMgLyTF0DYBEiNJ2zTXszplw/exec"; // LINKED!
+        
+        // EmailJS for Consult
+        emailjs.init("9-7GR7Lab7wUNI5sH");
+        const SERVICE_ID = "service_ilkre51";
+        const TEMPLATE_ID = "template_hu62u55";
 
-        // --- 1. UI CONTROLS ---
-        function openModal(mode) {
-            isRegistering = (mode === 'register');
-            document.getElementById('auth-modal').classList.add('active');
-            updateModalUI();
+        // --- 2. UI NAVIGATION ---
+        function switchPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            window.scrollTo(0,0);
         }
 
-        function closeModal() {
-            document.getElementById('auth-modal').classList.remove('active');
-        }
-
-        function toggleAuthMode() {
-            isRegistering = !isRegistering;
-            updateModalUI();
-        }
-
-        function updateModalUI() {
-            document.getElementById('reg-fields').style.display = isRegistering ? 'block' : 'none';
-            document.getElementById('modal-title').innerText = isRegistering ? "Request Access" : "Sign In";
-            document.getElementById('submit-btn').innerText = isRegistering ? "Submit Application" : "Enter";
-            document.getElementById('switch-txt').innerText = isRegistering ? "Already have an account? Sign In" : "Not a member? Apply for Access";
-        }
-
-        function switchView(viewName) {
-            document.getElementById('page-hero').style.display = (viewName === 'hero') ? 'flex' : 'none';
-            document.getElementById('page-dash').style.display = (viewName === 'dash') ? 'block' : 'none';
-        }
-
-        // --- 2. FIREBASE AUTH LOGIC ---
         class AppCore {
-            async handleAuth() {
-                const btn = document.getElementById('submit-btn');
-                btn.innerText = "Authenticating...";
+            constructor() { this.isRegistering = false; }
 
-                const email = document.getElementById('email').value;
-                const pass = document.getElementById('password').value;
+            // --- AUTH LOGIC (FIREBASE) ---
+            toggleAuthMode() {
+                this.isRegistering = !this.isRegistering;
+                document.getElementById('reg-fields').style.display = this.isRegistering ? 'block' : 'none';
+                document.getElementById('auth-title').innerText = this.isRegistering ? "Apply for Access" : "Client Access";
+                document.getElementById('auth-btn').innerText = this.isRegistering ? "Submit Application" : "Sign In";
+                document.getElementById('auth-toggle').innerText = this.isRegistering ? "Already a member? Sign In" : "Not a member? Apply for Access";
+            }
+
+            async handleAuth(e) {
+                e.preventDefault();
+                const btn = document.getElementById('auth-btn');
+                btn.innerText = "Processing...";
 
                 try {
-                    if (isRegistering) {
-                        const cred = await window.firebase.createUserWithEmailAndPassword(window.auth, email, pass);
+                    if (this.isRegistering) {
+                        const cred = await window.firebase.createUserWithEmailAndPassword(window.auth, document.getElementById('email').value, document.getElementById('password').value);
                         await window.firebase.setDoc(window.firebase.doc(window.db, "users", cred.user.uid), {
                             name: document.getElementById('reg-name').value,
                             car: document.getElementById('reg-car').value,
-                            insta: document.getElementById('reg-insta').value,
                             phone: document.getElementById('reg-phone').value,
                         });
                     } else {
-                        await window.firebase.signInWithEmailAndPassword(window.auth, email, pass);
+                        await window.firebase.signInWithEmailAndPassword(window.auth, document.getElementById('email').value, document.getElementById('password').value);
                     }
-                    closeModal();
-                } catch(e) { 
-                    alert("Authentication Error: " + e.message); 
-                    btn.innerText = isRegistering ? "Submit Application" : "Enter";
-                }
+                } catch(err) { alert("Error: " + err.message); btn.innerText = this.isRegistering ? "Submit Application" : "Sign In"; }
             }
 
             logout() { window.firebase.signOut(window.auth); }
 
-            loadDashboard(user) {
-                switchView('dash');
-                document.getElementById('nav-guest').style.display = 'none';
-                document.getElementById('nav-user').style.display = 'flex';
+            // --- STORE LOGIC ---
+            async loadStore() {
+                switchPage('store');
+                const list = document.getElementById('product-list');
+                const loader = document.getElementById('loader-store');
+                list.innerHTML = ""; loader.style.display = 'block';
 
-                window.firebase.getDoc(window.firebase.doc(window.db, "users", user.uid)).then(doc => {
-                    const data = doc.data();
-                    document.getElementById('user-display').innerText = data.name;
-                    document.getElementById('dash-car').innerText = data.car;
-                    document.getElementById('dash-phone').innerText = data.phone;
-                });
+                try {
+                    const res = await fetch(`${SCRIPT_URL}?action=getInventory`);
+                    const data = await res.json();
+                    loader.style.display = 'none';
+
+                    data.forEach(p => {
+                        list.innerHTML += `
+                        <div class="item-card">
+                            <div class="item-img" style="background-image:url('${p.image}')"></div>
+                            <h3 class="item-name">${p.name}</h3>
+                            <div class="item-price">$${p.price}</div>
+                            <button class="btn-gold btn-full" onclick="window.open('https://wa.me/919999999999?text=Inquiring about: ${p.name}')">Acquire</button>
+                        </div>`;
+                    });
+                } catch(e) { loader.innerText = "Error Loading Inventory."; }
+            }
+
+            // --- BOOKING LOGIC ---
+            async checkSlots() {
+                const date = document.getElementById('dateInput').value;
+                const sel = document.getElementById('timeInput');
+                sel.innerHTML = "<option>Checking availability...</option>"; sel.disabled = true;
+
+                try {
+                    const res = await fetch(`${SCRIPT_URL}?action=checkSlots&date=${date}`);
+                    const taken = await res.json();
+                    const hours = ["10:00","12:00","14:00","16:00"];
+                    const avail = hours.filter(h => !taken.includes(h));
+
+                    sel.innerHTML = "";
+                    if(avail.length === 0) sel.innerHTML = "<option>Fully Booked</option>";
+                    else { avail.forEach(h => sel.innerHTML += `<option value="${h}">${h}</option>`); sel.disabled = false; }
+                } catch(e) { sel.innerHTML = "<option>Error</option>"; }
+            }
+
+            async bookSlot(e) {
+                e.preventDefault();
+                const btn = document.getElementById('bookBtn');
+                const stat = document.getElementById('booking-status');
+                btn.innerText = "Securing Appointment...";
+
+                const fd = new FormData();
+                fd.append('date', document.getElementById('dateInput').value);
+                fd.append('time', document.getElementById('timeInput').value);
+                fd.append('name', document.getElementById('b_name').value);
+                fd.append('phone', document.getElementById('b_phone').value);
+                fd.append('car', document.getElementById('b_car').value);
+
+                try {
+                    await fetch(SCRIPT_URL, {method:'POST', body:fd});
+                    stat.innerText = "Appointment Secured. A concierge will contact you shortly.";
+                    stat.style.color = "#D4AF37";
+                    document.getElementById('bookingForm').reset();
+                    btn.innerText = "Confirm Appointment";
+                } catch(e) { stat.innerText = "Booking Failed."; btn.innerText = "Confirm Appointment"; }
+            }
+
+            // --- EMAIL LOGIC ---
+            sendMail() {
+                const btn = document.getElementById('sendBtn');
+                const stat = document.getElementById('mail-status');
+                btn.innerText = "Submitting...";
+
+                const params = {
+                    from_name: document.getElementById('u_name').value,
+                    reply_to: document.getElementById('u_email').value,
+                    car_model: document.getElementById('u_car').value,
+                    message: document.getElementById('u_message').value
+                };
+
+                emailjs.send(SERVICE_ID, TEMPLATE_ID, params)
+                .then(() => { stat.innerText = "Inquiry Sent. We will be in touch."; stat.style.color="#D4AF37"; btn.innerText="Submit Inquiry"; })
+                .catch(() => { stat.innerText = "Error Sending Inquiry."; });
             }
         }
 
@@ -296,15 +369,26 @@
         // AUTH LISTENER
         setTimeout(() => {
             window.auth.onAuthStateChanged(user => {
-                if (user) app.loadDashboard(user);
-                else {
-                    document.getElementById('nav-guest').style.display = 'flex';
-                    document.getElementById('nav-user').style.display = 'none';
-                    switchView('hero');
+                if (user) {
+                    document.getElementById('nav-login').style.display = 'none';
+                    document.getElementById('nav-dash').style.display = 'block';
+                    document.getElementById('nav-logout').style.display = 'block';
+                    switchPage('dash');
+
+                    window.firebase.getDoc(window.firebase.doc(window.db, "users", user.uid)).then(doc => {
+                        const data = doc.data();
+                        document.getElementById('dash-name').innerText = data.name;
+                        document.getElementById('dash-car-val').innerText = data.car;
+                        document.getElementById('dash-phone-val').innerText = data.phone;
+                    });
+                } else {
+                    document.getElementById('nav-login').style.display = 'block';
+                    document.getElementById('nav-dash').style.display = 'none';
+                    document.getElementById('nav-logout').style.display = 'none';
+                    switchPage('home');
                 }
             });
         }, 1000);
-
     </script>
 </body>
 </html>
