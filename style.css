@@ -110,7 +110,6 @@ nav { position: fixed; top: 0; width: 100%; padding: 20px 40px; display: flex; j
 @media (max-width: 768px) {
     nav { padding: 15px 20px; }
     .logo-container img { height: 45px; }
-    .auto-elements { display: none; } /* Hide floating parts on mobile for performance */
     .booking-grid { grid-template-columns: 1fr; gap: 20px; }
     .vip-lounge { padding: 30px; order: 2; } 
     .booking-form { order: 1; }
