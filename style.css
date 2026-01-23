@@ -189,29 +189,29 @@ nav {
         bottom: -50vh; 
         opacity: 0; 
         /* Maintain rotation start */
-        transform: translateX(-50%) rotate(-90deg) scale(0.8); 
+        transform: translateX(-50%) rotate(0deg) scale(0.8); 
     }
     15% { 
         opacity: 1; 
         bottom: 5%; 
         /* Engine Idle Vibrate */
-        transform: translateX(-50%) rotate(-90deg) scale(1) translate(2px, -2px); 
+        transform: translateX(-50%) rotate(0deg) scale(1) translate(2px, -2px); 
     }
     25% {
-        transform: translateX(-50%) rotate(-90deg) scale(1) translate(-2px, 2px); 
+        transform: translateX(-50%) rotate(0deg) scale(1) translate(-2px, 2px); 
     }
     100% { 
         bottom: 120vh; /* Fly off top */
         opacity: 1; 
         /* Speed Stretch effect */
-        transform: translateX(-50%) rotate(-90deg) scaleY(1.2); 
+        transform: translateX(-50%) rotate(90deg) scaleY(1.2); 
     } 
 }
 
 @keyframes skidGrow {
-    0% { height: 0; opacity: 0; }
-    20% { height: 60vh; opacity: 0.8; } /* Trails grow behind car */
-    100% { height: 100vh; opacity: 0; bottom: 100%; } /* Fade out moving up */
+    0% { height: 0; opacity: 0.5; }
+    60% { height: 60vh; opacity: 0.9; } /* Trails grow behind car */
+    100% { height: 100vh; opacity: 1; bottom: 100%; } /* Fade out moving up */
 }
 /* PROFILE & STORE */
 .profile-container { display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
