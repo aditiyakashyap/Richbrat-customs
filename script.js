@@ -19,9 +19,16 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKWST3IhiMjYIS6hLfB
 
 // --- 3. UI & MODAL CONTROL ---
 let authMode = 'login';
-window.openModal = (mode) => { authMode = mode; updateModalUI(); document.getElementById('auth-modal').style.display = 'flex'; }
+window.openModal = (mode) => { 
+    authMode = mode; 
+    updateModalUI(); 
+    document.getElementById('auth-modal').style.display = 'flex'; 
+}
 window.closeModal = () => document.getElementById('auth-modal').style.display = 'none';
-window.switchMode = () => { authMode = authMode === 'login' ? 'register' : 'login'; updateModalUI(); }
+window.switchMode = () => { 
+    authMode = authMode === 'login' ? 'register' : 'login'; 
+    updateModalUI(); 
+}
 
 function updateModalUI() {
     document.getElementById('modal-title').innerText = authMode === 'register' ? "NEW PILOT REGISTRY" : "SECURE LOGIN";
@@ -37,7 +44,6 @@ class App {
         this.uid = null;
         
         // --- GLOBAL LOADER LOGIC ---
-        // Fades out the pulsing logo overlay once the app loads
         window.onload = () => {
             const loader = document.getElementById('global-loader');
             if(loader) {
@@ -48,7 +54,7 @@ class App {
             }
         };
 
-        // Auth Listener
+        // --- AUTH LISTENER ---
         setTimeout(() => {
             auth.onAuthStateChanged(user => {
                 if (user) {
@@ -57,11 +63,6 @@ class App {
                     this.loadProfile(user.uid);
                     document.getElementById('nav-actions').style.display = 'none';
                     document.getElementById('user-actions').style.display = 'flex';
-                    
-                    // Optional: Auto-redirect if on landing page
-                    if(document.getElementById('view-landing').classList.contains('active')) {
-                        // this.navTo('view-dashboard'); // Uncomment to auto-enter
-                    }
                 } else {
                     // GUEST
                     this.uid = null;
@@ -73,32 +74,31 @@ class App {
         }, 1000);
     }
 
-    // --- NAVIGATION & ANIMATION ---
-    
-    // DRAG RACE ANIMATION TRIGGER
+    // --- ANIMATION TRIGGER ---
     triggerDragRace(callback) {
         const overlay = document.getElementById('drag-run-overlay');
         overlay.style.display = 'block';
         overlay.classList.add('animate-drag');
 
-        // Animation lasts ~1.8s total. Execute callback mid-way.
+        // Execute callback mid-way through animation
         setTimeout(() => {
             if (callback) callback();
         }, 1200);
 
-        // Cleanup after animation finishes
+        // Reset animation
         setTimeout(() => {
             overlay.classList.remove('animate-drag');
             overlay.style.display = 'none';
         }, 2000);
     }
 
+    // --- NAVIGATION ---
     navTo(id) {
         window.scrollTo(0,0);
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         
-        // FLOATING HOME BUTTON LOGIC
+        // Floating Home Button Logic
         const floatBtn = document.getElementById('floatHome');
         if (floatBtn) {
             if (id === 'view-landing') {
@@ -108,7 +108,7 @@ class App {
             }
         }
 
-        // Reset consultancy form UI if entering that section
+        // Reset Consultancy Form UI
         if(id === 'view-consultancy') {
              document.getElementById('consultancy-form-container').style.display = 'block';
              document.getElementById('consultancy-success').style.display = 'none';
@@ -119,7 +119,7 @@ class App {
     goHome() { this.navTo('view-landing'); }
     logout() { auth.signOut(); this.navTo('view-landing'); }
 
-    // --- AUTHENTICATION ---
+    // --- AUTHENTICATION ACTIONS ---
     async handleAuth(e) {
         e.preventDefault();
         const email = document.getElementById('email').value;
@@ -137,7 +137,7 @@ class App {
             } else {
                 await auth.signInWithEmailAndPassword(email, password);
             }
-            // Trigger Animation on Success
+            // Animate and Redirect
             this.triggerDragRace(() => {
                 window.closeModal();
                 this.navTo('view-dashboard');
@@ -145,9 +145,8 @@ class App {
         } catch (error) { alert("Access Denied: " + error.message); }
     }
 
-    // --- PROFILE MANAGEMENT ---
+    // --- PROFILE DATA ---
     loadGuestProfile() {
-        // Clear all form fields
         document.getElementById('b_name').value = ""; 
         document.getElementById('b_phone').value = ""; 
         document.getElementById('b_car').value = "";
@@ -158,18 +157,16 @@ class App {
         if (docSnap.exists) {
             const data = docSnap.data();
             
-            // Auto-fill Booking Form
+            // Auto-fill forms
             document.getElementById('b_name').value = data.name; 
             document.getElementById('b_phone').value = data.phone; 
             document.getElementById('b_car').value = data.car;
 
-            // Auto-fill Consultancy Form
             document.getElementById('c_name').value = data.name; 
             document.getElementById('c_phone').value = data.phone || "";
             document.getElementById('c_email').value = data.email || "";
             document.getElementById('c_car').value = data.car;
             
-            // Auto-fill Profile Page
             document.getElementById('p_name').value = data.name;
             document.getElementById('p_phone').value = data.phone || "";
             document.getElementById('p_car').value = data.car || "";
@@ -220,7 +217,6 @@ class App {
         const list = document.getElementById('product-list');
         const loader = document.getElementById('loading-store');
         
-        // Simple cache check
         if(list.children.length > 0) return;
 
         loader.style.display = 'block';
@@ -339,7 +335,6 @@ class App {
                 orders: firebase.firestore.FieldValue.arrayUnion(order)
             });
             
-            // Trigger Drag Race Animation
             this.triggerDragRace(() => {
                 this.cart = []; this.renderCart();
                 document.getElementById('checkout-modal').style.display = 'none';
@@ -385,7 +380,6 @@ class App {
         try {
             await fetch(SCRIPT_URL, {method:'POST', body:fd});
             
-            // Trigger Drag Race Animation
             this.triggerDragRace(() => {
                 document.getElementById('bookingForm').reset();
                 btn.innerText = "CONFIRM";
@@ -410,7 +404,6 @@ class App {
         btn.innerText = "UPLOADING..."; btn.disabled = true;
         const file = document.getElementById('c_image').files[0];
         
-        // Optional: Allow submit without image if you want, but sticking to logic
         if (!file) { alert("Image required."); btn.innerText = "SEND"; btn.disabled = false; return; }
 
         try {
@@ -429,7 +422,6 @@ class App {
 
             await fetch(SCRIPT_URL, {method:'POST', body:fd});
 
-            // Trigger Drag Race Animation
             this.triggerDragRace(() => {
                 formContainer.style.display = 'none';
                 successContainer.style.display = 'block';
