@@ -1,3 +1,34 @@
+/* --- IMPORT CUSTOM FONT --- */
+@font-face {
+    font-family: 'Planet Kosmos';
+    src: url('PlanetKosmos.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* --- UPDATE ROOT VARIABLES --- */
+:root {
+    /* ... existing variables ... */
+    --font-logo: 'Planet Kosmos', sans-serif; /* Define the new font variable */
+}
+
+/* --- APPLY TO LOGO TEXT --- */
+.logo-text {
+    font-family: var(--font-logo); /* Applies Planet Kosmos */
+    font-size: 2.2rem; /* Adjusted size for this specific font */
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    transition: 0.3s;
+}
+
+.logo-text:hover {
+    color: var(--gold);
+    text-shadow: 0 0 20px var(--gold);
+    transform: scale(1.02);
+}
 /* --- CORE UI: GEN-Z LUXURY & TRENDY --- */
 :root {
     --gold: #D4AF37;
