@@ -44,21 +44,7 @@
     --font-logo: 'Planet Kosmos', 'Clash Display', sans-serif; /* NEW FONT VAR */
 }
 
-/* IMPORT PLANET KOSMOS (Assuming file is in root, otherwise allow fallback) */
-@font-face {
-    font-family: 'Planet Kosmos';
-    src: url('PlanetKosmos.ttf') format('truetype'); /* Ensure you have this file! */
-    font-weight: normal;
-    font-style: normal;
-}
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { 
-    background-color: var(--navy); 
-    color: var(--text-white); 
-    font-family: var(--font-body); 
-    overflow-x: hidden; 
-}
 
 .bg-noise {
     position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
