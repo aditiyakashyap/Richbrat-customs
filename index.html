@@ -32,11 +32,17 @@
     
     <nav>
         <div class="logo-container" onclick="app.goHome()">
-            <img src="logo.png" alt="RichBrat$ Customs">
+            <h1 class="logo-text">RICHBRAT$ CUSTOMS</h1>
+        </div>
+
+        <div class="nav-center">
+            <a class="page-link" onclick="app.loadStore()">Store</a>
+            <a class="page-link" onclick="app.navTo('view-booking')">Appointment</a>
+            <a class="page-link" onclick="app.navTo('view-consultancy')">Consult</a>
         </div>
 
         <div class="user-panel" id="nav-actions">
-            <span class="nav-link" onclick="openModal('login')">Log In</span>
+            <span class="nav-action-link" onclick="openModal('login')">Log In</span>
             <button class="btn-luxury" style="padding: 10px 24px; font-size: 0.85rem;" onclick="openModal('register')">Sign Up</button>
         </div>
         <div class="user-panel" id="user-actions" style="display:none;">
@@ -44,13 +50,18 @@
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span id="cart-count">0</span>
             </span>
-            <span class="nav-link" onclick="app.navTo('view-profile')">My Garage</span>
-            <span class="nav-link" style="color:#666;" onclick="app.logout()">Log Out</span>
+            <span class="nav-action-link" onclick="app.navTo('view-profile')">My Garage</span>
+            <span class="nav-action-link" style="color:#666;" onclick="app.logout()">Log Out</span>
         </div>
     </nav>
 
-    <div class="floating-home-btn" id="floatHome" onclick="app.goHome()">
-        <i class="fa-solid fa-house"></i>
+    <div class="floating-footer">
+        <div class="footer-icon" onclick="app.goHome()" title="Home">
+            <i class="fa-solid fa-house"></i>
+        </div>
+        <a href="https://wa.me/9999999999" target="_blank" class="footer-icon whatsapp-icon" title="Chat on WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
     </div>
 
     <div id="cart-panel">
@@ -69,7 +80,7 @@
 
     <div class="modal-overlay" id="auth-modal">
         <div class="modal-box">
-            <h2 id="modal-title">ACCESS</h2>
+            <h2 id="modal-title" style="color:#fff; font-family:var(--font-display); margin-bottom:20px;">ACCESS</h2>
             <form onsubmit="app.handleAuth(event)">
                 <input type="text" id="reg-name" class="form-input" placeholder="Name" style="display:none;">
                 <input type="email" id="email" class="form-input" placeholder="Email" required>
@@ -107,7 +118,6 @@
     <div id="view-landing" class="section active">
         <div class="hero">
             <div style="display: flex; flex-direction: column; align-items: center;">
-                
                 <img src="logo.png" class="hero-logo" alt="RichBrat$ Logo">
                 
                 <h1>RICHBRAT$<br><span class="gold-glow-text">CUSTOMS</span></h1>
@@ -151,6 +161,9 @@
     </div>
 
     <div id="view-store" class="section">
+        <div class="back-btn-container">
+            <button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        </div>
         <div class="content-box">
             <h2 class="section-title" style="color:var(--gold);">THE COLLECTION</h2>
             <div id="loading-store" style="text-align:center; padding:50px;">
@@ -161,6 +174,9 @@
     </div>
 
     <div id="view-booking" class="section">
+        <div class="back-btn-container">
+            <button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        </div>
         <div class="content-box">
             <h2 class="section-title" style="color:var(--gold);">BOOK APPOINTMENT</h2>
             <div class="booking-grid">
@@ -182,6 +198,9 @@
     </div>
 
     <div id="view-consultancy" class="section">
+        <div class="back-btn-container">
+            <button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        </div>
         <div class="content-box">
             <h2 class="section-title" style="color:var(--gold);">CUSTOM DESIGN</h2>
             <div id="consultancy-form-container" style="max-width:700px; margin:0 auto;">
@@ -205,6 +224,9 @@
     </div>
 
     <div id="view-profile" class="section">
+        <div class="back-btn-container">
+            <button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        </div>
         <div class="content-box">
             <h2 class="section-title">MY GARAGE</h2>
             <div class="profile-layout">
