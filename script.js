@@ -50,7 +50,7 @@ class App {
                 setTimeout(() => {
                     loader.style.opacity = '0';
                     setTimeout(() => loader.style.display = 'none', 500);
-                }, 1000); // 1-second pulse before fading
+                }, 1000); 
             }
         };
 
@@ -58,13 +58,11 @@ class App {
         setTimeout(() => {
             auth.onAuthStateChanged(user => {
                 if (user) {
-                    // LOGGED IN
                     this.uid = user.uid;
                     this.loadProfile(user.uid);
                     document.getElementById('nav-actions').style.display = 'none';
                     document.getElementById('user-actions').style.display = 'flex';
                 } else {
-                    // GUEST
                     this.uid = null;
                     this.loadGuestProfile();
                     document.getElementById('nav-actions').style.display = 'flex';
@@ -80,12 +78,10 @@ class App {
         overlay.style.display = 'block';
         overlay.classList.add('animate-drag');
 
-        // Execute callback mid-way through animation
         setTimeout(() => {
             if (callback) callback();
         }, 1200);
 
-        // Reset animation
         setTimeout(() => {
             overlay.classList.remove('animate-drag');
             overlay.style.display = 'none';
@@ -98,17 +94,6 @@ class App {
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         
-        // Floating Home Button Logic
-        const floatBtn = document.getElementById('floatHome');
-        if (floatBtn) {
-            if (id === 'view-landing') {
-                floatBtn.classList.remove('visible');
-            } else {
-                floatBtn.classList.add('visible');
-            }
-        }
-
-        // Reset Consultancy Form UI
         if(id === 'view-consultancy') {
              document.getElementById('consultancy-form-container').style.display = 'block';
              document.getElementById('consultancy-success').style.display = 'none';
@@ -119,7 +104,7 @@ class App {
     goHome() { this.navTo('view-landing'); }
     logout() { auth.signOut(); this.navTo('view-landing'); }
 
-    // --- AUTHENTICATION ACTIONS ---
+    // --- AUTHENTICATION ---
     async handleAuth(e) {
         e.preventDefault();
         const email = document.getElementById('email').value;
@@ -137,7 +122,6 @@ class App {
             } else {
                 await auth.signInWithEmailAndPassword(email, password);
             }
-            // Animate and Redirect
             this.triggerDragRace(() => {
                 window.closeModal();
                 this.navTo('view-dashboard');
@@ -145,7 +129,6 @@ class App {
         } catch (error) { alert("Access Denied: " + error.message); }
     }
 
-    // --- PROFILE DATA ---
     loadGuestProfile() {
         document.getElementById('b_name').value = ""; 
         document.getElementById('b_phone').value = ""; 
@@ -157,7 +140,6 @@ class App {
         if (docSnap.exists) {
             const data = docSnap.data();
             
-            // Auto-fill forms
             document.getElementById('b_name').value = data.name; 
             document.getElementById('b_phone').value = data.phone; 
             document.getElementById('b_car').value = data.car;
@@ -171,7 +153,6 @@ class App {
             document.getElementById('p_phone').value = data.phone || "";
             document.getElementById('p_car').value = data.car || "";
 
-            // Render History
             const historyList = document.getElementById('order-history-list');
             historyList.innerHTML = "";
             if (data.orders && data.orders.length > 0) {
@@ -211,7 +192,7 @@ class App {
         }
     }
 
-    // --- STORE LOGIC ---
+    // --- STORE ---
     async loadStore() {
         this.navTo('view-store');
         const list = document.getElementById('product-list');
@@ -347,7 +328,7 @@ class App {
         } catch (error) { alert(error.message); }
     }
 
-    // --- BOOKING LOGIC ---
+    // --- BOOKING ---
     async checkSlots() {
         const date = document.getElementById('b_date').value;
         const sel = document.getElementById('b_time');
@@ -388,7 +369,7 @@ class App {
         } catch(e) { alert("Failed"); }
     }
 
-    // --- CONSULTANCY LOGIC ---
+    // --- CONSULTANCY ---
     async submitConsultation(e) {
         e.preventDefault();
         if (!this.uid) { 
