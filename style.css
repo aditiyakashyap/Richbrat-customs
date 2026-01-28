@@ -13,10 +13,10 @@
     --font-logo: 'Planet Kosmos', 'Clash Display', sans-serif; 
 }
 
-/* IMPORT PLANET KOSMOS FONT */
+/* IMPORT PLANET KOSMOS FONT (WOFF) */
 @font-face {
     font-family: 'Planet Kosmos';
-    src: url('PlanetKosmos.ttf') format('truetype');
+    src: url('PlanetKosmos.WOFF') format('woff'); /* Updated to WOFF */
     font-weight: normal;
     font-style: normal;
 }
@@ -83,31 +83,40 @@ nav {
 .nav-action-link { cursor: pointer; font-size: 0.9rem; font-weight: 600; color: #fff; text-transform: uppercase; transition: 0.3s; }
 .nav-action-link:hover { color: var(--gold); }
 
-/* --- FLOATING TRANSLUCENT FOOTER --- */
+/* --- FLOATING VERTICAL DOCK (Bottom Right) --- */
 .floating-footer {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    position: fixed; 
+    bottom: 40px; 
+    right: 30px; 
+    left: auto; 
+    transform: none;
+    
     background: rgba(11, 22, 36, 0.6); 
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 10px 25px;
-    border-radius: 50px;
-    display: flex; gap: 20px; align-items: center;
+    
+    display: flex; 
+    flex-direction: column-reverse; 
+    gap: 20px; 
+    padding: 20px 10px;
+    border-radius: 30px;
+    
     z-index: 5000;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    transition: 0.3s;
+    box-shadow: -10px 10px 30px rgba(0,0,0,0.5);
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .floating-footer:hover {
-    background: rgba(11, 22, 36, 0.8);
+    background: rgba(11, 22, 36, 0.9);
     border-color: var(--gold);
-    transform: translateX(-50%) translateY(-5px);
+    transform: translateY(-5px);
 }
 .footer-icon {
-    font-size: 1.5rem; color: #fff; cursor: pointer; transition: 0.3s;
+    font-size: 1.4rem; color: #fff; cursor: pointer; transition: 0.3s;
     display: flex; align-items: center; justify-content: center;
-    width: 45px; height: 45px; border-radius: 50%;
+    width: 40px; height: 40px; border-radius: 50%;
     text-decoration: none;
 }
-.footer-icon:hover { background: rgba(255,255,255,0.1); color: var(--gold); transform: scale(1.1); }
+.footer-icon:hover { background: rgba(255,255,255,0.1); color: var(--gold); transform: scale(1.2); }
 .whatsapp-icon { color: #25D366; }
 .whatsapp-icon:hover { color: #fff; background: #25D366; }
 
@@ -206,6 +215,33 @@ h1 {
 }
 .form-input:focus { outline: none; border-color: var(--gold); background: rgba(0,0,0,0.6); }
 
+/* --- EYES ANIMATION --- */
+#eye-intro { position: relative; height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.eye-shape {
+    width: 200px; height: 100px; background: #fff; border-radius: 100px 0; transform: rotate(45deg); position: relative; overflow: hidden;
+    box-shadow: 0 0 20px rgba(255,255,255,0.1); animation: morphToHeadlight 2s 2s forwards;
+}
+.iris {
+    width: 50px; height: 50px; background: #000; border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    border: 15px solid #4B3621; animation: irisGlow 2s 2s forwards;
+}
+.eyelid-top, .eyelid-bottom { position: absolute; left: 0; width: 100%; height: 50%; background: var(--navy); z-index: 10; }
+.eyelid-top { top: 0; transform-origin: top; animation: blink 3s forwards; }
+.eyelid-bottom { bottom: 0; transform-origin: bottom; animation: blink 3s forwards; }
+
+@keyframes blink { 0%, 20%, 40% { transform: scaleY(1); } 10%, 30% { transform: scaleY(0); } 50% { transform: scaleY(0); } 100% { transform: scaleY(0); } }
+@keyframes morphToHeadlight { 0% { border-radius: 100px 0; transform: rotate(45deg); box-shadow: 0 0 20px rgba(255,255,255,0.1); width: 200px; } 100% { border-radius: 10px; transform: rotate(0deg); width: 300px; background: #111; border: 2px solid var(--neon-blue); box-shadow: 0 0 50px var(--neon-blue); } }
+@keyframes irisGlow { 0% { border-color: #4B3621; background: #000; width: 50px; height: 50px; } 100% { border-color: var(--neon-blue); background: #fff; width: 80px; height: 80px; box-shadow: 0 0 40px var(--neon-blue), inset 0 0 20px var(--neon-blue); } }
+
+/* --- BLACKLIST BOARD --- */
+.blacklist-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+.blacklist-item { background: linear-gradient(145deg, rgba(10, 10, 10, 0.9), rgba(20, 20, 20, 0.95)); border: 1px solid #333; padding: 30px; border-radius: 12px; position: relative; overflow: hidden; }
+.blacklist-item::before { content: ''; position: absolute; top:0; left:0; width: 4px; height: 100%; background: var(--neon-red); }
+.bl-tag { font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; background: var(--neon-red); color: #000; padding: 4px 8px; display: inline-block; margin-bottom: 15px; border-radius: 2px; }
+.bl-date { color: var(--gold); font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 5px; }
+.bl-title { color: #fff; font-family: var(--font-display); font-size: 1.5rem; line-height: 1.2; margin-bottom: 10px; }
+.bl-desc { color: #888; font-size: 0.9rem; line-height: 1.5; }
+
 /* --- CART --- */
 #cart-panel { position: fixed; top: 0; right: -450px; width: 450px; height: 100vh; background: #0b1624; border-left: 1px solid var(--gold); z-index: 3000; transition: 0.4s; padding: 40px; display: flex; flex-direction: column; box-shadow: -20px 0 50px rgba(0,0,0,0.8); }
 #cart-panel.open { right: 0; }
@@ -235,7 +271,7 @@ h1 {
 /* Mobile */
 @media (max-width: 768px) {
     nav { padding: 15px 20px; }
-    .nav-center { display: none; } /* Hide text links on mobile, use dashboard */
+    .nav-center { display: none; }
     .logo-container img { height: 50px; }
     .booking-grid, .profile-layout { grid-template-columns: 1fr; }
     #cart-panel { width: 100%; right: -100%; }
