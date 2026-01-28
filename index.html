@@ -16,7 +16,7 @@
 </head>
 <body>
 
-    <div id="global-loader"><img src="logo.png" class="loader-logo" alt="Loading..."></div>
+    <div id="global-loader"><img src="logo.PNG" class="loader-logo" alt="Loading..."></div>
     <div id="drag-run-overlay"><div class="skid-marks"></div><img src="zoom.jpg" class="hologram-car" alt="Blueprint"></div>
     <div class="bg-noise"></div>
     <div style="position:fixed; top:0; left:0; width:100%; height:100vh; background: var(--navy); z-index:-2;"></div>
@@ -85,7 +85,7 @@
     <div id="view-landing" class="section active">
         <div class="hero">
             <div style="display: flex; flex-direction: column; align-items: center;">
-                <img src="logo.png" class="hero-logo" alt="RichBrat$ Logo">
+                <img src="logo.PNG" class="hero-logo" alt="RichBrat$ Logo">
                 <h1>RICHBRAT$<br><span class="gold-glow-text">CUSTOMS</span></h1>
                 <p style="color:#aaa; font-size:1.1rem; max-width:500px; margin:0 auto 40px; line-height:1.6;">Premium modifications for the modern enthusiast. Aesthetics, Performance, and Identity.</p>
                 <button class="btn-start-engine" onclick="app.enterGarage()"><span>ENGINE</span><strong>START</strong><span>STOP</span></button>
@@ -135,7 +135,7 @@
         </div>
     </div>
 
-    <div id="view-store" class="section"><div class="back-btn-container"><button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button></div><div class="content-box"><h2 class="section-title" style="color:var(--gold);">THE COLLECTION</h2><div id="loading-store" style="text-align:center; padding:50px;"><img src="logo.png" class="loader-logo" alt="Loading..." style="width:80px;"></div><div class="store-grid" id="product-list"></div></div></div>
+    <div id="view-store" class="section"><div class="back-btn-container"><button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button></div><div class="content-box"><h2 class="section-title" style="color:var(--gold);">THE COLLECTION</h2><div id="loading-store" style="text-align:center; padding:50px;"><img src="logo.PNG" class="loader-logo" alt="Loading..." style="width:80px;"></div><div class="store-grid" id="product-list"></div></div></div>
     
     <div id="view-booking" class="section"><div class="back-btn-container"><button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button></div><div class="content-box"><h2 class="section-title" style="color:var(--gold);">BOOK APPOINTMENT</h2><div class="booking-grid"><form id="bookingForm" onsubmit="app.bookSlot(event)"><input type="date" id="b_date" class="form-input" required onchange="app.checkSlots()"><select id="b_time" class="form-input" disabled><option>Select Date</option></select><input type="text" id="b_name" class="form-input" placeholder="Name" required><input type="tel" id="b_phone" class="form-input" placeholder="Phone" required><input type="text" id="b_car" class="form-input" placeholder="Car Model" required><button type="submit" id="bookBtn" class="btn-luxury" style="width:100%;">CONFIRM</button><div id="booking-status" style="margin-top:15px; text-align:center; color:var(--gold);"></div></form><div class="vip-lounge-box"><h3 style="color:#fff;">VIP SERVICE</h3><p style="color:#888;">Lounge access included.</p></div></div></div></div>
 
