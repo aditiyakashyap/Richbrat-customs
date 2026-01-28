@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RichBrat$ Customs | Luxury Mods</title>
+    
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&f[]=clash-display@700,600,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -16,8 +18,15 @@
 </head>
 <body>
 
-    <div id="global-loader"><img src="logo.PNG" class="loader-logo" alt="Loading..."></div>
-    <div id="drag-run-overlay"><div class="skid-marks"></div><img src="zoom.jpg" class="hologram-car" alt="Blueprint"></div>
+    <div id="global-loader">
+        <img src="logo.PNG" class="loader-logo" alt="Loading...">
+    </div>
+
+    <div id="drag-run-overlay">
+        <div class="skid-marks"></div>
+        <img src="zoom.jpg" class="hologram-car" alt="Blueprint">
+    </div>
+
     <div class="bg-noise"></div>
     <div style="position:fixed; top:0; left:0; width:100%; height:100vh; background: var(--navy); z-index:-2;"></div>
     
@@ -25,6 +34,7 @@
         <div class="logo-container" onclick="app.goHome()">
             <h1 class="logo-text">RICHBRAT$ CUSTOMS</h1>
         </div>
+
         <div class="nav-center">
             <a class="page-link" onclick="app.loadStore()">Store</a>
             <a class="page-link" onclick="app.navTo('view-booking')">Appointment</a>
@@ -32,13 +42,15 @@
             <a class="page-link" onclick="app.navTo('view-eyes')">Eyes</a>
             <a class="page-link" onclick="app.navTo('view-ride-or-die')" style="color:var(--neon-red);">Ride or Die</a>
         </div>
+
         <div class="user-panel" id="nav-actions">
             <span class="nav-action-link" onclick="openModal('login')">Log In</span>
             <button class="btn-luxury" style="padding: 10px 24px; font-size: 0.85rem;" onclick="openModal('register')">Sign Up</button>
         </div>
         <div class="user-panel" id="user-actions" style="display:none;">
             <span style="cursor:pointer; font-size: 1.3rem; color:#fff; display:flex; align-items:center;" onclick="app.toggleCart()">
-                <i class="fa-solid fa-bag-shopping"></i><span id="cart-count">0</span>
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span id="cart-count">0</span>
             </span>
             <span class="nav-action-link" onclick="app.navTo('view-profile')">My Garage</span>
             <span class="nav-action-link" style="color:#666;" onclick="app.logout()">Log Out</span>
@@ -46,14 +58,26 @@
     </nav>
 
     <div class="floating-footer">
-        <div class="footer-icon" onclick="app.goHome()" title="Home"><i class="fa-solid fa-house"></i></div>
-        <a href="https://wa.me/918527746844" target="_blank" class="footer-icon whatsapp-icon" title="Chat on WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        <div class="footer-icon" onclick="app.goHome()" title="Home">
+            <i class="fa-solid fa-house"></i>
+        </div>
+        <a href="https://wa.me/918527746844" target="_blank" class="footer-icon whatsapp-icon" title="Chat on WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
     </div>
 
     <div id="cart-panel">
-        <div class="cart-header"><h2 style="color:var(--gold); font-family:var(--font-display);">YOUR STASH</h2><i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.5rem; color:#fff;" onclick="app.toggleCart()"></i></div>
+        <div class="cart-header">
+            <h2 style="color:var(--gold); font-family:var(--font-display);">YOUR STASH</h2>
+            <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.5rem; color:#fff;" onclick="app.toggleCart()"></i>
+        </div>
         <div class="cart-items" id="cart-items-list">Bag is empty.</div>
-        <div class="cart-footer"><div style="display:flex; justify-content:space-between; font-weight:bold; color:#fff; margin-bottom:15px;"><span>TOTAL</span><span id="cart-total" style="color:var(--gold);">$0</span></div><button class="btn-luxury" style="width:100%;" onclick="app.openCheckout()">PAY NOW</button></div>
+        <div class="cart-footer">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; color:#fff; margin-bottom:15px;">
+                <span>TOTAL</span><span id="cart-total" style="color:var(--gold);">$0</span>
+            </div>
+            <button class="btn-luxury" style="width:100%;" onclick="app.openCheckout()">PAY NOW</button>
+        </div>
     </div>
 
     <div class="modal-overlay" id="auth-modal">
@@ -63,10 +87,14 @@
                 <input type="text" id="reg-name" class="form-input" placeholder="Name" style="display:none;">
                 <input type="email" id="email" class="form-input" placeholder="Email" required>
                 <input type="password" id="password" class="form-input" placeholder="Password" required>
-                <div id="extra-fields" style="display:none;"><input type="tel" id="reg-phone" class="form-input" placeholder="Phone"><input type="text" id="reg-car" class="form-input" placeholder="Car Model"></div>
+                <div id="extra-fields" style="display:none;">
+                    <input type="tel" id="reg-phone" class="form-input" placeholder="Phone">
+                    <input type="text" id="reg-car" class="form-input" placeholder="Car Model">
+                </div>
                 <button type="submit" class="btn-luxury" style="width:100%;" id="submit-btn">GO</button>
             </form>
-            <p style="margin-top:20px; color:#666; cursor:pointer;" onclick="switchMode()">Switch Mode</p><p style="margin-top:10px; color:#666; cursor:pointer;" onclick="closeModal()">Close</p>
+            <p style="margin-top:20px; color:#666; cursor:pointer;" onclick="switchMode()">Switch Mode</p>
+            <p style="margin-top:10px; color:#666; cursor:pointer;" onclick="closeModal()">Close</p>
         </div>
     </div>
     
@@ -74,8 +102,15 @@
         <div class="modal-box" style="max-width:500px;">
             <h2 style="color:var(--gold); margin-bottom:20px;">SHIPPING</h2>
             <form onsubmit="app.processCheckout(event)">
-                <input type="text" id="chk-address" class="form-input" placeholder="Address" required><div style="display:flex; gap:10px;"><input type="text" id="chk-city" class="form-input" placeholder="City" required><input type="text" id="chk-zip" class="form-input" placeholder="Zip Code" required></div>
-                <select id="chk-payment" class="form-input"><option value="ONLINE">Online Payment</option><option value="COD">Cash on Delivery</option></select>
+                <input type="text" id="chk-address" class="form-input" placeholder="Address" required>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="chk-city" class="form-input" placeholder="City" required>
+                    <input type="text" id="chk-zip" class="form-input" placeholder="Zip Code" required>
+                </div>
+                <select id="chk-payment" class="form-input">
+                    <option value="ONLINE">Online Payment</option>
+                    <option value="COD">Cash on Delivery</option>
+                </select>
                 <button type="submit" class="btn-luxury" style="width:100%;" id="chk-btn">CONFIRM ORDER</button>
             </form>
             <p style="margin-top:20px; color:#666; cursor:pointer; text-align:center;" onclick="document.getElementById('checkout-modal').style.display='none'">Cancel</p>
@@ -87,8 +122,14 @@
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <img src="logo.PNG" class="hero-logo" alt="RichBrat$ Logo">
                 <h1>RICHBRAT$<br><span class="gold-glow-text">CUSTOMS</span></h1>
-                <p style="color:#aaa; font-size:1.1rem; max-width:500px; margin:0 auto 40px; line-height:1.6;">Premium modifications for the modern enthusiast. Aesthetics, Performance, and Identity.</p>
-                <button class="btn-start-engine" onclick="app.enterGarage()"><span>ENGINE</span><strong>START</strong><span>STOP</span></button>
+                <p style="color:#aaa; font-size:1.1rem; max-width:500px; margin:0 auto 40px; line-height:1.6;">
+                    Premium modifications for the modern enthusiast. Aesthetics, Performance, and Identity.
+                </p>
+                <button class="btn-start-engine" onclick="app.enterGarage()">
+                    <span>ENGINE</span>
+                    <strong>START</strong>
+                    <span>STOP</span>
+                </button>
             </div>
         </div>
     </div>
@@ -97,52 +138,201 @@
         <div class="content-box">
             <h2 class="section-title">THE HUB</h2>
             <div class="dashboard-grid">
-                <div class="dash-card" onclick="app.loadStore()"><i class="fa-solid fa-cart-shopping dash-icon"></i><h3>Shop Mods</h3></div>
-                <div class="dash-card" onclick="app.navTo('view-booking')"><i class="fa-regular fa-calendar-days dash-icon"></i><h3>Book Appointment</h3></div>
-                <div class="dash-card" onclick="app.navTo('view-eyes')"><i class="fa-solid fa-eye dash-icon"></i><h3>Eyes</h3></div>
-                <div class="dash-card" onclick="app.navTo('view-consultancy')"><i class="fa-solid fa-pencil dash-icon"></i><h3>Custom Design</h3></div>
-                <div class="dash-card" onclick="app.navTo('view-ride-or-die')" style="border-color:var(--neon-red);"><i class="fa-solid fa-skull dash-icon" style="color:var(--neon-red);"></i><h3 style="color:var(--neon-red);">Ride or Die</h3></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="view-eyes" class="section">
-        <div class="back-btn-container"><button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button></div>
-        <div class="content-box" style="text-align: center;">
-            <div id="eye-intro"><div class="eye-shape"><div class="eyelid-top"></div><div class="iris"></div><div class="eyelid-bottom"></div></div><h2 class="section-title" style="margin-top: 40px; opacity: 0; animation: fadeUp 1s 2.5s forwards;">CUSTOM ILLUMINATION</h2></div>
-            <div id="eyes-content" style="display:none; opacity: 0;">
-                <h2 class="section-title" style="color:var(--gold);">HEADLIGHT GROOMING</h2>
-                <p style="color:#888; margin-bottom: 40px;">Select your signature style.</p>
-                <div class="dashboard-grid" style="justify-content: center;">
-                    <div class="dash-card" onclick="app.openEyesChat('Multi Colour')"><i class="fa-solid fa-palette dash-icon" style="color: #00f3ff;"></i><h3>Multi Colour</h3><p style="color:#666; margin-top:10px;">RGB / Demon Eyes</p></div>
-                    <div class="dash-card" onclick="app.openEyesChat('Single Colour')"><i class="fa-solid fa-lightbulb dash-icon" style="color: #fff;"></i><h3>Single Colour</h3><p style="color:#666; margin-top:10px;">Classic White / DRL</p></div>
+                <div class="dash-card" onclick="app.loadStore()">
+                    <i class="fa-solid fa-cart-shopping dash-icon"></i>
+                    <h3>Shop Mods</h3>
+                    <p style="color:#666; margin-top:10px;">Browse Parts & Kits</p>
+                </div>
+                <div class="dash-card" onclick="app.navTo('view-booking')">
+                    <i class="fa-regular fa-calendar-days dash-icon"></i>
+                    <h3>Book Appointment</h3>
+                    <p style="color:#666; margin-top:10px;">Schedule Garage Visit</p>
+                </div>
+                <div class="dash-card" onclick="app.navTo('view-eyes')">
+                    <i class="fa-solid fa-eye dash-icon"></i>
+                    <h3>Eyes</h3>
+                    <p style="color:#666; margin-top:10px;">Headlight Customization</p>
+                </div>
+                <div class="dash-card" onclick="app.navTo('view-consultancy')">
+                    <i class="fa-solid fa-pencil dash-icon"></i>
+                    <h3>Custom Design</h3>
+                    <p style="color:#666; margin-top:10px;">Consult with Experts</p>
+                </div>
+                <div class="dash-card" onclick="app.navTo('view-ride-or-die')" style="border-color:var(--neon-red);">
+                    <i class="fa-solid fa-skull dash-icon" style="color:var(--neon-red);"></i>
+                    <h3 style="color:var(--neon-red);">Ride or Die</h3>
+                    <p style="color:#666; margin-top:10px;">Exclusive Community</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="view-ride-or-die" class="section">
-        <div class="back-btn-container"><button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button></div>
-        <div class="content-box">
-            <h2 class="section-title" style="color:var(--neon-red); text-shadow:0 0 20px var(--neon-red);">RIDE OR DIE</h2>
-            <div id="rod-guest-view" style="text-align:center; padding:50px; border:1px solid #333; background:rgba(0,0,0,0.6); border-radius:16px;">
-                <i class="fa-solid fa-lock" style="font-size:4rem; color:var(--text-muted); margin-bottom:20px;"></i>
-                <h3 style="font-family:var(--font-display); color:#fff; font-size:2rem; margin-bottom:15px;">RESTRICTED ACCESS</h3>
-                <p style="color:#aaa; max-width:500px; margin:0 auto 30px;">Classified events and product drops.</p>
-                <button class="btn-luxury" onclick="openModal('register')">JOIN THE COMMUNITY</button>
+    <div id="view-eyes" class="section">
+        <div class="back-btn-container">
+            <button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        </div>
+        <div class="content-box" style="text-align: center;">
+            
+            <div id="eye-intro">
+                <div class="eye-shape">
+                    <div class="eyelid-top"></div>
+                    <div class="iris"></div>
+                    <div class="eyelid-bottom"></div>
+                </div>
+                <h2 class="section-title" style="margin-top: 40px; opacity: 0; animation: fadeUp 1s 2.5s forwards;">CUSTOM ILLUMINATION</h2>
             </div>
-            <div id="rod-member-view" style="display:none;"><div class="blacklist-board"></div></div>
+
+            <div id="eyes-content" style="display:none; opacity: 0;">
+                <h2 class="section-title" style="color:var(--gold);">HEADLIGHT GROOMING</h2>
+                <p style="color:#888; margin-bottom: 40px;">Select your signature style to chat with an expert.</p>
+                
+                <div class="dashboard-grid" style="justify-content: center;">
+                    <div class="dash-card" onclick="app.openEyesChat('Multi Colour')">
+                        <i class="fa-solid fa-palette dash-icon" style="color: #00f3ff;"></i>
+                        <h3>Multi Colour</h3>
+                        <p style="color:#666; margin-top:10px;">RGB / Demon Eyes / App Controlled</p>
+                    </div>
+                    <div class="dash-card" onclick="app.openEyesChat('Single Colour')">
+                        <i class="fa-solid fa-lightbulb dash-icon" style="color: #fff;"></i>
+                        <h3>Single Colour</h3>
+                        <p style="color:#666; margin-top:10px;">Classic White / DRL / Tint</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <div id="view-store" class="section"><div class="back-btn-container"><button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button></div><div class="content-box"><h2 class="section-title" style="color:var(--gold);">THE COLLECTION</h2><div id="loading-store" style="text-align:center; padding:50px;"><img src="logo.PNG" class="loader-logo" alt="Loading..." style="width:80px;"></div><div class="store-grid" id="product-list"></div></div></div>
-    
-    <div id="view-booking" class="section"><div class="back-btn-container"><button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button></div><div class="content-box"><h2 class="section-title" style="color:var(--gold);">BOOK APPOINTMENT</h2><div class="booking-grid"><form id="bookingForm" onsubmit="app.bookSlot(event)"><input type="date" id="b_date" class="form-input" required onchange="app.checkSlots()"><select id="b_time" class="form-input" disabled><option>Select Date</option></select><input type="text" id="b_name" class="form-input" placeholder="Name" required><input type="tel" id="b_phone" class="form-input" placeholder="Phone" required><input type="text" id="b_car" class="form-input" placeholder="Car Model" required><button type="submit" id="bookBtn" class="btn-luxury" style="width:100%;">CONFIRM</button><div id="booking-status" style="margin-top:15px; text-align:center; color:var(--gold);"></div></form><div class="vip-lounge-box"><h3 style="color:#fff;">VIP SERVICE</h3><p style="color:#888;">Lounge access included.</p></div></div></div></div>
+    <div id="view-ride-or-die" class="section">
+        <div class="back-btn-container">
+            <button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        </div>
+        <div class="content-box">
+            <h2 class="section-title" style="color:var(--neon-red); text-shadow:0 0 20px var(--neon-red);">RIDE OR DIE</h2>
+            
+            <div id="rod-guest-view" style="text-align:center; padding:50px; border:1px solid #333; background:rgba(0,0,0,0.6); border-radius:16px;">
+                <i class="fa-solid fa-lock" style="font-size:4rem; color:var(--text-muted); margin-bottom:20px;"></i>
+                <h3 style="font-family:var(--font-display); color:#fff; font-size:2rem; margin-bottom:15px;">RESTRICTED ACCESS</h3>
+                <p style="color:#aaa; max-width:500px; margin:0 auto 30px;">Classified events and product drops. Only members can view the Blacklist.</p>
+                <button class="btn-luxury" onclick="openModal('register')">JOIN THE COMMUNITY</button>
+            </div>
 
-    <div id="view-consultancy" class="section"><div class="back-btn-container"><button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button></div><div class="content-box"><h2 class="section-title" style="color:var(--gold);">CUSTOM DESIGN</h2><div id="consultancy-form-container" style="max-width:700px; margin:0 auto;"><form onsubmit="app.submitConsultation(event)"><input type="text" id="c_name" class="form-input" placeholder="Name" required><input type="email" id="c_email" class="form-input" placeholder="Email" required><input type="tel" id="c_phone" class="form-input" placeholder="Phone" required><input type="text" id="c_car" class="form-input" placeholder="Car Model" required><label style="display:block; color:#888; margin-bottom:5px;">Upload Inspiration</label><input type="file" id="c_image" class="form-input" style="padding:10px;"><textarea id="c_message" class="form-input" rows="4" placeholder="Idea..." required></textarea><button type="submit" class="btn-luxury" style="width:100%;" id="consultBtn">SEND</button></form></div><div id="consultancy-success" style="display:none; text-align:center; padding:40px; background:#0b1624; border:1px solid var(--gold);"><h3 style="color:#fff;">RECEIVED</h3><a href="https://wa.me/918527746844" target="_blank" class="btn-luxury" style="text-decoration:none;">WHATSAPP US</a></div></div></div>
+            <div id="rod-member-view" style="display:none;">
+                <div class="blacklist-board">
+                    </div>
+            </div>
+        </div>
+    </div>
 
-    <div id="view-profile" class="section"><div class="back-btn-container"><button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button></div><div class="content-box"><h2 class="section-title">MY GARAGE</h2><div class="profile-layout"><div class="profile-card"><h3 style="color:var(--gold); margin-bottom:20px;">PROFILE</h3><form onsubmit="app.updateProfile(event)"><input type="text" id="p_name" disabled class="form-input" style="background:#222; border:none; color:#888;"><input type="text" id="p_phone" placeholder="Phone" class="form-input"><input type="text" id="p_car" placeholder="Car" class="form-input"><button type="submit" id="updateProfileBtn" class="btn-luxury" style="width:100%; font-size:0.8rem;">SAVE</button></form></div><div class="profile-card"><h3 style="color:var(--gold);">HISTORY</h3><div id="order-history-list"></div></div></div></div></div>
+    <div id="view-store" class="section">
+        <div class="back-btn-container">
+            <button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        </div>
+        <div class="content-box">
+            <h2 class="section-title" style="color:var(--gold);">THE COLLECTION</h2>
+            
+            <div class="shop-controls">
+                <div class="control-group">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="shop-search" placeholder="Search mods..." onkeyup="app.renderShop()">
+                </div>
+                <div class="control-group">
+                    <i class="fa-solid fa-filter"></i>
+                    <span style="font-size:0.8rem; white-space:nowrap;">Max Price: $<span id="price-val">10000</span></span>
+                    <input type="range" id="shop-filter-price" min="0" max="10000" step="100" value="10000" oninput="document.getElementById('price-val').innerText=this.value; app.renderShop()">
+                </div>
+                <div class="control-group">
+                    <select id="shop-sort" onchange="app.renderShop()">
+                        <option value="default">Sort By: Featured</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="name-asc">Name: A-Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="loading-store" style="text-align:center; padding:50px;">
+                <img src="logo.PNG" class="loader-logo" alt="Loading..." style="width:80px;">
+            </div>
+            <div class="store-grid" id="product-list"></div>
+        </div>
+    </div>
+
+    <div id="view-booking" class="section">
+        <div class="back-btn-container">
+            <button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        </div>
+        <div class="content-box">
+            <h2 class="section-title" style="color:var(--gold);">BOOK APPOINTMENT</h2>
+            <div class="booking-grid">
+                <form id="bookingForm" onsubmit="app.bookSlot(event)">
+                    <input type="date" id="b_date" class="form-input" required onchange="app.checkSlots()">
+                    <select id="b_time" class="form-input" disabled><option>Select Date</option></select>
+                    <input type="text" id="b_name" class="form-input" placeholder="Name" required>
+                    <input type="tel" id="b_phone" class="form-input" placeholder="Phone" required>
+                    <input type="text" id="b_car" class="form-input" placeholder="Car Model" required>
+                    <button type="submit" id="bookBtn" class="btn-luxury" style="width:100%;">CONFIRM</button>
+                    <div id="booking-status" style="margin-top:15px; text-align:center; color:var(--gold);"></div>
+                </form>
+                <div class="vip-lounge-box">
+                    <h3 style="color:#fff; font-family:var(--font-display);">VIP SERVICE</h3>
+                    <p style="color:#888; margin-top:10px; line-height:1.6;">Relax in our lounge while we work on your car. Wi-Fi, Coffee, and Sim Racing available.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-consultancy" class="section">
+        <div class="back-btn-container">
+            <button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        </div>
+        <div class="content-box">
+            <h2 class="section-title" style="color:var(--gold);">CUSTOM DESIGN</h2>
+            <div id="consultancy-form-container" style="max-width:700px; margin:0 auto;">
+                <form onsubmit="app.submitConsultation(event)">
+                    <input type="text" id="c_name" class="form-input" placeholder="Name" required>
+                    <input type="email" id="c_email" class="form-input" placeholder="Email" required>
+                    <input type="tel" id="c_phone" class="form-input" placeholder="Phone" required>
+                    <input type="text" id="c_car" class="form-input" placeholder="Car Model" required>
+                    <label style="display:block; color:#888; margin-bottom:5px; text-align:left;">Upload Inspiration</label>
+                    <input type="file" id="c_image" class="form-input" style="padding:10px;">
+                    <textarea id="c_message" class="form-input" rows="4" placeholder="Describe your idea..." required></textarea>
+                    <button type="submit" class="btn-luxury" style="width:100%;" id="consultBtn">SEND</button>
+                </form>
+            </div>
+            <div id="consultancy-success" style="display:none; text-align:center; padding:40px; background:#0b1624; border:1px solid var(--gold); margin-top:20px;">
+                <h3 style="color:#fff; font-family:var(--font-display);">RECEIVED</h3>
+                <p style="color:#888; margin:15px 0;">We'll get back to you shortly.</p>
+                <a href="https://wa.me/918527746844" target="_blank" class="btn-luxury" style="text-decoration:none; background:#25D366; color:#fff; display:inline-block;">WHATSAPP US</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-profile" class="section">
+        <div class="back-btn-container">
+            <button class="btn-back" onclick="app.navTo('view-dashboard')"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        </div>
+        <div class="content-box">
+            <h2 class="section-title">MY GARAGE</h2>
+            <div class="profile-layout">
+                <div class="profile-card">
+                    <h3 style="color:var(--gold); margin-bottom:20px;">PROFILE</h3>
+                    <form onsubmit="app.updateProfile(event)">
+                        <input type="text" id="p_name" disabled class="form-input" style="background:#222; border:none; color:#888;">
+                        <input type="text" id="p_phone" placeholder="Phone" class="form-input">
+                        <input type="text" id="p_car" placeholder="Car" class="form-input">
+                        <button type="submit" id="updateProfileBtn" class="btn-luxury" style="width:100%; font-size:0.8rem;">SAVE</button>
+                    </form>
+                </div>
+                <div class="profile-card">
+                    <h3 style="color:var(--gold); margin-bottom:20px;">HISTORY</h3>
+                    <div id="order-history-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
