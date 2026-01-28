@@ -42,19 +42,18 @@ class App {
     constructor() {
         this.cart = [];
         this.uid = null;
+        this.inventory = [];
         
-        // --- GLOBAL LOADER LOGIC ---
         window.onload = () => {
             const loader = document.getElementById('global-loader');
             if(loader) {
                 setTimeout(() => {
                     loader.style.opacity = '0';
                     setTimeout(() => loader.style.display = 'none', 500);
-                }, 1000); 
+                }, 1000);
             }
         };
 
-        // --- AUTH LISTENER ---
         setTimeout(() => {
             auth.onAuthStateChanged(user => {
                 if (user) {
@@ -98,11 +97,69 @@ class App {
              document.getElementById('consultancy-form-container').style.display = 'block';
              document.getElementById('consultancy-success').style.display = 'none';
         }
+
+        if(id === 'view-ride-or-die') {
+            this.renderRideOrDie();
+        }
+
+        if(id === 'view-eyes') {
+            const intro = document.getElementById('eye-intro');
+            const content = document.getElementById('eyes-content');
+            intro.style.display = 'flex';
+            content.style.display = 'none';
+            content.style.opacity = '0';
+            
+            setTimeout(() => {
+                intro.style.display = 'none';
+                content.style.display = 'block';
+                setTimeout(() => { content.style.opacity = '1'; content.style.transition = 'opacity 1s'; }, 50);
+            }, 3500);
+        }
     }
 
     enterGarage() { this.navTo('view-dashboard'); }
     goHome() { this.navTo('view-landing'); }
     logout() { auth.signOut(); this.navTo('view-landing'); }
+
+    // --- EYES CHAT ---
+    openEyesChat(type) {
+        const phone = "918527746844";
+        const msg = encodeURIComponent(`Hi, I'm looking to get her eyes highlighted. Interested in: ${type}`);
+        window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+    }
+
+    // --- RIDE OR DIE ---
+    renderRideOrDie() {
+        const guestView = document.getElementById('rod-guest-view');
+        const memberView = document.getElementById('rod-member-view');
+        const board = document.querySelector('.blacklist-board');
+
+        if (!this.uid) {
+            guestView.style.display = 'block';
+            memberView.style.display = 'none';
+        } else {
+            guestView.style.display = 'none';
+            memberView.style.display = 'block';
+            
+            const events = [
+                { type: "RIDE", date: "FEB 14 // 11:00 PM", title: "MIDNIGHT RUN: SOUTH DELHI", desc: "Start point: Secret location sent via DM." },
+                { type: "DROP", date: "MAR 01 // 12:00 AM", title: "CARBON AERO KIT V2", desc: "Limited edition widebody kits dropping soon." },
+                { type: "EVENT", date: "MAR 15 // 10:00 AM", title: "TRACK DAY: BUDDHA CIRCUIT", desc: "Exclusive track access for RichBrat$ members." }
+            ];
+
+            board.innerHTML = "";
+            events.forEach(ev => {
+                board.innerHTML += `
+                    <div class="blacklist-item">
+                        <span class="bl-tag">${ev.type}</span>
+                        <div class="bl-date">${ev.date}</div>
+                        <h3 class="bl-title">${ev.title}</h3>
+                        <p class="bl-desc">${ev.desc}</p>
+                    </div>
+                `;
+            });
+        }
+    }
 
     // --- AUTHENTICATION ---
     async handleAuth(e) {
@@ -195,10 +252,12 @@ class App {
     // --- STORE ---
     async loadStore() {
         this.navTo('view-store');
-        const list = document.getElementById('product-list');
         const loader = document.getElementById('loading-store');
         
-        if(list.children.length > 0) return;
+        if(this.inventory.length > 0) {
+            this.renderShop(); 
+            return; 
+        }
 
         loader.style.display = 'block';
 
@@ -207,19 +266,46 @@ class App {
             const data = await res.json();
             loader.style.display = 'none';
 
-            if(data.length === 0) { list.innerHTML = "<p>Out of Stock</p>"; return; }
-
-            list.innerHTML = "";
-            data.forEach(p => {
-                list.innerHTML += `
-                <div class="product-item">
-                    <div class="prod-img" style="background-image:url('${p.image}')"></div>
-                    <div class="prod-title">${p.name}</div>
-                    <div class="prod-price">$${p.price}</div>
-                    <button class="btn-luxury" style="width:100%; font-size:0.8rem; padding:10px;" onclick="app.addToCart('${p.name}', ${p.price})">ADD TO BAG</button>
-                </div>`;
-            });
+            this.inventory = data;
+            this.renderShop();
         } catch(e) { loader.innerText = "Error loading inventory."; }
+    }
+
+    renderShop() {
+        const list = document.getElementById('product-list');
+        const searchInput = document.getElementById('shop-search').value.toLowerCase();
+        const maxPrice = parseFloat(document.getElementById('shop-filter-price').value);
+        const sortMode = document.getElementById('shop-sort').value;
+
+        let filtered = this.inventory.filter(p => {
+            const matchesSearch = p.name.toLowerCase().includes(searchInput);
+            const matchesPrice = parseFloat(p.price) <= maxPrice;
+            return matchesSearch && matchesPrice;
+        });
+
+        if (sortMode === 'price-low') {
+            filtered.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+        } else if (sortMode === 'price-high') {
+            filtered.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+        } else if (sortMode === 'name-asc') {
+            filtered.sort((a, b) => a.name.localeCompare(b.name));
+        }
+
+        list.innerHTML = "";
+        if (filtered.length === 0) {
+            list.innerHTML = "<p style='color:#666; text-align:center; width:100%;'>No matching parts found.</p>";
+            return;
+        }
+
+        filtered.forEach(p => {
+            list.innerHTML += `
+            <div class="product-item">
+                <div class="prod-img" style="background-image:url('${p.image}')"></div>
+                <div class="prod-title">${p.name}</div>
+                <div class="prod-price">$${p.price}</div>
+                <button class="btn-luxury" style="width:100%; font-size:0.8rem; padding:10px;" onclick="app.addToCart('${p.name}', ${p.price})">ADD TO BAG</button>
+            </div>`;
+        });
     }
 
     addToCart(name, price) {
@@ -280,7 +366,7 @@ class App {
             currency: "INR",
             name: "RichBrat$ Customs",
             description: "Modifications",
-            image: "logo.png",
+            image: "logo.PNG", // Case sensitive update
             handler: (response) => {
                 this.saveOrderToDatabase("Online Paid", response.razorpay_payment_id);
             },
