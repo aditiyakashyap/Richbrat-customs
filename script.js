@@ -9,15 +9,13 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const auth = firebase.auth();
 const db = firebase.firestore();
-const storage = firebase.storage();
 
-// --- 2. CONFIGURATION ---
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKWST3IhiMjYIS6hLfBQhOdftghIZr9lvrU5rZZWu7uaOnDfhAhPPUnTxnmAbI33wgdg/exec";
-
-// --- 3. UI & MODAL CONTROL ---
+// --- 2. UI & MODAL CONTROL ---
 let authMode = 'login';
 window.openModal = (mode) => { 
     authMode = mode; 
@@ -37,12 +35,16 @@ function updateModalUI() {
     document.getElementById('extra-fields').style.display = authMode === 'register' ? 'block' : 'none';
 }
 
-// --- 4. MASTER APP LOGIC ---
+// --- 3. MASTER APP LOGIC ---
 class App {
     constructor() {
         this.cart = [];
         this.uid = null;
         this.inventory = [];
+        
+        // Contact Numbers
+        this.callNumber = "8527746844";
+        this.whatsappNumber = "8920503933";
         
         window.onload = () => {
             const loader = document.getElementById('global-loader');
@@ -54,21 +56,30 @@ class App {
             }
         };
 
+        // Auth Listener
         setTimeout(() => {
             auth.onAuthStateChanged(user => {
                 if (user) {
                     this.uid = user.uid;
-                    this.loadProfile(user.uid);
                     document.getElementById('nav-actions').style.display = 'none';
                     document.getElementById('user-actions').style.display = 'flex';
                 } else {
                     this.uid = null;
-                    this.loadGuestProfile();
                     document.getElementById('nav-actions').style.display = 'flex';
                     document.getElementById('user-actions').style.display = 'none';
                 }
             });
         }, 1000);
+    }
+
+    // --- CONTACT LOGIC ---
+    callUs() {
+        window.location.href = `tel:${this.callNumber}`;
+    }
+
+    whatsappUs(subject) {
+        const msg = encodeURIComponent(`Hi RichBrat$, I'm interested in: ${subject}`);
+        window.open(`https://wa.me/${this.whatsappNumber}?text=${msg}`, '_blank');
     }
 
     // --- ANIMATION TRIGGER ---
@@ -95,78 +106,15 @@ class App {
     navTo(id) {
         window.scrollTo(0,0);
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+        const target = document.getElementById(id);
+        if(target) target.classList.add('active');
         
         // Ensure mobile menu closes on click
         document.getElementById('nav-center').classList.remove('nav-open');
-
-        if(id === 'view-consultancy') {
-             document.getElementById('consultancy-form-container').style.display = 'block';
-             document.getElementById('consultancy-success').style.display = 'none';
-        }
-
-        if(id === 'view-ride-or-die') {
-            this.renderRideOrDie();
-        }
-
-        if(id === 'view-eyes') {
-            const intro = document.getElementById('eye-intro');
-            const content = document.getElementById('eyes-content');
-            intro.style.display = 'flex';
-            content.style.display = 'none';
-            content.style.opacity = '0';
-            
-            setTimeout(() => {
-                intro.style.display = 'none';
-                content.style.display = 'block';
-                setTimeout(() => { content.style.opacity = '1'; content.style.transition = 'opacity 1s'; }, 50);
-            }, 3500);
-        }
     }
 
-    enterGarage() { this.navTo('view-dashboard'); }
     goHome() { this.navTo('view-landing'); }
     logout() { auth.signOut(); this.navTo('view-landing'); }
-
-    // --- EYES CHAT ---
-    openEyesChat(type) {
-        const phone = "918527746844";
-        const msg = encodeURIComponent(`Hi, I'm looking to get her eyes highlighted. Interested in: ${type}`);
-        window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
-    }
-
-    // --- RIDE OR DIE ---
-    renderRideOrDie() {
-        const guestView = document.getElementById('rod-guest-view');
-        const memberView = document.getElementById('rod-member-view');
-        const board = document.querySelector('.blacklist-board');
-
-        if (!this.uid) {
-            guestView.style.display = 'block';
-            memberView.style.display = 'none';
-        } else {
-            guestView.style.display = 'none';
-            memberView.style.display = 'block';
-            
-            const events = [
-                { type: "RIDE", date: "FEB 14 // 11:00 PM", title: "MIDNIGHT RUN: SOUTH DELHI", desc: "Start point: Secret location sent via DM." },
-                { type: "DROP", date: "MAR 01 // 12:00 AM", title: "CARBON AERO KIT V2", desc: "Limited edition widebody kits dropping soon." },
-                { type: "EVENT", date: "MAR 15 // 10:00 AM", title: "TRACK DAY: BUDDHA CIRCUIT", desc: "Exclusive track access for RichBrat$ members." }
-            ];
-
-            board.innerHTML = "";
-            events.forEach(ev => {
-                board.innerHTML += `
-                    <div class="blacklist-item">
-                        <span class="bl-tag">${ev.type}</span>
-                        <div class="bl-date">${ev.date}</div>
-                        <h3 class="bl-title">${ev.title}</h3>
-                        <p class="bl-desc">${ev.desc}</p>
-                    </div>
-                `;
-            });
-        }
-    }
 
     // --- AUTHENTICATION ---
     async handleAuth(e) {
@@ -188,75 +136,12 @@ class App {
             }
             this.triggerDragRace(() => {
                 window.closeModal();
-                this.navTo('view-dashboard');
+                this.navTo('view-store');
             });
         } catch (error) { alert("Access Denied: " + error.message); }
     }
 
-    loadGuestProfile() {
-        document.getElementById('b_name').value = ""; 
-        document.getElementById('b_phone').value = ""; 
-        document.getElementById('b_car').value = "";
-    }
-
-    async loadProfile(uid) {
-        const docSnap = await db.collection("users").doc(uid).get();
-        if (docSnap.exists) {
-            const data = docSnap.data();
-            
-            document.getElementById('b_name').value = data.name; 
-            document.getElementById('b_phone').value = data.phone; 
-            document.getElementById('b_car').value = data.car;
-
-            document.getElementById('c_name').value = data.name; 
-            document.getElementById('c_phone').value = data.phone || "";
-            document.getElementById('c_email').value = data.email || "";
-            document.getElementById('c_car').value = data.car;
-            
-            document.getElementById('p_name').value = data.name;
-            document.getElementById('p_phone').value = data.phone || "";
-            document.getElementById('p_car').value = data.car || "";
-
-            const historyList = document.getElementById('order-history-list');
-            historyList.innerHTML = "";
-            if (data.orders && data.orders.length > 0) {
-                data.orders.reverse().forEach(order => {
-                    historyList.innerHTML += `
-                        <div style="padding:15px; background:rgba(255,255,255,0.05); margin-bottom:10px; border-radius:6px; font-size:0.9rem;">
-                            <div style="display:flex; justify-content:space-between; color:#fff;">
-                                <span>${order.date}</span>
-                                <span style="color:var(--gold);">$${order.total}</span>
-                            </div>
-                            <div style="color:#666; font-size:0.8rem; margin-top:5px;">${order.status}</div>
-                        </div>
-                    `;
-                });
-            } else {
-                historyList.innerHTML = '<p style="color:#666;">No history found.</p>';
-            }
-        }
-    }
-    
-    async updateProfile(e) {
-        e.preventDefault();
-        const btn = document.getElementById('updateProfileBtn');
-        btn.innerText = "SAVING..."; btn.disabled = true;
-        try {
-            await db.collection("users").doc(this.uid).update({
-                phone: document.getElementById('p_phone').value,
-                car: document.getElementById('p_car').value
-            });
-            this.triggerDragRace(() => {
-                btn.innerText = "SAVE"; btn.disabled = false;
-                this.loadProfile(this.uid);
-            });
-        } catch(error) { 
-            alert(error.message); 
-            btn.innerText = "SAVE"; btn.disabled = false; 
-        }
-    }
-
-    // --- STORE ---
+    // --- STORE (E-COMMERCE) ---
     async loadStore() {
         this.navTo('view-store');
         const loader = document.getElementById('loading-store');
@@ -268,14 +153,30 @@ class App {
 
         loader.style.display = 'block';
 
+        // Fetching from Firebase Firestore instead of Google Scripts
         try {
-            const res = await fetch(`${SCRIPT_URL}?action=getInventory`);
-            const data = await res.json();
+            const snapshot = await db.collection("inventory").get();
+            let items = [];
+            snapshot.forEach(doc => {
+                items.push({ id: doc.id, ...doc.data() });
+            });
+            
             loader.style.display = 'none';
 
-            this.inventory = data;
+            // If empty, put some dummy data so the page isn't blank while you set up Firebase
+            if(items.length === 0) {
+                items = [
+                    { name: "Carbon Fiber Steering", price: 450, image: "logo.PNG" },
+                    { name: "Akrapovic Exhaust Tips", price: 200, image: "logo.PNG" },
+                    { name: "Ambient Light Kit", price: 150, image: "logo.PNG" }
+                ];
+            }
+
+            this.inventory = items;
             this.renderShop();
-        } catch(e) { loader.innerText = "Error loading inventory."; }
+        } catch(e) { 
+            loader.innerText = "Error loading inventory. Check Firebase connection."; 
+        }
     }
 
     renderShop() {
@@ -307,7 +208,7 @@ class App {
         filtered.forEach(p => {
             list.innerHTML += `
             <div class="product-item">
-                <div class="prod-img" style="background-image:url('${p.image}')"></div>
+                <div class="prod-img" style="background-image:url('${p.image || 'logo.PNG'}')"></div>
                 <div class="prod-title">${p.name}</div>
                 <div class="prod-price">$${p.price}</div>
                 <button class="btn-luxury" style="width:100%; font-size:0.8rem; padding:10px;" onclick="app.addToCart('${p.name}', ${p.price})">ADD TO BAG</button>
@@ -315,6 +216,7 @@ class App {
         });
     }
 
+    // --- CART LOGIC ---
     addToCart(name, price) {
         this.cart.push({name, price});
         this.renderCart();
@@ -332,7 +234,7 @@ class App {
             list.innerHTML += `
             <div class="cart-item">
                 <span>${item.name}</span>
-                <span>$${item.price} <i class="fa-solid fa-trash" style="color:var(--gold); cursor:pointer;" onclick="app.removeFromCart(${index})"></i></span>
+                <span>$${item.price} <i class="fa-solid fa-trash" style="color:var(--gold); cursor:pointer; margin-left:10px;" onclick="app.removeFromCart(${index})"></i></span>
             </div>`;
         });
         document.getElementById('cart-total').innerText = `$${total}`;
@@ -354,6 +256,7 @@ class App {
         document.getElementById('checkout-modal').style.display = 'flex';
     }
 
+    // --- CHECKOUT LOGIC ---
     async processCheckout(e) {
         e.preventDefault();
         const btn = document.getElementById('chk-btn');
@@ -362,11 +265,25 @@ class App {
         
         btn.innerText = "PROCESSING..."; btn.disabled = true;
 
+        const orderData = {
+            userId: this.uid,
+            date: new Date().toLocaleDateString(),
+            timestamp: Date.now(),
+            items: this.cart,
+            total: totalAmount,
+            status: "PROCESSING",
+            address: document.getElementById('chk-address').value,
+            city: document.getElementById('chk-city').value,
+            zip: document.getElementById('chk-zip').value,
+            payment_method: paymentMethod
+        };
+
         if (paymentMethod === "COD") {
-            this.saveOrderToDatabase("Cash on Delivery", "PENDING_PAYMENT");
+            await this.saveOrderToDatabase(orderData);
             return;
         }
 
+        // Razorpay logic
         const options = {
             key: "rzp_test_S78l8FsaqvBc3n",
             amount: totalAmount * 100,
@@ -375,12 +292,8 @@ class App {
             description: "Modifications",
             image: "logo.PNG", 
             handler: (response) => {
-                this.saveOrderToDatabase("Online Paid", response.razorpay_payment_id);
-            },
-            prefill: {
-                name: document.getElementById('c_name').value,
-                email: auth.currentUser.email,
-                contact: document.getElementById('b_phone').value || ""
+                orderData.transaction_id = response.razorpay_payment_id;
+                this.saveOrderToDatabase(orderData);
             },
             theme: { color: "#D4AF37" }
         };
@@ -393,20 +306,14 @@ class App {
         rzp.open();
     }
 
-    async saveOrderToDatabase(payMethod, transactionId) {
-        const order = {
-            date: new Date().toLocaleDateString(),
-            items: this.cart,
-            total: document.getElementById('chk-total').innerText,
-            status: "PROCESSING",
-            address: document.getElementById('chk-address').value,
-            payment_method: payMethod,
-            transaction_id: transactionId
-        };
-
+    async saveOrderToDatabase(orderData) {
         try {
+            // Save to global orders collection for Admin
+            await db.collection("orders").add(orderData);
+
+            // Also save to user's personal profile document
             await db.collection("users").doc(this.uid).update({
-                orders: firebase.firestore.FieldValue.arrayUnion(order)
+                orders: firebase.firestore.FieldValue.arrayUnion(orderData)
             });
             
             this.triggerDragRace(() => {
@@ -414,97 +321,70 @@ class App {
                 document.getElementById('checkout-modal').style.display = 'none';
                 document.getElementById('chk-btn').innerText = "PAY NOW"; 
                 document.getElementById('chk-btn').disabled = false;
-                this.loadProfile(this.uid);
-                this.navTo('view-profile');
-            });
-
-        } catch (error) { alert(error.message); }
-    }
-
-    // --- BOOKING ---
-    async checkSlots() {
-        const date = document.getElementById('b_date').value;
-        const sel = document.getElementById('b_time');
-        sel.innerHTML = "<option>SCANNING...</option>"; sel.disabled = true;
-        try {
-            const res = await fetch(`${SCRIPT_URL}?action=checkSlots&date=${date}`);
-            const taken = await res.json();
-            const hours = ["10:00","11:00","12:00","13:00","14:00","15:00","16:00"];
-            const avail = hours.filter(h => !taken.includes(h));
-            sel.innerHTML = "";
-            if(avail.length === 0) { sel.innerHTML = "<option>FULL</option>"; }
-            else { avail.forEach(h => sel.innerHTML += `<option value="${h}">${h}</option>`); sel.disabled = false; }
-        } catch(e) { sel.innerHTML = "<option>ERROR</option>"; }
-    }
-
-    async bookSlot(e) {
-        e.preventDefault();
-        if (!this.uid) { 
-            alert("Login required."); 
-            window.openModal('login'); 
-            return; 
-        }
-
-        const btn = document.getElementById('bookBtn');
-        btn.innerText = "BOOKING...";
-        const fd = new FormData();
-        fd.append('date', document.getElementById('b_date').value); fd.append('time', document.getElementById('b_time').value);
-        fd.append('name', document.getElementById('b_name').value); fd.append('phone', document.getElementById('b_phone').value); fd.append('car', document.getElementById('b_car').value);
-
-        try {
-            await fetch(SCRIPT_URL, {method:'POST', body:fd});
-            
-            this.triggerDragRace(() => {
-                document.getElementById('bookingForm').reset();
-                btn.innerText = "CONFIRM";
+                alert("Order Placed Successfully!");
                 this.goHome();
             });
-        } catch(e) { alert("Failed"); }
+
+        } catch (error) { 
+            alert(error.message); 
+            document.getElementById('chk-btn').innerText = "PAY NOW"; 
+            document.getElementById('chk-btn').disabled = false;
+        }
     }
 
-    // --- CONSULTANCY ---
-    async submitConsultation(e) {
+    // --- APPOINTMENTS (Schedule the Change) ---
+    async bookAppointment(e) {
         e.preventDefault();
-        if (!this.uid) { 
-            alert("Login required."); 
-            window.openModal('login'); 
-            return; 
-        }
-
-        const btn = document.getElementById('consultBtn');
-        const formContainer = document.getElementById('consultancy-form-container');
-        const successContainer = document.getElementById('consultancy-success');
         
-        btn.innerText = "UPLOADING..."; btn.disabled = true;
-        const file = document.getElementById('c_image').files[0];
-        
-        if (!file) { alert("Image required."); btn.innerText = "SEND"; btn.disabled = false; return; }
+        const data = {
+            name: document.getElementById('s_name').value,
+            email: document.getElementById('s_email').value,
+            phone: document.getElementById('s_phone').value,
+            car: document.getElementById('s_car').value,
+            date: document.getElementById('s_date').value,
+            modType: document.getElementById('s_mod_type').value,
+            hasParts: document.querySelector('input[name="has_parts"]:checked').value,
+            details: document.getElementById('s_details').value,
+            timestamp: Date.now(),
+            status: 'Pending'
+        };
 
         try {
-            const storageRef = storage.ref(`consultations/${this.uid}_${Date.now()}_${encodeURIComponent(file.name)}`);
-            const snapshot = await storageRef.put(file);
-            const downloadURL = await snapshot.ref.getDownloadURL();
-
-            const fd = new FormData();
-            fd.append('action', 'consultationRequest');
-            fd.append('name', document.getElementById('c_name').value);
-            fd.append('phone', document.getElementById('c_phone').value);
-            fd.append('email', document.getElementById('c_email').value);
-            fd.append('car', document.getElementById('c_car').value);
-            fd.append('desired_look', document.getElementById('c_message').value);
-            fd.append('image_url', downloadURL);
-
-            await fetch(SCRIPT_URL, {method:'POST', body:fd});
-
+            await db.collection("appointments").add(data);
             this.triggerDragRace(() => {
-                formContainer.style.display = 'none';
-                successContainer.style.display = 'block';
-                document.getElementById('c_image').value = ""; 
-                document.getElementById('c_message').value = "";
-                btn.innerText = "SEND"; btn.disabled = false;
+                document.getElementById('scheduleForm').reset();
+                alert("Appointment Requested! Our team will contact you shortly to confirm timing.");
+                this.goHome();
             });
+        } catch(error) {
+            alert("Failed to book appointment. Please try again.");
+        }
+    }
 
-        } catch (error) { alert("Failed"); btn.disabled = false; }
+    // --- CONSULTATION QUERIES ---
+    async submitConsultation(e) {
+        e.preventDefault();
+
+        const data = {
+            name: document.getElementById('c_name').value,
+            car: document.getElementById('c_car').value,
+            query: document.getElementById('c_query').value,
+            timestamp: Date.now(),
+            status: 'Unread'
+        };
+
+        try {
+            await db.collection("queries").add(data);
+            this.triggerDragRace(() => {
+                document.getElementById('c_name').value = '';
+                document.getElementById('c_car').value = '';
+                document.getElementById('c_query').value = '';
+                alert("Query received! We will be in touch soon.");
+                this.goHome();
+            });
+        } catch(error) {
+            alert("Failed to submit query.");
+        }
     }
 }
 
