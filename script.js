@@ -153,7 +153,6 @@ class App {
 
         loader.style.display = 'block';
 
-        // Fetching from Firebase Firestore instead of Google Scripts
         try {
             const snapshot = await db.collection("inventory").get();
             let items = [];
@@ -163,7 +162,6 @@ class App {
             
             loader.style.display = 'none';
 
-            // If empty, put some dummy data so the page isn't blank while you set up Firebase
             if(items.length === 0) {
                 items = [
                     { name: "Carbon Fiber Steering", price: 450, image: "logo.PNG" },
@@ -308,10 +306,7 @@ class App {
 
     async saveOrderToDatabase(orderData) {
         try {
-            // Save to global orders collection for Admin
             await db.collection("orders").add(orderData);
-
-            // Also save to user's personal profile document
             await db.collection("users").doc(this.uid).update({
                 orders: firebase.firestore.FieldValue.arrayUnion(orderData)
             });
