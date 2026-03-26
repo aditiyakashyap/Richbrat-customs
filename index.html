@@ -4,1731 +4,286 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RichBrat$ Customs | Luxury Mods</title>
+    
     <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,400&f[]=clash-display@700,600,500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <style>
-        /* =============================================
-           RICHBRAT$ CUSTOMS — FIXED & PROFESSIONAL CSS
-           ============================================= */
-        :root {
-            --gold: #D4AF37;
-            --gold-light: #F0CC5A;
-            --navy: #050E1A;
-            --navy-card: rgba(11, 22, 36, 0.85);
-            --navy-border: rgba(255, 255, 255, 0.07);
-            --neon-blue: #00f3ff;
-            --neon-red: #ff003c;
-            --text-white: #F0F0F0;
-            --text-muted: #8B9BB4;
-            --font-body: 'Satoshi', sans-serif;
-            --font-display: 'Clash Display', sans-serif;
-            --nav-h: 70px;
-        }
-
-        @font-face {
-            font-family: 'Planet Kosmos';
-            src: url('PlanetKosmos.WOFF') format('woff'), url('PlanetKosmos.TTF') format('truetype');
-        }
-
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-        html { scroll-behavior: smooth; }
-
-        body {
-            background-color: var(--navy);
-            color: var(--text-white);
-            font-family: var(--font-body);
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
-
-        /* Fixed dark bg layer */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background: var(--navy);
-            z-index: -3;
-        }
-
-        /* Subtle noise texture overlay */
-        body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-            z-index: -2;
-            pointer-events: none;
-            opacity: 0.4;
-        }
-
-        /* =============================================
-           GLOBAL LOADER
-           ============================================= */
-        #global-loader {
-            position: fixed;
-            inset: 0;
-            background: var(--navy);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 20px;
-            transition: opacity 0.6s ease;
-        }
-        #global-loader.hide { opacity: 0; pointer-events: none; }
-        .loader-logo {
-            width: 100px;
-            height: auto;
-            animation: loaderPulse 1.4s ease-in-out infinite;
-        }
-        .loader-bar {
-            width: 160px;
-            height: 2px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        .loader-bar-fill {
-            height: 100%;
-            background: var(--gold);
-            width: 0%;
-            animation: loaderFill 1.2s ease forwards;
-        }
-        @keyframes loaderPulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.06); opacity: 1; }
-        }
-        @keyframes loaderFill {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-
-        /* =============================================
-           NAVIGATION — FIXED, ALWAYS VISIBLE
-           ============================================= */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: var(--nav-h);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            background: rgba(5, 14, 26, 0.92);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--navy-border);
-            z-index: 1000;
-        }
-
-        .nav-logo {
-            font-family: 'Planet Kosmos', 'Clash Display', sans-serif;
-            font-size: clamp(1.4rem, 2.5vw, 2rem);
-            color: #fff;
-            letter-spacing: 3px;
-            cursor: pointer;
-            transition: color 0.3s, text-shadow 0.3s;
-            flex-shrink: 0;
-            text-decoration: none;
-        }
-        .nav-logo:hover { color: var(--gold); text-shadow: 0 0 20px rgba(212,175,55,0.5); }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: clamp(16px, 2.5vw, 36px);
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .nav-link {
-            color: var(--text-muted);
-            font-size: 0.82rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: color 0.25s;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-        .nav-link:hover, .nav-link.active { color: var(--gold); }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-shrink: 0;
-        }
-
-        .btn-nav-ghost {
-            color: #fff;
-            font-size: 0.82rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: color 0.3s;
-            background: none;
-            border: none;
-            font-family: var(--font-body);
-        }
-        .btn-nav-ghost:hover { color: var(--gold); }
-
-        .btn-nav-primary {
-            background: var(--gold);
-            color: #000;
-            font-family: var(--font-display);
-            font-size: 0.78rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 9px 22px;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
-        }
-        .btn-nav-primary:hover { background: #fff; transform: translateY(-1px); }
-
-        .btn-cart {
-            position: relative;
-            color: #fff;
-            font-size: 1.2rem;
-            cursor: pointer;
-            background: none;
-            border: none;
-            transition: color 0.3s;
-            display: flex;
-            align-items: center;
-        }
-        .btn-cart:hover { color: var(--gold); }
-        .cart-badge {
-            position: absolute;
-            top: -6px;
-            right: -8px;
-            background: var(--gold);
-            color: #000;
-            font-size: 0.65rem;
-            font-weight: 900;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .mobile-toggle {
-            display: none;
-            color: #fff;
-            font-size: 1.4rem;
-            cursor: pointer;
-            background: none;
-            border: none;
-            z-index: 1002;
-        }
-
-        /* Mobile Nav Drawer */
-        @media (max-width: 820px) {
-            nav { padding: 0 20px; }
-            .mobile-toggle { display: flex; align-items: center; }
-            .nav-links {
-                position: fixed;
-                top: 0;
-                right: 0;
-                width: 260px;
-                height: 100vh;
-                background: rgba(5, 14, 26, 0.98);
-                backdrop-filter: blur(20px);
-                border-left: 1px solid var(--navy-border);
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 90px 30px 40px;
-                gap: 28px;
-                transform: translateX(110%);
-                transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-                z-index: 1001;
-                left: auto;
-            }
-            .nav-links.open { transform: translateX(0); }
-            .nav-link { font-size: 1rem; }
-            .nav-close {
-                position: absolute;
-                top: 22px;
-                right: 22px;
-                font-size: 1.4rem;
-                color: #fff;
-                cursor: pointer;
-            }
-        }
-        @media (min-width: 821px) {
-            .nav-close { display: none; }
-        }
-
-        /* =============================================
-           SECTIONS — SPA VIEW SYSTEM
-           ============================================= */
-        .view {
-            display: none;
-            min-height: 100vh;
-            padding-top: var(--nav-h);
-        }
-        .view.active {
-            display: block;
-            animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
-        }
-        #view-landing { padding-top: 0; }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* =============================================
-           HERO — LANDING
-           ============================================= */
-        #view-landing {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* animated grid lines background */
-        #view-landing::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px);
-            background-size: 60px 60px;
-            z-index: 0;
-        }
-
-        .hero-inner {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0;
-            padding: 20px;
-        }
-
-        .hero-logo {
-            width: clamp(220px, 38vw, 440px);
-            height: auto;
-            object-fit: contain;
-            filter: drop-shadow(0 0 40px rgba(0,0,0,0.7));
-            transition: transform 0.4s ease;
-            margin-bottom: 24px;
-        }
-        .hero-logo:hover { transform: scale(1.03); }
-
-        .hero-tagline {
-            color: var(--text-muted);
-            font-size: clamp(0.85rem, 1.8vw, 1.05rem);
-            max-width: 420px;
-            line-height: 1.7;
-            margin-bottom: 48px;
-        }
-
-        /* Ignition button */
-        .btn-ignition {
-            width: clamp(110px, 14vw, 145px);
-            height: clamp(110px, 14vw, 145px);
-            border-radius: 50%;
-            background: radial-gradient(circle at 35% 35%, #2c2c2c, #000);
-            border: 3px solid #2a2a2a;
-            box-shadow:
-                0 0 0 6px #0d0d0d,
-                0 0 40px rgba(255, 0, 60, 0.25),
-                inset 0 4px 12px rgba(255,255,255,0.08);
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            transition: transform 0.15s, box-shadow 0.2s;
-            font-family: var(--font-display);
-        }
-        .btn-ignition span {
-            font-size: 0.72rem;
-            color: #888;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-        .btn-ignition strong {
-            font-size: clamp(1rem, 2vw, 1.3rem);
-            letter-spacing: 2px;
-            color: var(--neon-red);
-            text-shadow: 0 0 12px var(--neon-red);
-            text-transform: uppercase;
-        }
-        .btn-ignition:hover {
-            transform: scale(1.04);
-            box-shadow: 0 0 0 6px #0d0d0d, 0 0 60px rgba(255, 0, 60, 0.5), inset 0 4px 12px rgba(255,255,255,0.1);
-        }
-        .btn-ignition:active { transform: scale(0.96); }
-
-        /* =============================================
-           SHARED PAGE LAYOUT
-           ============================================= */
-        .page-wrap {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 60px 24px 100px;
-        }
-
-        .page-title {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 5vw, 3.2rem);
-            text-transform: uppercase;
-            text-align: center;
-            margin-bottom: 12px;
-            letter-spacing: 1px;
-        }
-        .page-subtitle {
-            color: var(--text-muted);
-            text-align: center;
-            margin-bottom: 50px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .gold { color: var(--gold); }
-        .gold-line {
-            width: 60px;
-            height: 2px;
-            background: var(--gold);
-            margin: 16px auto 50px;
-        }
-
-        /* =============================================
-           BUTTONS (GENERAL)
-           ============================================= */
-        .btn-gold {
-            background: var(--gold);
-            color: #000;
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 14px 32px;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-        }
-        .btn-gold:hover {
-            background: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(212,175,55,0.3);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--gold);
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 13px 32px;
-            border: 1px solid var(--gold);
-            cursor: pointer;
-            transition: background 0.3s, color 0.3s, transform 0.2s;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-        }
-        .btn-outline:hover { background: var(--gold); color: #000; transform: translateY(-2px); }
-
-        .btn-whatsapp {
-            background: #25D366;
-            color: #fff;
-            font-family: var(--font-display);
-            font-size: 0.85rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            padding: 14px 24px;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.2s;
-            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-whatsapp:hover { background: #1aad52; transform: translateY(-2px); }
-
-        /* =============================================
-           CARDS
-           ============================================= */
-        .card {
-            background: var(--navy-card);
-            border: 1px solid var(--navy-border);
-            border-radius: 14px;
-            backdrop-filter: blur(10px);
-            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-        }
-        .card:hover {
-            border-color: rgba(212,175,55,0.4);
-            transform: translateY(-6px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
-        /* =============================================
-           STORE SECTION
-           ============================================= */
-        .shop-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            justify-content: center;
-            align-items: center;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--navy-border);
-            border-radius: 12px;
-            padding: 18px 24px;
-            margin-bottom: 36px;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--navy);
-            border: 1px solid #1e2d3d;
-            border-radius: 8px;
-            padding: 10px 16px;
-            flex: 1;
-            min-width: 220px;
-            color: var(--text-muted);
-        }
-        .filter-group i { font-size: 0.9rem; flex-shrink: 0; }
-        .filter-group input[type="text"],
-        .filter-group select {
-            background: transparent;
-            border: none;
-            outline: none;
-            color: #fff;
-            font-family: var(--font-body);
-            width: 100%;
-            font-size: 0.9rem;
-        }
-        .filter-group select { color: var(--gold); font-family: var(--font-display); font-weight: 600; cursor: pointer; }
-        .filter-group select option { background: var(--navy); color: #fff; }
-        .filter-group input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-        .filter-group input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 16px;
-            width: 16px;
-            border-radius: 50%;
-            background: var(--gold);
-            cursor: pointer;
-            margin-top: -6px;
-        }
-        .filter-group input[type="range"]::-webkit-slider-runnable-track {
-            height: 4px;
-            background: #1e2d3d;
-            border-radius: 2px;
-        }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-            gap: 26px;
-        }
-
-        .product-card {
-            background: var(--navy-card);
-            border: 1px solid var(--navy-border);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-            cursor: default;
-        }
-        .product-card:hover {
-            border-color: rgba(212,175,55,0.5);
-            transform: translateY(-5px);
-            box-shadow: 0 16px 40px rgba(0,0,0,0.5);
-        }
-
-        .product-img {
-            width: 100%;
-            height: 210px;
-            object-fit: cover;
-            background-color: #0d1b2a;
-            background-size: cover;
-            background-position: center;
-            display: block;
-        }
-
-        .product-info { padding: 20px; }
-        .product-name {
-            font-family: var(--font-display);
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 6px;
-        }
-        .product-cat {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 14px;
-        }
-        .product-price {
-            font-family: var(--font-display);
-            font-size: 1.3rem;
-            color: var(--gold);
-            margin-bottom: 16px;
-        }
-
-        .store-loader {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-        }
-
-        /* =============================================
-           SERVICE CARDS (Lighting / Audio)
-           ============================================= */
-        .service-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 28px;
-        }
-
-        .service-card {
-            padding: 44px 32px;
-            text-align: center;
-        }
-        .service-icon {
-            font-size: 3rem;
-            margin-bottom: 22px;
-            display: block;
-            transition: transform 0.3s;
-        }
-        .service-card:hover .service-icon { transform: scale(1.15) rotate(-5deg); }
-        .service-card h3 {
-            font-family: var(--font-display);
-            font-size: 1.7rem;
-            color: #fff;
-            margin-bottom: 12px;
-        }
-        .service-card p {
-            color: var(--text-muted);
-            line-height: 1.6;
-            font-size: 0.9rem;
-            margin-bottom: 28px;
-        }
-        .service-btns {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        /* =============================================
-           BOOKING FORM (Schedule)
-           ============================================= */
-        .booking-wrap {
-            background: var(--navy-card);
-            border: 1px solid var(--navy-border);
-            border-radius: 16px;
-            padding: clamp(24px, 5vw, 48px);
-        }
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .form-field {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .form-field label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        .inp {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 8px;
-            color: #fff;
-            font-family: var(--font-body);
-            font-size: 0.95rem;
-            transition: border-color 0.3s, background 0.3s;
-        }
-        .inp:focus {
-            outline: none;
-            border-color: var(--gold);
-            background: rgba(0,0,0,0.6);
-        }
-        .inp::placeholder { color: #3a4a5c; }
-        textarea.inp { resize: vertical; min-height: 110px; }
-        select.inp { cursor: pointer; }
-        select.inp option { background: #0b1624; }
-
-        /* Radio row */
-        .radio-row {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            padding: 14px 16px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 8px;
-        }
-        .radio-row label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-        .radio-row legend {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #fff;
-            margin-right: 16px;
-        }
-
-        /* =============================================
-           CONSULT SECTION
-           ============================================= */
-        .consult-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 36px;
-            align-items: start;
-        }
-        @media (max-width: 720px) {
-            .consult-grid { grid-template-columns: 1fr; }
-        }
-
-        .contact-box {
-            padding: 40px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .contact-box h3 {
-            font-family: var(--font-display);
-            font-size: 1.6rem;
-            margin-bottom: 12px;
-        }
-        .contact-box p {
-            color: var(--text-muted);
-            line-height: 1.7;
-            font-size: 0.9rem;
-            margin-bottom: 32px;
-        }
-        .contact-btns {
-            display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        /* =============================================
-           FAMILY (COMING SOON)
-           ============================================= */
-        .coming-soon-box {
-            text-align: center;
-            padding: 80px 30px;
-            border: 1px dashed rgba(212,175,55,0.3);
-            border-radius: 20px;
-            background: rgba(212,175,55,0.02);
-        }
-        .coming-soon-box i {
-            font-size: 3.5rem;
-            color: var(--gold);
-            margin-bottom: 20px;
-            display: block;
-        }
-        .coming-soon-box h3 {
-            font-family: var(--font-display);
-            font-size: 2.5rem;
-            margin-bottom: 14px;
-        }
-        .coming-soon-box p {
-            color: var(--text-muted);
-            max-width: 380px;
-            margin: 0 auto;
-            line-height: 1.7;
-        }
-
-        /* =============================================
-           CART SIDEBAR
-           ============================================= */
-        #cart-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 2999;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-        #cart-overlay.show { opacity: 1; pointer-events: auto; }
-
-        #cart-panel {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: min(420px, 100vw);
-            height: 100vh;
-            background: #070f1c;
-            border-left: 1px solid rgba(212,175,55,0.3);
-            z-index: 3000;
-            transform: translateX(100%);
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            display: flex;
-            flex-direction: column;
-            box-shadow: -20px 0 60px rgba(0,0,0,0.8);
-        }
-        #cart-panel.open { transform: translateX(0); }
-
-        .cart-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 24px 28px;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
-            flex-shrink: 0;
-        }
-        .cart-head h2 {
-            font-family: var(--font-display);
-            font-size: 1.4rem;
-            color: var(--gold);
-        }
-        .cart-close-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        .cart-close-btn:hover { color: var(--gold); }
-
-        .cart-items-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px 28px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-        .cart-item-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .cart-item-name { color: #fff; font-weight: 500; }
-        .cart-item-price { color: var(--gold); font-family: var(--font-display); }
-        .cart-remove {
-            background: none;
-            border: none;
-            color: #444;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: color 0.2s;
-            margin-left: 10px;
-        }
-        .cart-remove:hover { color: var(--neon-red); }
-
-        .cart-foot {
-            padding: 20px 28px 28px;
-            border-top: 1px solid rgba(255,255,255,0.07);
-            flex-shrink: 0;
-        }
-        .cart-total-row {
-            display: flex;
-            justify-content: space-between;
-            font-weight: 700;
-            margin-bottom: 16px;
-            font-family: var(--font-display);
-            font-size: 1.1rem;
-        }
-        .cart-total-row span:last-child { color: var(--gold); }
-
-        /* =============================================
-           MODALS (Auth & Checkout)
-           ============================================= */
-        .modal-bg {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.88);
-            backdrop-filter: blur(10px);
-            z-index: 4000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .modal-bg.open { display: flex; }
-
-        .modal-box {
-            background: #08131f;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 18px;
-            padding: clamp(32px, 5vw, 52px);
-            width: 100%;
-            max-width: 440px;
-            text-align: center;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.7);
-            position: relative;
-        }
-        .modal-title {
-            font-family: var(--font-display);
-            font-size: 1.8rem;
-            color: #fff;
-            margin-bottom: 28px;
-            letter-spacing: 2px;
-        }
-        .modal-close {
-            position: absolute;
-            top: 18px;
-            right: 22px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .modal-close:hover { color: #fff; }
-        .modal-switch {
-            margin-top: 20px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: color 0.3s;
-            background: none;
-            border: none;
-            font-family: var(--font-body);
-        }
-        .modal-switch:hover { color: var(--gold); }
-
-        /* =============================================
-           FLOATING DOCK (right side)
-           ============================================= */
-        .float-dock {
-            position: fixed;
-            bottom: 36px;
-            right: 26px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            z-index: 500;
-        }
-        .dock-btn {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            text-decoration: none;
-            border: none;
-            transition: transform 0.3s, box-shadow 0.3s;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-        }
-        .dock-btn:hover { transform: scale(1.12) translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.5); }
-        .dock-home { background: rgba(11, 22, 36, 0.9); border: 1px solid var(--navy-border); color: #fff; }
-        .dock-wa { background: #25D366; color: #fff; }
-
-        /* =============================================
-           DRAG RACE TRANSITION OVERLAY
-           ============================================= */
-        #drag-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            pointer-events: none;
-            display: none;
-            overflow: hidden;
-            background: linear-gradient(to top, var(--navy) 0%, rgba(5,14,26,0.7) 60%, transparent 100%);
-        }
-        .drag-car {
-            position: absolute;
-            bottom: -60vh;
-            left: 50%;
-            width: clamp(160px, 22vw, 300px);
-            transform: translateX(-50%) rotate(-90deg);
-            opacity: 0;
-            mix-blend-mode: lighten;
-            filter: contrast(1.4) brightness(1.2) drop-shadow(0 0 18px var(--neon-blue));
-        }
-        .drag-skid {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: clamp(80px, 12vw, 160px);
-            height: 0;
-            border-left: 3px dashed var(--neon-blue);
-            border-right: 3px dashed var(--neon-blue);
-            opacity: 0;
-            filter: blur(2px);
-            box-shadow: 0 0 20px var(--neon-blue);
-        }
-        .drag-run .drag-car {
-            animation: carLaunch 1.8s cubic-bezier(0.5,0,0.1,1) forwards;
-        }
-        .drag-run .drag-skid {
-            animation: skidUp 1.8s cubic-bezier(0.5,0,0.1,1) forwards;
-        }
-        @keyframes carLaunch {
-            0% { bottom: -60vh; opacity: 0; transform: translateX(-50%) rotate(-90deg) scale(0.8); }
-            12% { opacity: 1; }
-            100% { bottom: 130vh; opacity: 1; transform: translateX(-50%) rotate(-90deg) scaleY(1.3); }
-        }
-        @keyframes skidUp {
-            0% { height: 0; opacity: 0; }
-            20% { height: 50vh; opacity: 0.8; }
-            100% { height: 110vh; opacity: 0; }
-        }
-
-        /* =============================================
-           RESPONSIVE
-           ============================================= */
-        @media (max-width: 600px) {
-            .page-wrap { padding: 40px 16px 80px; }
-            .service-btns { flex-direction: column; }
-            .booking-wrap { padding: 24px 18px; }
-            .contact-box { padding: 28px 20px; }
-            .form-grid { grid-template-columns: 1fr; }
-        }
-    </style>
 </head>
 <body>
 
-    <!-- LOADER -->
     <div id="global-loader">
-        <img src="logo.PNG" class="loader-logo" alt="RichBrat$ Customs">
-        <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+        <img src="logo.PNG" class="loader-logo" alt="Loading...">
     </div>
 
-    <!-- DRAG RACE OVERLAY -->
-    <div id="drag-overlay">
-        <div class="drag-skid"></div>
-        <img src="zoom.png" class="drag-car" alt="">
+    <div id="drag-run-overlay">
+        <div class="skid-marks"></div>
+        <img src="zoom.png" class="hologram-car" alt="Blueprint">
     </div>
 
-    <!-- NAV -->
-    <nav id="main-nav">
-        <span class="nav-logo" onclick="app.goHome()">RICHBRAT$</span>
-
-        <div class="nav-links" id="nav-links">
-            <i class="fa-solid fa-xmark nav-close" onclick="app.closeNav()"></i>
-            <span class="nav-link" onclick="app.go('store')">Shop</span>
-            <span class="nav-link" onclick="app.go('lighting')">Lighting</span>
-            <span class="nav-link" onclick="app.go('audio')">Audio</span>
-            <span class="nav-link" onclick="app.go('schedule')">Schedule</span>
-            <span class="nav-link" onclick="app.go('consult')">Consult</span>
-            <span class="nav-link gold" onclick="app.go('family')">Family</span>
+    <div class="bg-noise"></div>
+    <div style="position:fixed; top:0; left:0; width:100%; height:100vh; background: var(--navy); z-index:-2;"></div>
+    
+    <nav>
+        <div class="logo-container" onclick="app.goHome()">
+            <h1 class="logo-text">RICHBRAT$</h1>
         </div>
 
-        <div class="nav-actions">
-            <div id="guest-actions">
-                <button class="btn-nav-ghost" onclick="app.openAuth('login')">Log In</button>
-                <button class="btn-nav-primary" onclick="app.openAuth('register')">Sign Up</button>
-            </div>
-            <div id="user-actions" style="display:none; gap:16px; align-items:center;" class="nav-actions">
-                <button class="btn-cart" onclick="app.toggleCart()">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    <span class="cart-badge" id="cart-count">0</span>
-                </button>
-                <button class="btn-nav-ghost" onclick="app.logout()">Log Out</button>
-            </div>
-        </div>
-
-        <button class="mobile-toggle" onclick="app.openNav()">
+        <div class="mobile-toggle" onclick="app.toggleNav()">
             <i class="fa-solid fa-bars"></i>
-        </button>
+        </div>
+
+        <div class="nav-center" id="nav-center">
+            <i class="fa-solid fa-xmark mobile-close" onclick="app.toggleNav()"></i>
+            <a class="page-link" onclick="app.loadStore()">Shop</a>
+            <a class="page-link" onclick="app.navTo('view-lighting')">Lighting</a>
+            <a class="page-link" onclick="app.navTo('view-audio')">Audio</a>
+            <a class="page-link" onclick="app.navTo('view-schedule')">Schedule</a>
+            <a class="page-link" onclick="app.navTo('view-consult')">Consult</a>
+            <a class="page-link" onclick="app.navTo('view-family')" style="color:var(--gold);">Family</a>
+        </div>
+
+        <div class="user-panel" id="nav-actions">
+            <span class="nav-action-link" onclick="openModal('login')">Log In</span>
+            <button class="btn-luxury" style="padding: 10px 24px; font-size: 0.85rem;" onclick="openModal('register')">Sign Up</button>
+        </div>
+        <div class="user-panel" id="user-actions" style="display:none;">
+            <span style="cursor:pointer; font-size: 1.3rem; color:#fff; display:flex; align-items:center;" onclick="app.toggleCart()">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span id="cart-count">0</span>
+            </span>
+            <span class="nav-action-link" style="color:#666;" onclick="app.logout()">Log Out</span>
+        </div>
     </nav>
 
-    <!-- ===================== VIEWS ===================== -->
+    <div class="floating-footer">
+        <div class="footer-icon" onclick="app.goHome()" title="Home">
+            <i class="fa-solid fa-house"></i>
+        </div>
+        <a href="javascript:void(0)" onclick="app.whatsappUs('General Inquiry')" class="footer-icon whatsapp-icon" title="Chat on WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+    </div>
 
-    <!-- LANDING -->
-    <div id="view-landing" class="view active">
-        <div class="hero-inner">
-            <img src="logo.PNG" class="hero-logo" alt="RichBrat$ Customs">
-            <p class="hero-tagline">Premium modifications for the modern enthusiast.<br>Aesthetics, Performance, and Identity.</p>
-            <button class="btn-ignition" onclick="app.go('store')">
-                <span>ENTER</span>
-                <strong>GARAGE</strong>
-            </button>
+    <div id="cart-panel">
+        <div class="cart-header">
+            <h2 style="color:var(--gold); font-family:var(--font-display);">YOUR STASH</h2>
+            <i class="fa-solid fa-xmark" style="cursor:pointer; font-size:1.5rem; color:#fff;" onclick="app.toggleCart()"></i>
+        </div>
+        <div class="cart-items" id="cart-items-list">Bag is empty.</div>
+        <div class="cart-footer">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; color:#fff; margin-bottom:15px;">
+                <span>TOTAL</span><span id="cart-total" style="color:var(--gold);">$0</span>
+                <span id="chk-total" style="display:none;">0</span>
+            </div>
+            <button class="btn-luxury" style="width:100%;" onclick="app.openCheckout()">PAY NOW</button>
         </div>
     </div>
 
-    <!-- STORE -->
-    <div id="view-store" class="view">
-        <div class="page-wrap">
-            <h2 class="page-title gold">The Mod Shop</h2>
-            <div class="gold-line"></div>
-            <div class="shop-filters">
-                <div class="filter-group">
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-box">
+            <h2 id="modal-title" style="color:#fff; font-family:var(--font-display); margin-bottom:20px;">ACCESS</h2>
+            <form onsubmit="app.handleAuth(event)">
+                <input type="text" id="reg-name" class="form-input" placeholder="Name" style="display:none;">
+                <input type="email" id="email" class="form-input" placeholder="Email" required>
+                <input type="password" id="password" class="form-input" placeholder="Password" required>
+                <div id="extra-fields" style="display:none;">
+                    <input type="tel" id="reg-phone" class="form-input" placeholder="Phone">
+                    <input type="text" id="reg-car" class="form-input" placeholder="Car Model">
+                </div>
+                <button type="submit" class="btn-luxury" style="width:100%;" id="submit-btn">GO</button>
+            </form>
+            <p style="margin-top:20px; color:#666; cursor:pointer;" onclick="switchMode()">Switch Mode</p>
+            <p style="margin-top:10px; color:#666; cursor:pointer;" onclick="closeModal()">Close</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="modal-box" style="max-width:500px;">
+            <h2 style="color:var(--gold); margin-bottom:20px;">SHIPPING</h2>
+            <form onsubmit="app.processCheckout(event)">
+                <input type="text" id="chk-address" class="form-input" placeholder="Address" required>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="chk-city" class="form-input" placeholder="City" required>
+                    <input type="text" id="chk-zip" class="form-input" placeholder="Zip Code" required>
+                </div>
+                <select id="chk-payment" class="form-input">
+                    <option value="ONLINE">Online Payment</option>
+                    <option value="COD">Cash on Delivery</option>
+                </select>
+                <button type="submit" class="btn-luxury" style="width:100%;" id="chk-btn">CONFIRM ORDER</button>
+            </form>
+            <p style="margin-top:20px; color:#666; cursor:pointer; text-align:center;" onclick="document.getElementById('checkout-modal').style.display='none'">Cancel</p>
+        </div>
+    </div>
+
+    <div id="view-landing" class="section active">
+        <div class="hero">
+            <div class="hero-content">
+                <img src="logo.PNG" class="hero-logo" alt="RichBrat$ Logo">
+                <p class="hero-subtitle">Premium modifications for the modern enthusiast. <br>Aesthetics, Performance, and Identity.</p>
+                <button class="btn-start-engine" onclick="app.loadStore()">
+                    <span>ENTER</span>
+                    <strong>GARAGE</strong>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-store" class="section">
+        <div class="content-box">
+            <h2 class="section-title" style="color:var(--gold);">THE MOD SHOP</h2>
+            <div class="shop-controls">
+                <div class="control-group">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="shop-search" placeholder="Search mods..." oninput="app.renderShop()">
+                    <input type="text" id="shop-search" placeholder="Search mods..." onkeyup="app.renderShop()">
                 </div>
-                <div class="filter-group">
-                    <i class="fa-solid fa-tag"></i>
-                    <span style="font-size:0.8rem; white-space:nowrap; color:var(--text-muted);">Max: ₹<span id="price-val">50000</span></span>
-                    <input type="range" id="shop-filter-price" min="0" max="50000" step="500" value="50000" oninput="document.getElementById('price-val').innerText=this.value; app.renderShop()">
+                <div class="control-group">
+                    <i class="fa-solid fa-filter"></i>
+                    <span style="font-size:0.8rem; white-space:nowrap;">Max Price: $<span id="price-val">10000</span></span>
+                    <input type="range" id="shop-filter-price" min="0" max="10000" step="100" value="10000" oninput="document.getElementById('price-val').innerText=this.value; app.renderShop()">
                 </div>
-                <div class="filter-group">
-                    <i class="fa-solid fa-arrow-up-wide-short"></i>
+                <div class="control-group">
                     <select id="shop-sort" onchange="app.renderShop()">
-                        <option value="default">Sort: Featured</option>
-                        <option value="price-low">Price: Low → High</option>
-                        <option value="price-high">Price: High → Low</option>
-                        <option value="name-asc">Name: A–Z</option>
+                        <option value="default">Sort By: Featured</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="name-asc">Name: A-Z</option>
                     </select>
                 </div>
             </div>
-            <div id="store-loader" class="store-loader">
-                <i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem; color:var(--gold);"></i>
-                <p style="margin-top:14px;">Loading inventory...</p>
+            <div id="loading-store" style="text-align:center; padding:50px;">
+                <img src="logo.PNG" class="loader-logo" alt="Loading..." style="width:80px;">
             </div>
-            <div class="product-grid" id="product-list"></div>
+            <div class="store-grid" id="product-list"></div>
         </div>
     </div>
 
-    <!-- LIGHTING -->
-    <div id="view-lighting" class="view">
-        <div class="page-wrap">
-            <h2 class="page-title">Lighting <span class="gold">Mods</span></h2>
-            <p class="page-subtitle">Illuminate your presence. Choose your setup below.</p>
-            <div class="service-grid">
-                <div class="card service-card">
-                    <i class="fa-solid fa-sun service-icon" style="color:var(--neon-blue);"></i>
-                    <h3>Headlights</h3>
-                    <p>Projectors, DRLs, Demon Eyes, RGB control — make your front end unforgettable.</p>
-                    <div class="service-btns">
-                        <button class="btn-gold" onclick="app.go('schedule')">Book Now</button>
-                        <button class="btn-whatsapp" onclick="app.wa('Headlight Modification')"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
-                    </div>
-                </div>
-                <div class="card service-card">
-                    <i class="fa-solid fa-moon service-icon" style="color:var(--neon-red);"></i>
-                    <h3>Taillights</h3>
-                    <p>Matrix LEDs, custom tinting, and sequential turn signals for a signature rear presence.</p>
-                    <div class="service-btns">
-                        <button class="btn-gold" onclick="app.go('schedule')">Book Now</button>
-                        <button class="btn-whatsapp" onclick="app.wa('Taillight Modification')"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
-                    </div>
-                </div>
-                <div class="card service-card">
-                    <i class="fa-solid fa-lightbulb service-icon" style="color:var(--gold);"></i>
-                    <h3>Ambient Lighting</h3>
-                    <p>Interior ambient kits, footwell glow, and underbody strips — set the vibe inside and out.</p>
-                    <div class="service-btns">
-                        <button class="btn-gold" onclick="app.go('schedule')">Book Now</button>
-                        <button class="btn-whatsapp" onclick="app.wa('Ambient Lighting')"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+    <div id="view-family" class="section">
+        <div class="content-box" style="text-align:center;">
+            <h2 class="section-title" style="color:var(--gold);">THE FAMILY</h2>
+            <div style="padding:100px 20px; background:rgba(255,255,255,0.02); border-radius:20px; border:1px dashed var(--gold);">
+                <i class="fa-solid fa-hourglass-half" style="font-size:4rem; color:var(--gold); margin-bottom:20px;"></i>
+                <h3 style="font-family:var(--font-display); font-size:2rem; color:#fff;">COMING SOON</h3>
+                <p style="color:#666; max-width: 400px; margin: 15px auto;">Our exclusive community hub is under construction. Get ready for drops, meets, and classified events.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-consult" class="section">
+        <div class="content-box">
+            <h2 class="section-title">CONSULT AN EXPERT</h2>
+            <p style="text-align:center; color:#888; margin-bottom:30px;">Not sure what to get? Fill out the form or contact us directly.</p>
+            <div class="booking-grid">
+                <form onsubmit="app.submitConsultation(event)">
+                    <input type="text" id="c_name" class="form-input" placeholder="Name" required>
+                    <input type="text" id="c_car" class="form-input" placeholder="Car Model & Year" required>
+                    <textarea id="c_query" class="form-input" rows="5" placeholder="Tell us what you're dreaming of..." required></textarea>
+                    <button type="submit" class="btn-luxury" style="width:100%;">SUBMIT QUERY</button>
+                </form>
+                <div class="vip-lounge-box">
+                    <h3 style="color:#fff; font-family:var(--font-display);">GET IN TOUCH NOW</h3>
+                    <p style="color:#888; margin-top:10px;">Connect with our master builders immediately to discuss your vision.</p>
+                    <div style="display:flex; gap:15px; margin-top:30px;">
+                        <button onclick="app.callUs()" class="btn-luxury" style="background:#fff; flex:1;">CALL</button>
+                        <button onclick="app.whatsappUs('Consultation Query')" class="btn-luxury" style="background:#25D366; color:#fff; flex:1;">WHATSAPP</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- AUDIO -->
-    <div id="view-audio" class="view">
-        <div class="page-wrap">
-            <h2 class="page-title">Audio <span class="gold">Systems</span></h2>
-            <p class="page-subtitle">Feel the bass. Crystal clear highs. Choose your tier.</p>
-            <div class="service-grid">
-                <div class="card service-card" style="border-color:rgba(212,175,55,0.3);">
-                    <i class="fa-solid fa-volume-high service-icon" style="color:var(--gold);"></i>
-                    <h3 class="gold">High-End</h3>
-                    <p>Premium components, custom enclosures, and studio-grade DSP tuning for true audiophiles.</p>
-                    <div class="service-btns">
-                        <button class="btn-gold" onclick="app.go('schedule')">Book Now</button>
-                        <button class="btn-whatsapp" onclick="app.wa('High-End Audio System')"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
-                    </div>
-                </div>
-                <div class="card service-card">
-                    <i class="fa-solid fa-music service-icon" style="color:var(--neon-blue);"></i>
-                    <h3>Pocket Friendly</h3>
-                    <p>Superior sound without the heavy tag. Great bass, clear vocals, OEM integration.</p>
-                    <div class="service-btns">
-                        <button class="btn-gold" onclick="app.go('schedule')">Book Now</button>
-                        <button class="btn-whatsapp" onclick="app.wa('Budget Audio System')"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- SCHEDULE -->
-    <div id="view-schedule" class="view">
-        <div class="page-wrap">
-            <h2 class="page-title">Schedule <span class="gold">the Change</span></h2>
-            <div class="gold-line"></div>
-            <div class="booking-wrap">
+    <div id="view-schedule" class="section">
+        <div class="content-box">
+            <h2 class="section-title">SCHEDULE THE CHANGE</h2>
+            <div style="background:var(--navy-card); padding:40px; border-radius:16px; border:1px solid rgba(255,255,255,0.08);">
                 <form id="scheduleForm" onsubmit="app.bookAppointment(event)">
-                    <div class="form-grid">
-                        <div class="form-field">
-                            <label>Your Name</label>
-                            <input type="text" id="s_name" class="inp" placeholder="Full name" required>
-                        </div>
-                        <div class="form-field">
-                            <label>Email</label>
-                            <input type="email" id="s_email" class="inp" placeholder="you@example.com" required>
-                        </div>
-                        <div class="form-field">
-                            <label>Phone</label>
-                            <input type="tel" id="s_phone" class="inp" placeholder="+91 XXXXX XXXXX" required>
-                        </div>
-                        <div class="form-field">
-                            <label>Car Model & Year</label>
-                            <input type="text" id="s_car" class="inp" placeholder="e.g. Honda City 2022" required>
-                        </div>
-                        <div class="form-field">
-                            <label>Preferred Date</label>
-                            <input type="date" id="s_date" class="inp" required>
-                        </div>
-                        <div class="form-field">
-                            <label>Modification Type</label>
-                            <select id="s_mod_type" class="inp">
-                                <option value="Interior">Interior Work</option>
-                                <option value="Exterior">Exterior Work</option>
-                                <option value="Performance">Performance Tuning</option>
-                                <option value="Lighting">Lighting / Electrics</option>
-                                <option value="Audio">Audio Setup</option>
-                            </select>
-                        </div>
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:20px;">
+                        <input type="text" id="s_name" class="form-input" placeholder="Name" required>
+                        <input type="email" id="s_email" class="form-input" placeholder="Email" required>
+                        <input type="tel" id="s_phone" class="form-input" placeholder="Phone" required>
+                        <input type="text" id="s_car" class="form-input" placeholder="Car Model & Year" required>
+                        <input type="date" id="s_date" class="form-input" required>
+                        <select id="s_mod_type" class="form-input" style="color:var(--text-muted);">
+                            <option value="Interior">Interior Work</option>
+                            <option value="Exterior">Exterior Work</option>
+                            <option value="Performance">Performance Tuning</option>
+                            <option value="Lighting">Lighting / Electrics</option>
+                            <option value="Audio">Audio Setup</option>
+                        </select>
                     </div>
-                    <div class="radio-row" style="margin-bottom:16px;">
-                        <legend>Do you have the parts?</legend>
-                        <label><input type="radio" name="has_parts" value="Yes"> Yes, I have them</label>
-                        <label><input type="radio" name="has_parts" value="No" checked> No, source for me</label>
+                    <div style="margin:20px 0; background:rgba(0,0,0,0.3); padding:15px; border-radius:8px;">
+                        <label style="color:#fff; font-weight:bold; margin-right:20px;">Do you have the parts already?</label>
+                        <label style="color:#888; cursor:pointer;"><input type="radio" name="has_parts" value="Yes"> Yes</label> &nbsp;&nbsp;&nbsp;
+                        <label style="color:#888; cursor:pointer;"><input type="radio" name="has_parts" value="No" checked> No</label>
                     </div>
-                    <div class="form-field" style="margin-bottom:20px;">
-                        <label>Details & Requests</label>
-                        <textarea id="s_details" class="inp" rows="4" placeholder="List the specific modifications you want..."></textarea>
-                    </div>
-                    <button type="submit" class="btn-gold" style="width:100%;" id="schedule-btn">Book Appointment</button>
+                    <textarea id="s_details" class="form-input" rows="4" placeholder="List the specific modifications you want..."></textarea>
+                    <button type="submit" class="btn-luxury" style="width:100%; margin-top:10px;">BOOK APPOINTMENT</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <!-- CONSULT -->
-    <div id="view-consult" class="view">
-        <div class="page-wrap">
-            <h2 class="page-title">Consult <span class="gold">an Expert</span></h2>
-            <p class="page-subtitle">Not sure what to get? We'll figure it out together.</p>
-            <div class="consult-grid">
-                <div>
-                    <form onsubmit="app.submitConsultation(event)">
-                        <div class="form-field" style="margin-bottom:16px;">
-                            <label>Your Name</label>
-                            <input type="text" id="c_name" class="inp" placeholder="Your name" required>
-                        </div>
-                        <div class="form-field" style="margin-bottom:16px;">
-                            <label>Car Model & Year</label>
-                            <input type="text" id="c_car" class="inp" placeholder="e.g. Maruti Swift 2021" required>
-                        </div>
-                        <div class="form-field" style="margin-bottom:20px;">
-                            <label>Your Vision</label>
-                            <textarea id="c_query" class="inp" rows="5" placeholder="Tell us what you're dreaming of..." required></textarea>
-                        </div>
-                        <button type="submit" class="btn-gold" style="width:100%;">Submit Query</button>
-                    </form>
+    <div id="view-lighting" class="section">
+        <div class="content-box">
+            <h2 class="section-title">LIGHTING MODS</h2>
+            <p style="text-align:center; color:#888; margin-bottom:40px;">Illuminate your presence. Choose your setup below.</p>
+            <div class="dashboard-grid">
+                <div class="dash-card">
+                    <i class="fa-solid fa-sun dash-icon" style="color:var(--neon-blue);"></i>
+                    <h3>HEADLIGHTS</h3>
+                    <p style="color:#666; margin-top:10px; margin-bottom:20px;">Projectors, DRLs, Demon Eyes, and RGB control.</p>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-luxury" style="flex:1; padding:10px; font-size:0.8rem;" onclick="app.navTo('view-schedule')">BOOK</button>
+                        <button class="btn-luxury" style="flex:1; padding:10px; font-size:0.8rem; background:#25D366; color:#fff;" onclick="app.whatsappUs('Headlight Modification')">WHATSAPP</button>
+                    </div>
                 </div>
-                <div class="card contact-box">
-                    <h3>Get In Touch <span class="gold">Now</span></h3>
-                    <p>Connect with our master builders immediately to discuss your vision. We're available for calls and WhatsApp chats.</p>
-                    <div class="contact-btns">
-                        <button class="btn-outline" onclick="app.call()"><i class="fa-solid fa-phone" style="margin-right:8px;"></i>Call Us</button>
-                        <button class="btn-whatsapp" onclick="app.wa('Consultation Query')"><i class="fa-brands fa-whatsapp"></i> WhatsApp</button>
+                <div class="dash-card">
+                    <i class="fa-solid fa-moon dash-icon" style="color:var(--neon-red);"></i>
+                    <h3>TAILLIGHTS</h3>
+                    <p style="color:#666; margin-top:10px; margin-bottom:20px;">Matrix LEDs, Custom Tinting, and Sequential Turn Signals.</p>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-luxury" style="flex:1; padding:10px; font-size:0.8rem;" onclick="app.navTo('view-schedule')">BOOK</button>
+                        <button class="btn-luxury" style="flex:1; padding:10px; font-size:0.8rem; background:#25D366; color:#fff;" onclick="app.whatsappUs('Taillight Modification')">WHATSAPP</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- FAMILY -->
-    <div id="view-family" class="view">
-        <div class="page-wrap">
-            <h2 class="page-title gold">The Family</h2>
-            <div class="gold-line"></div>
-            <div class="coming-soon-box">
-                <i class="fa-solid fa-hourglass-half"></i>
-                <h3>Coming Soon</h3>
-                <p>Our exclusive community hub is under construction. Get ready for drops, meets, and classified events.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===================== CART ===================== -->
-    <div id="cart-overlay" onclick="app.toggleCart()"></div>
-    <div id="cart-panel">
-        <div class="cart-head">
-            <h2>Your Stash</h2>
-            <button class="cart-close-btn" onclick="app.toggleCart()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="cart-items-list" id="cart-items-list">
-            <p style="color:var(--text-muted); margin-top:20px;">Your bag is empty.</p>
-        </div>
-        <div class="cart-foot">
-            <div class="cart-total-row">
-                <span>Total</span>
-                <span id="cart-total">₹0</span>
-                <span id="chk-total" style="display:none;">0</span>
-            </div>
-            <button class="btn-gold" style="width:100%;" onclick="app.openCheckout()">Pay Now</button>
-        </div>
-    </div>
-
-    <!-- ===================== MODALS ===================== -->
-
-    <!-- Auth Modal -->
-    <div class="modal-bg" id="auth-modal">
-        <div class="modal-box">
-            <button class="modal-close" onclick="app.closeModal('auth-modal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2 class="modal-title" id="auth-title">Secure Login</h2>
-            <form onsubmit="app.handleAuth(event)">
-                <input type="text" id="reg-name" class="inp" placeholder="Full Name" style="display:none; margin-bottom:14px;">
-                <input type="email" id="auth-email" class="inp" placeholder="Email address" required style="margin-bottom:14px;">
-                <input type="password" id="auth-password" class="inp" placeholder="Password" required style="margin-bottom:14px;">
-                <div id="reg-extra" style="display:none;">
-                    <input type="tel" id="reg-phone" class="inp" placeholder="Phone Number" style="margin-bottom:14px;">
-                    <input type="text" id="reg-car" class="inp" placeholder="Your Car Model" style="margin-bottom:14px;">
-                </div>
-                <button type="submit" class="btn-gold" style="width:100%;" id="auth-btn">Access</button>
-            </form>
-            <button class="modal-switch" onclick="app.switchAuthMode()">Switch Mode</button>
-        </div>
-    </div>
-
-    <!-- Checkout Modal -->
-    <div class="modal-bg" id="checkout-modal">
-        <div class="modal-box" style="max-width:480px;">
-            <button class="modal-close" onclick="app.closeModal('checkout-modal')"><i class="fa-solid fa-xmark"></i></button>
-            <h2 class="modal-title">Shipping Details</h2>
-            <form onsubmit="app.processCheckout(event)">
-                <input type="text" id="chk-address" class="inp" placeholder="Full Address" required style="margin-bottom:14px;">
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
-                    <input type="text" id="chk-city" class="inp" placeholder="City" required>
-                    <input type="text" id="chk-zip" class="inp" placeholder="PIN Code" required>
-                </div>
-                <select id="chk-payment" class="inp" style="margin-bottom:20px;">
-                    <option value="ONLINE">Online Payment</option>
-                    <option value="COD">Cash on Delivery</option>
-                </select>
-                <button type="submit" class="btn-gold" style="width:100%;" id="chk-btn">Confirm Order</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- FLOATING DOCK -->
-    <div class="float-dock">
-        <button class="dock-btn dock-home" onclick="app.goHome()" title="Home"><i class="fa-solid fa-house"></i></button>
-        <a class="dock-btn dock-wa" onclick="app.wa('General Inquiry')" href="javascript:void(0)" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-    </div>
-
-    <script>
-    // =============================================
-    // FIREBASE SETUP
-    // =============================================
-    const firebaseConfig = {
-        apiKey: "AIzaSyDoU-ixQiMmjEofIAK_sQe729PZ86jseDY",
-        authDomain: "richbart-customs.firebaseapp.com",
-        projectId: "richbart-customs",
-        storageBucket: "richbart-customs.firebasestorage.app",
-        messagingSenderId: "717900685166",
-        appId: "1:717900685166:web:095f2354c75917907c6b7f"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db   = firebase.firestore();
-
-    // =============================================
-    // APP CLASS
-    // =============================================
-    class RichBratApp {
-        constructor() {
-            this.cart      = [];
-            this.uid       = null;
-            this.inventory = [];
-            this.authMode  = 'login';
-            this.CALL_NO   = "8527746844";
-            this.WA_NO     = "8920503933";
-
-            // Hide loader on window load
-            window.addEventListener('load', () => {
-                setTimeout(() => {
-                    const l = document.getElementById('global-loader');
-                    l.classList.add('hide');
-                    setTimeout(() => l.style.display = 'none', 700);
-                }, 1400);
-            });
-
-            // Auth state
-            auth.onAuthStateChanged(user => {
-                this.uid = user ? user.uid : null;
-                document.getElementById('guest-actions').style.display = user ? 'none' : 'flex';
-                document.getElementById('user-actions').style.display  = user ? 'flex' : 'none';
-            });
-        }
-
-        // ---- NAVIGATION ----
-        go(section) {
-            window.scrollTo({ top: 0, behavior: 'instant' });
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            const el = document.getElementById('view-' + section);
-            if (el) el.classList.add('active');
-            this.closeNav();
-
-            // Lazy-load store
-            if (section === 'store') this._loadStore();
-        }
-
-        goHome() { this.go('landing'); }
-        openNav()  { document.getElementById('nav-links').classList.add('open'); }
-        closeNav() { document.getElementById('nav-links').classList.remove('open'); }
-
-        // ---- CONTACT ----
-        call() { window.location.href = `tel:${this.CALL_NO}`; }
-        wa(subject) {
-            const msg = encodeURIComponent(`Hi RichBrat$! I'm interested in: ${subject}`);
-            window.open(`https://wa.me/${this.WA_NO}?text=${msg}`, '_blank');
-        }
-
-        // ---- DRAG RACE ANIMATION ----
-        _drag(cb) {
-            const o = document.getElementById('drag-overlay');
-            o.style.display = 'block';
-            o.classList.add('drag-run');
-            setTimeout(() => { if (cb) cb(); }, 1200);
-            setTimeout(() => { o.classList.remove('drag-run'); o.style.display = 'none'; }, 2100);
-        }
-
-        // ---- AUTH ----
-        openAuth(mode) {
-            this.authMode = mode;
-            this._syncAuthUI();
-            document.getElementById('auth-modal').classList.add('open');
-        }
-        closeModal(id) { document.getElementById(id).classList.remove('open'); }
-        switchAuthMode() {
-            this.authMode = this.authMode === 'login' ? 'register' : 'login';
-            this._syncAuthUI();
-        }
-        _syncAuthUI() {
-            const isReg = this.authMode === 'register';
-            document.getElementById('auth-title').innerText = isReg ? 'New Pilot Registry' : 'Secure Login';
-            document.getElementById('auth-btn').innerText   = isReg ? 'Initialize' : 'Access';
-            document.getElementById('reg-name').style.display  = isReg ? 'block' : 'none';
-            document.getElementById('reg-extra').style.display = isReg ? 'block' : 'none';
-        }
-        async handleAuth(e) {
-            e.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            const pass  = document.getElementById('auth-password').value;
-            const btn   = document.getElementById('auth-btn');
-            btn.innerText = '...'; btn.disabled = true;
-            try {
-                if (this.authMode === 'register') {
-                    const cred = await auth.createUserWithEmailAndPassword(email, pass);
-                    await db.collection('users').doc(cred.user.uid).set({
-                        name:  document.getElementById('reg-name').value,
-                        phone: document.getElementById('reg-phone').value,
-                        car:   document.getElementById('reg-car').value,
-                        email, orders: []
-                    });
-                } else {
-                    await auth.signInWithEmailAndPassword(email, pass);
-                }
-                this._drag(() => {
-                    this.closeModal('auth-modal');
-                    this.go('store');
-                });
-            } catch (err) {
-                alert('Access Denied: ' + err.message);
-            } finally {
-                btn.disabled = false;
-                this._syncAuthUI();
-            }
-        }
-        logout() { auth.signOut(); this.goHome(); }
-
-        // ---- STORE ----
-        async _loadStore() {
-            if (this.inventory.length > 0) { this.renderShop(); return; }
-            const loader = document.getElementById('store-loader');
-            loader.style.display = 'block';
-            try {
-                const snap = await db.collection('inventory').get();
-                let items = [];
-                snap.forEach(doc => items.push({ id: doc.id, ...doc.data() }));
-                if (items.length === 0) {
-                    // Placeholder items
-                    items = [
-                        { name: 'Carbon Fibre Steering Wrap', price: 3500,  category: 'Interior',    image: 'logo.PNG' },
-                        { name: 'Ambient LED Interior Kit',   price: 2800,  category: 'Lighting',    image: 'logo.PNG' },
-                        { name: 'Custom Exhaust Tips (Pair)', price: 8500,  category: 'Exterior',    image: 'logo.PNG' },
-                        { name: 'DRL LED Projector Kit',      price: 12000, category: 'Lighting',    image: 'logo.PNG' },
-                        { name: 'Pioneer Audio Head Unit',    price: 9800,  category: 'Audio',       image: 'logo.PNG' },
-                        { name: 'Sport Suspension Kit',       price: 22000, category: 'Performance', image: 'logo.PNG' }
-                    ];
-                }
-                this.inventory = items;
-            } catch (err) {
-                loader.innerHTML = `<p style="color:var(--neon-red);">Could not load inventory. Check Firebase.</p>`;
-                return;
-            }
-            loader.style.display = 'none';
-            this.renderShop();
-        }
-
-        renderShop() {
-            const list     = document.getElementById('product-list');
-            const search   = (document.getElementById('shop-search').value || '').toLowerCase();
-            const maxPrice = parseFloat(document.getElementById('shop-filter-price').value);
-            const sort     = document.getElementById('shop-sort').value;
-
-            let items = this.inventory.filter(p =>
-                p.name.toLowerCase().includes(search) && parseFloat(p.price) <= maxPrice
-            );
-            if (sort === 'price-low')  items.sort((a,b) => a.price - b.price);
-            if (sort === 'price-high') items.sort((a,b) => b.price - a.price);
-            if (sort === 'name-asc')   items.sort((a,b) => a.name.localeCompare(b.name));
-
-            if (items.length === 0) {
-                list.innerHTML = `<p style="color:var(--text-muted); text-align:center; grid-column:1/-1; padding:40px;">No matching parts found.</p>`;
-                return;
-            }
-
-            list.innerHTML = items.map(p => `
-                <div class="product-card">
-                    <div class="product-img" style="background-image:url('${p.image || 'logo.PNG'}');"></div>
-                    <div class="product-info">
-                        <div class="product-name">${p.name}</div>
-                        <div class="product-cat">${p.category || 'Mod'}</div>
-                        <div class="product-price">₹${Number(p.price).toLocaleString('en-IN')}</div>
-                        <button class="btn-gold" style="width:100%; font-size:0.8rem; padding:11px;" onclick="app.addToCart('${p.name.replace(/'/g,"\\'")}', ${p.price})">Add to Bag</button>
+    <div id="view-audio" class="section">
+        <div class="content-box">
+            <h2 class="section-title">AUDIO SYSTEMS</h2>
+            <p style="text-align:center; color:#888; margin-bottom:40px;">Feel the bass. Crystal clear highs. Choose your tier.</p>
+            <div class="dashboard-grid">
+                <div class="dash-card" style="border-color:var(--gold);">
+                    <i class="fa-solid fa-volume-high dash-icon" style="color:var(--gold);"></i>
+                    <h3 style="color:var(--gold);">HIGH-END</h3>
+                    <p style="color:#666; margin-top:10px; margin-bottom:20px;">Premium components, custom enclosures, and studio-grade DSP tuning for true audiophiles.</p>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-luxury" style="flex:1; padding:10px; font-size:0.8rem;" onclick="app.navTo('view-schedule')">BOOK</button>
+                        <button class="btn-luxury" style="flex:1; padding:10px; font-size:0.8rem; background:#25D366; color:#fff;" onclick="app.whatsappUs('High-End Audio System')">WHATSAPP</button>
                     </div>
                 </div>
-            `).join('');
-        }
+                <div class="dash-card">
+                    <i class="fa-solid fa-music dash-icon"></i>
+                    <h3>POCKET FRIENDLY</h3>
+                    <p style="color:#666; margin-top:10px; margin-bottom:20px;">Superior sound without the heavy tag. Great bass, clear vocals, OEM integration.</p>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn-luxury" style="flex:1; padding:10px; font-size:0.8rem;" onclick="app.navTo('view-schedule')">BOOK</button>
+                        <button class="btn-luxury" style="flex:1; padding:10px; font-size:0.8rem; background:#25D366; color:#fff;" onclick="app.whatsappUs('Pocket-Friendly Audio System')">WHATSAPP</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        // ---- CART ----
-        addToCart(name, price) {
-            this.cart.push({ name, price: Number(price) });
-            this._renderCart();
-            document.getElementById('cart-panel').classList.add('open');
-            document.getElementById('cart-overlay').classList.add('show');
-        }
-        removeFromCart(i) {
-            this.cart.splice(i, 1);
-            this._renderCart();
-        }
-        _renderCart() {
-            const badge = document.getElementById('cart-count');
-            badge.innerText = this.cart.length;
-            const list  = document.getElementById('cart-items-list');
-            let total   = 0;
-            if (this.cart.length === 0) {
-                list.innerHTML = `<p style="color:var(--text-muted); margin-top:20px;">Your bag is empty.</p>`;
-            } else {
-                list.innerHTML = this.cart.map((item, i) => {
-                    total += item.price;
-                    return `<div class="cart-item-row">
-                        <span class="cart-item-name">${item.name}</span>
-                        <span style="display:flex;align-items:center;gap:4px;">
-                            <span class="cart-item-price">₹${item.price.toLocaleString('en-IN')}</span>
-                            <button class="cart-remove" onclick="app.removeFromCart(${i})"><i class="fa-solid fa-trash-can"></i></button>
-                        </span>
-                    </div>`;
-                }).join('');
-            }
-            document.getElementById('cart-total').innerText = '₹' + total.toLocaleString('en-IN');
-            document.getElementById('chk-total').innerText  = total;
-        }
-        toggleCart() {
-            document.getElementById('cart-panel').classList.toggle('open');
-            document.getElementById('cart-overlay').classList.toggle('show');
-        }
-
-        // ---- CHECKOUT ----
-        openCheckout() {
-            if (this.cart.length === 0) { alert('Your bag is empty!'); return; }
-            if (!this.uid) {
-                this.toggleCart();
-                this.openAuth('login');
-                return;
-            }
-            this.toggleCart();
-            document.getElementById('checkout-modal').classList.add('open');
-        }
-
-        async processCheckout(e) {
-            e.preventDefault();
-            const btn  = document.getElementById('chk-btn');
-            const meth = document.getElementById('chk-payment').value;
-            const tot  = parseFloat(document.getElementById('chk-total').innerText);
-            btn.innerText = 'Processing...'; btn.disabled = true;
-
-            const order = {
-                userId: this.uid,
-                date: new Date().toLocaleDateString('en-IN'),
-                timestamp: Date.now(),
-                items: this.cart,
-                total: tot,
-                status: 'Processing',
-                address: document.getElementById('chk-address').value,
-                city: document.getElementById('chk-city').value,
-                zip: document.getElementById('chk-zip').value,
-                payment_method: meth
-            };
-
-            if (meth === 'COD') { await this._saveOrder(order); return; }
-
-            const rzp = new Razorpay({
-                key: 'rzp_test_S78l8FsaqvBc3n',
-                amount: tot * 100,
-                currency: 'INR',
-                name: 'RichBrat$ Customs',
-                description: 'Car Modifications',
-                image: 'logo.PNG',
-                handler: (res) => {
-                    order.transaction_id = res.razorpay_payment_id;
-                    this._saveOrder(order);
-                },
-                theme: { color: '#D4AF37' }
-            });
-            rzp.on('payment.failed', r => {
-                alert('Payment Failed: ' + r.error.description);
-                btn.innerText = 'Confirm Order'; btn.disabled = false;
-            });
-            rzp.open();
-        }
-
-        async _saveOrder(orderData) {
-            try {
-                await db.collection('orders').add(orderData);
-                await db.collection('users').doc(this.uid).update({
-                    orders: firebase.firestore.FieldValue.arrayUnion(orderData)
-                });
-                this._drag(() => {
-                    this.cart = [];
-                    this._renderCart();
-                    this.closeModal('checkout-modal');
-                    document.getElementById('chk-btn').innerText = 'Confirm Order';
-                    document.getElementById('chk-btn').disabled  = false;
-                    document.getElementById('scheduleForm') && document.getElementById('scheduleForm').reset();
-                    alert('Order Placed!');
-                    this.goHome();
-                });
-            } catch (err) {
-                alert(err.message);
-                document.getElementById('chk-btn').innerText = 'Confirm Order';
-                document.getElementById('chk-btn').disabled  = false;
-            }
-        }
-
-        // ---- APPOINTMENT ----
-        async bookAppointment(e) {
-            e.preventDefault();
-            const btn = document.getElementById('schedule-btn');
-            btn.innerText = 'Booking...'; btn.disabled = true;
-
-            const data = {
-                name:     document.getElementById('s_name').value,
-                email:    document.getElementById('s_email').value,
-                phone:    document.getElementById('s_phone').value,
-                car:      document.getElementById('s_car').value,
-                date:     document.getElementById('s_date').value,
-                modType:  document.getElementById('s_mod_type').value,
-                hasParts: document.querySelector('input[name="has_parts"]:checked').value,
-                details:  document.getElementById('s_details').value,
-                timestamp: Date.now(),
-                status: 'Pending'
-            };
-            try {
-                await db.collection('appointments').add(data);
-                this._drag(() => {
-                    document.getElementById('scheduleForm').reset();
-                    btn.innerText = 'Book Appointment'; btn.disabled = false;
-                    alert('Appointment requested! We\'ll contact you shortly to confirm.');
-                    this.goHome();
-                });
-            } catch (err) {
-                alert('Could not book. Please try again.');
-                btn.innerText = 'Book Appointment'; btn.disabled = false;
-            }
-        }
-
-        // ---- CONSULTATION ----
-        async submitConsultation(e) {
-            e.preventDefault();
-            const data = {
-                name:      document.getElementById('c_name').value,
-                car:       document.getElementById('c_car').value,
-                query:     document.getElementById('c_query').value,
-                timestamp: Date.now(),
-                status:    'Unread'
-            };
-            try {
-                await db.collection('queries').add(data);
-                this._drag(() => {
-                    document.getElementById('c_name').value  = '';
-                    document.getElementById('c_car').value   = '';
-                    document.getElementById('c_query').value = '';
-                    alert('Query received! We\'ll be in touch soon.');
-                    this.goHome();
-                });
-            } catch (err) {
-                alert('Could not submit. Please try again.');
-            }
-        }
-    }
-
-    window.app = new RichBratApp();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
