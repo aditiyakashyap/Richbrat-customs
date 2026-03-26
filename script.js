@@ -88,11 +88,18 @@ class App {
     }
 
     // --- NAVIGATION ---
+    toggleNav() {
+        document.getElementById('nav-center').classList.toggle('nav-open');
+    }
+
     navTo(id) {
         window.scrollTo(0,0);
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         
+        // Ensure mobile menu closes on click
+        document.getElementById('nav-center').classList.remove('nav-open');
+
         if(id === 'view-consultancy') {
              document.getElementById('consultancy-form-container').style.display = 'block';
              document.getElementById('consultancy-success').style.display = 'none';
@@ -366,7 +373,7 @@ class App {
             currency: "INR",
             name: "RichBrat$ Customs",
             description: "Modifications",
-            image: "logo.PNG", // Case sensitive update
+            image: "logo.PNG", 
             handler: (response) => {
                 this.saveOrderToDatabase("Online Paid", response.razorpay_payment_id);
             },
@@ -474,7 +481,7 @@ class App {
         if (!file) { alert("Image required."); btn.innerText = "SEND"; btn.disabled = false; return; }
 
         try {
-            const storageRef = storage.ref(`consultations/${this.uid}_${Date.now()}_${file.name}`);
+            const storageRef = storage.ref(`consultations/${this.uid}_${Date.now()}_${encodeURIComponent(file.name)}`);
             const snapshot = await storageRef.put(file);
             const downloadURL = await snapshot.ref.getDownloadURL();
 
