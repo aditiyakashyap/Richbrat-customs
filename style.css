@@ -135,10 +135,23 @@ nav {
 
 /* --- HERO --- */
 .hero { display: flex; align-items: center; justify-content: center; height: 100vh; text-align: center; padding-top: 80px; }
-.hero-logo { width: 300px; max-width: 70%; margin-bottom: 30px; filter: drop-shadow(0 0 30px rgba(0,0,0,0.5)); }
+
+/* OPTIMIZED LOGO RESPONSIVENESS */
+.hero-logo { 
+    width: clamp(150px, 20vw, 250px); /* Dynamically adjusts between 150px and 250px */
+    max-height: 25vh; /* Prevents overflow on short/landscape devices */
+    object-fit: contain; /* Ensures aspect ratio remains perfect */
+    margin-bottom: 20px; 
+    filter: drop-shadow(0 0 30px rgba(0,0,0,0.5)); 
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.hero-logo:hover {
+    transform: scale(1.05);
+}
+
 h1 {
     font-family: var(--font-display); font-weight: 700;
-    font-size: clamp(3.5rem, 9vw, 6.5rem); line-height: 0.95; 
+    font-size: clamp(3rem, 8vw, 6.5rem); line-height: 0.95; 
     text-transform: uppercase; margin-bottom: 25px; letter-spacing: -2px;
     background: linear-gradient(to bottom, #ffffff 0%, #a0a0a0 50%, #ffffff 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -155,7 +168,7 @@ h1 {
     z-index: 10000; display: flex; align-items: center; justify-content: center;
     transition: opacity 0.5s ease-out;
 }
-.loader-logo { width: 120px; height: auto; animation: pulseGlow 1.5s infinite ease-in-out; }
+.loader-logo { width: clamp(80px, 15vw, 120px); height: auto; animation: pulseGlow 1.5s infinite ease-in-out; }
 @keyframes pulseGlow {
     0% { transform: scale(1); opacity: 0.8; }
     50% { transform: scale(1.1); opacity: 1; }
@@ -164,7 +177,7 @@ h1 {
 
 /* --- BUTTONS --- */
 .btn-start-engine {
-    width: 150px; height: 150px; border-radius: 50%;
+    width: clamp(120px, 15vw, 150px); height: clamp(120px, 15vw, 150px); border-radius: 50%;
     background: radial-gradient(circle, #2a2a2a 0%, #000 100%);
     border: 4px solid #333;
     box-shadow: 0 0 0 4px #111, 0 0 30px rgba(255, 0, 60, 0.3), inset 0 5px 15px rgba(255, 255, 255, 0.1);
@@ -172,7 +185,7 @@ h1 {
     cursor: pointer; position: relative; transition: 0.2s;
     display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 40px;
 }
-.btn-start-engine strong { font-size: 1.5rem; letter-spacing: 2px; color: var(--neon-red); text-shadow: 0 0 10px var(--neon-red); }
+.btn-start-engine strong { font-size: clamp(1.2rem, 3vw, 1.5rem); letter-spacing: 2px; color: var(--neon-red); text-shadow: 0 0 10px var(--neon-red); }
 .btn-start-engine:active { transform: scale(0.95); box-shadow: 0 0 15px rgba(255, 0, 60, 0.6); }
 
 .btn-luxury {
@@ -294,4 +307,7 @@ h1 {
     .logo-container img { height: 50px; }
     .booking-grid, .profile-layout { grid-template-columns: 1fr; }
     #cart-panel { width: 100%; right: -100%; }
+    /* Ensure the mobile view also scales appropriately */
+    .hero-logo { margin-bottom: 15px; width: clamp(120px, 35vw, 180px); }
+    h1 { font-size: clamp(2.5rem, 10vw, 3.5rem); }
 }
