@@ -24,7 +24,7 @@
 
     <div id="drag-run-overlay">
         <div class="skid-marks"></div>
-        <img src="zoom.jpg" class="hologram-car" alt="Blueprint">
+        <img src="zoom.png" class="hologram-car" alt="Blueprint">
     </div>
 
     <div class="bg-noise"></div>
@@ -35,7 +35,13 @@
             <h1 class="logo-text">RICHBRAT$ CUSTOMS</h1>
         </div>
 
-        <div class="nav-center">
+        <div class="mobile-toggle" onclick="app.toggleNav()">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+
+        <div class="nav-center" id="nav-center">
+            <i class="fa-solid fa-xmark mobile-close" onclick="app.toggleNav()"></i>
+            
             <a class="page-link" onclick="app.loadStore()">Store</a>
             <a class="page-link" onclick="app.navTo('view-booking')">Appointment</a>
             <a class="page-link" onclick="app.navTo('view-consultancy')">Consult</a>
